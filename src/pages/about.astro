@@ -1,0 +1,259 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Card from '../components/ui/Card.astro';
+import Badge from '../components/ui/Badge.astro';
+import { appConfig } from '../lib/config';
+---
+
+<Layout title="关于我们" description="了解软件管理平台的使命、愿景和团队">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- 页面标题 -->
+    <div class="text-center mb-16">
+      <h1 class="text-4xl font-bold text-gray-900 mb-4">关于我们</h1>
+      <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+        致力于为用户提供优质的软件管理和分发服务，让软件发现和使用变得更加简单高效
+      </p>
+    </div>
+
+    <!-- 平台介绍 -->
+    <section class="mb-16">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div>
+          <h2 class="text-3xl font-bold text-gray-900 mb-6">我们的平台</h2>
+          <div class="space-y-4 text-gray-600">
+            <p>
+              {appConfig.title} 是一个基于现代技术栈构建的软件管理平台，旨在为开发者和用户提供便捷的软件发布、管理和下载服务。
+            </p>
+            <p>
+              我们使用 Astro 框架构建前端界面，集成了强大的 LACS API 服务，为用户提供流畅的软件浏览和管理体验。
+            </p>
+            <p>
+              平台支持多种软件分类、标签系统、版本管理、激活码管理等功能，满足不同用户的需求。
+            </p>
+          </div>
+        </div>
+        
+        <div class="bg-gradient-to-br from-primary-50 to-primary-100 rounded-2xl p-8">
+          <div class="text-center">
+            <div class="w-20 h-20 bg-primary-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
+              <svg class="w-10 h-10 text-white" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"></path>
+              </svg>
+            </div>
+            <h3 class="text-xl font-semibold text-gray-900 mb-2">{appConfig.title}</h3>
+            <p class="text-gray-600">版本 {appConfig.version}</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 核心功能 -->
+    <section class="mb-16">
+      <h2 class="text-3xl font-bold text-gray-900 text-center mb-12">核心功能</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <Card class="text-center">
+          <div class="text-4xl mb-4">📦</div>
+          <h3 class="text-lg font-semibold text-gray-900 mb-2">软件管理</h3>
+          <p class="text-gray-600 text-sm">
+            完整的软件信息管理，包括版本历史、下载链接、系统要求等详细信息
+          </p>
+        </Card>
+
+        <Card class="text-center">
+          <div class="text-4xl mb-4">🏷️</div>
+          <h3 class="text-lg font-semibold text-gray-900 mb-2">分类标签</h3>
+          <p class="text-gray-600 text-sm">
+            灵活的分类和标签系统，帮助用户快速找到所需的软件工具
+          </p>
+        </Card>
+
+        <Card class="text-center">
+          <div class="text-4xl mb-4">🔑</div>
+          <h3 class="text-lg font-semibold text-gray-900 mb-2">激活码管理</h3>
+          <p class="text-gray-600 text-sm">
+            强大的激活码生成、验证和管理功能，支持软件许可证管理
+          </p>
+        </Card>
+
+        <Card class="text-center">
+          <div class="text-4xl mb-4">📊</div>
+          <h3 class="text-lg font-semibold text-gray-900 mb-2">数据统计</h3>
+          <p class="text-gray-600 text-sm">
+            详细的用户行为统计和软件使用分析，帮助了解软件使用情况
+          </p>
+        </Card>
+
+        <Card class="text-center">
+          <div class="text-4xl mb-4">🔍</div>
+          <h3 class="text-lg font-semibold text-gray-900 mb-2">智能搜索</h3>
+          <p class="text-gray-600 text-sm">
+            强大的搜索功能，支持按名称、分类、标签等多种方式查找软件
+          </p>
+        </Card>
+
+        <Card class="text-center">
+          <div class="text-4xl mb-4">📱</div>
+          <h3 class="text-lg font-semibold text-gray-900 mb-2">响应式设计</h3>
+          <p class="text-gray-600 text-sm">
+            完美适配桌面和移动设备，随时随地访问和管理软件
+          </p>
+        </Card>
+      </div>
+    </section>
+
+    <!-- 技术栈 -->
+    <section class="mb-16">
+      <h2 class="text-3xl font-bold text-gray-900 text-center mb-12">技术栈</h2>
+      <div class="bg-white rounded-2xl border border-gray-200 p-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div class="text-center">
+            <div class="w-16 h-16 bg-orange-100 rounded-xl flex items-center justify-center mx-auto mb-4">
+              <svg class="w-8 h-8 text-orange-600" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 0L1.608 4.8L3.072 19.2L12 24l8.928-4.8L21.392 4.8L12 0z"/>
+              </svg>
+            </div>
+            <h3 class="font-semibold text-gray-900 mb-1">Astro</h3>
+            <p class="text-sm text-gray-600">现代静态站点生成器</p>
+          </div>
+
+          <div class="text-center">
+            <div class="w-16 h-16 bg-blue-100 rounded-xl flex items-center justify-center mx-auto mb-4">
+              <svg class="w-8 h-8 text-blue-600" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M14.23 12.004a2.236 2.236 0 0 1-2.235 2.236 2.236 2.236 0 0 1-2.236-2.236 2.236 2.236 0 0 1 2.235-2.236 2.236 2.236 0 0 1 2.236 2.236zm2.648-10.69c-1.346 0-3.107.96-4.888 2.622-1.78-1.653-3.542-2.602-4.887-2.602-.41 0-.783.093-1.106.278-1.375.793-1.683 3.264-.973 6.365C1.98 8.917 0 10.42 0 12.004c0 1.59 1.99 3.097 5.043 4.03-.704 3.113-.39 5.588.988 6.38.32.187.69.275 1.102.275 1.345 0 3.107-.96 4.888-2.624 1.78 1.654 3.542 2.603 4.887 2.603.41 0 .783-.09 1.106-.275 1.374-.792 1.683-3.263.973-6.365C22.02 15.096 24 13.59 24 12.004c0-1.59-1.99-3.097-5.043-4.032.704-3.11.39-5.587-.988-6.38-.318-.184-.688-.277-1.092-.278zm-.005 1.09v.006c.225 0 .406.044.558.127.666.382.955 1.835.73 3.704-.054.46-.142.945-.25 1.44-.96-.236-2.006-.417-3.107-.534-.66-.905-1.345-1.727-2.035-2.447 1.592-1.48 3.087-2.292 4.105-2.295zm-9.77.02c1.012 0 2.514.808 4.11 2.28-.686.72-1.37 1.537-2.02 2.442-1.107.117-2.154.298-3.113.538-.112-.49-.195-.964-.254-1.42-.23-1.868.054-3.32.714-3.707.19-.09.4-.127.563-.132zm4.882 3.05c.455.468.91.992 1.36 1.564-.44-.02-.89-.034-1.36-.034-.47 0-.92.014-1.36.034.44-.572.895-1.096 1.36-1.564zM12 8.1c.74 0 1.477.034 2.202.093.406.582.802 1.203 1.183 1.86.372.64.71 1.29 1.018 1.946-.308.655-.646 1.31-1.013 1.95-.38.66-.773 1.288-1.18 1.87-.728.063-1.466.098-2.21.098-.74 0-1.477-.035-2.202-.093-.406-.582-.802-1.204-1.183-1.86-.372-.64-.71-1.29-1.018-1.946.303-.657.646-1.313 1.013-1.954.38-.66.773-1.286 1.18-1.868.728-.064 1.466-.099 2.21-.099zm-3.635.254c-.24.377-.48.763-.704 1.16-.225.39-.435.782-.635 1.174-.265-.656-.49-1.31-.676-1.947.64-.15 1.315-.283 2.015-.386zm7.26 0c.695.103 1.365.23 2.006.387-.18.632-.405 1.282-.66 1.933-.2-.39-.41-.783-.64-1.174-.225-.392-.465-.774-.705-1.146zm3.063.675c.484.15.944.317 1.375.498 1.732.74 2.852 1.708 2.852 2.476-.005.768-1.125 1.74-2.857 2.475-.42.18-.88.342-1.355.493-.28-.958-.646-1.956-1.1-2.98.45-1.017.81-2.01 1.085-2.964zm-13.395.004c.278.96.645 1.957 1.1 2.98-.45 1.017-.812 2.01-1.086 2.964-.484-.15-.944-.318-1.37-.5-1.732-.737-2.852-1.706-2.852-2.474 0-.768 1.12-1.742 2.852-2.476.42-.18.88-.342 1.356-.494zm11.678 4.28c.265.657.49 1.312.676 1.948-.64.157-1.316.29-2.016.39.24-.375.48-.762.705-1.158.225-.39.435-.788.636-1.18zm-9.945.02c.2.392.41.783.64 1.175.23.39.465.772.705 1.143-.695-.102-1.365-.23-2.006-.386.18-.63.406-1.282.66-1.933zM17.92 16.32c.112.493.2.968.254 1.423.23 1.868-.054 3.32-.714 3.708-.147.09-.338.128-.563.128-1.012 0-2.514-.807-4.11-2.28.686-.72 1.37-1.536 2.02-2.44 1.107-.118 2.154-.3 3.113-.54zm-11.83.01c.96.234 2.006.415 3.107.532.66.905 1.345 1.727 2.035 2.446-1.595 1.483-3.092 2.295-4.11 2.295-.22-.005-.406-.05-.553-.132-.666-.38-.955-1.834-.73-3.703.054-.46.142-.944.25-1.438zm4.56.64c.44.02.89.034 1.36.034.47 0 .92-.014 1.36-.034-.44.572-.895 1.095-1.36 1.56-.465-.467-.92-.988-1.36-1.56z"/>
+              </svg>
+            </div>
+            <h3 class="font-semibold text-gray-900 mb-1">React</h3>
+            <p class="text-sm text-gray-600">交互式组件开发</p>
+          </div>
+
+          <div class="text-center">
+            <div class="w-16 h-16 bg-cyan-100 rounded-xl flex items-center justify-center mx-auto mb-4">
+              <svg class="w-8 h-8 text-cyan-600" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12.001,4.8c-3.2,0-5.2,1.6-6,4.8c1.2-1.6,2.6-2.2,4.2-1.8c0.913,0.228,1.565,0.89,2.288,1.624 C13.666,10.618,15.027,12,18.001,12c3.2,0,5.2-1.6,6-4.8c-1.2,1.6-2.6,2.2-4.2,1.8c-0.913-0.228-1.565-0.89-2.288-1.624 C16.337,6.182,14.976,4.8,12.001,4.8z M6.001,12c-3.2,0-5.2,1.6-6,4.8c1.2-1.6,2.6-2.2,4.2-1.8c0.913,0.228,1.565,0.89,2.288,1.624 c1.177,1.194,2.538,2.576,5.512,2.576c3.2,0,5.2-1.6,6-4.8c-1.2,1.6-2.6,2.2-4.2,1.8c-0.913-0.228-1.565-0.89-2.288-1.624 C10.337,13.382,8.976,12,6.001,12z"/>
+              </svg>
+            </div>
+            <h3 class="font-semibold text-gray-900 mb-1">Tailwind CSS</h3>
+            <p class="text-sm text-gray-600">实用优先的 CSS 框架</p>
+          </div>
+
+          <div class="text-center">
+            <div class="w-16 h-16 bg-blue-100 rounded-xl flex items-center justify-center mx-auto mb-4">
+              <svg class="w-8 h-8 text-blue-600" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M1.125 0C.502 0 0 .502 0 1.125v21.75C0 23.498.502 24 1.125 24h21.75c.623 0 1.125-.502 1.125-1.125V1.125C24 .502 23.498 0 22.875 0H1.125zM12 7.5c-2.485 0-4.5 2.015-4.5 4.5s2.015 4.5 4.5 4.5 4.5-2.015 4.5-4.5-2.015-4.5-4.5-4.5z"/>
+              </svg>
+            </div>
+            <h3 class="font-semibold text-gray-900 mb-1">TypeScript</h3>
+            <p class="text-sm text-gray-600">类型安全的 JavaScript</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 联系信息 -->
+    <section class="mb-16">
+      <h2 class="text-3xl font-bold text-gray-900 text-center mb-12">联系我们</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <Card class="text-center">
+          <div class="text-3xl mb-4">📧</div>
+          <h3 class="font-semibold text-gray-900 mb-2">邮箱支持</h3>
+          <p class="text-sm text-gray-600 mb-3">
+            有任何问题或建议，欢迎发送邮件给我们
+          </p>
+          <a href="mailto:support@lacs.cc" class="text-primary-600 hover:text-primary-700 text-sm font-medium">
+            support@lacs.cc
+          </a>
+        </Card>
+
+        <Card class="text-center">
+          <div class="text-3xl mb-4">📚</div>
+          <h3 class="font-semibold text-gray-900 mb-2">API 文档</h3>
+          <p class="text-sm text-gray-600 mb-3">
+            查看完整的 API 文档和开发指南
+          </p>
+          <a href={appConfig.links.documentation} target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:text-primary-700 text-sm font-medium">
+            查看文档
+          </a>
+        </Card>
+
+        <Card class="text-center">
+          <div class="text-3xl mb-4">💬</div>
+          <h3 class="font-semibold text-gray-900 mb-2">技术支持</h3>
+          <p class="text-sm text-gray-600 mb-3">
+            获取技术支持和帮助
+          </p>
+          <a href={appConfig.links.support} target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:text-primary-700 text-sm font-medium">
+            获取支持
+          </a>
+        </Card>
+
+        <Card class="text-center">
+          <div class="text-3xl mb-4">🐙</div>
+          <h3 class="font-semibold text-gray-900 mb-2">开源项目</h3>
+          <p class="text-sm text-gray-600 mb-3">
+            查看我们的开源项目和贡献
+          </p>
+          <a href={appConfig.links.github} target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:text-primary-700 text-sm font-medium">
+            GitHub
+          </a>
+        </Card>
+      </div>
+    </section>
+
+    <!-- 版本信息 -->
+    <section class="text-center">
+      <div class="bg-gray-50 rounded-2xl p-8">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">版本信息</h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-sm">
+          <div>
+            <div class="font-medium text-gray-900">当前版本</div>
+            <div class="text-gray-600">v{appConfig.version}</div>
+          </div>
+          <div>
+            <div class="font-medium text-gray-900">构建时间</div>
+            <div class="text-gray-600" id="build-time">-</div>
+          </div>
+          <div>
+            <div class="font-medium text-gray-900">开发团队</div>
+            <div class="text-gray-600">{appConfig.author}</div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</Layout>
+
+<script>
+  // 设置构建时间
+  document.addEventListener('DOMContentLoaded', () => {
+    const buildTimeElement = document.getElementById('build-time');
+    if (buildTimeElement) {
+      buildTimeElement.textContent = new Date().toLocaleDateString('zh-CN');
+    }
+  });
+</script>
+
+<style>
+  .bg-primary-50 {
+    background-color: var(--color-primary-50);
+  }
+  
+  .bg-primary-100 {
+    background-color: var(--color-primary-100);
+  }
+  
+  .bg-primary-600 {
+    background-color: var(--color-primary-600);
+  }
+  
+  .text-primary-600 {
+    color: var(--color-primary-600);
+  }
+  
+  .text-primary-700 {
+    color: var(--color-primary-700);
+  }
+  
+  .hover\:text-primary-700:hover {
+    color: var(--color-primary-700);
+  }
+</style>

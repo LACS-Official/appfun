@@ -1,0 +1,277 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Card from '../../components/ui/Card.astro';
+import Badge from '../../components/ui/Badge.astro';
+import { softwareCategories } from '../../lib/config';
+---
+
+<Layout title="软件分类" description="按分类浏览软件">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- 页面标题 -->
+    <div class="mb-8">
+      <h1 class="text-3xl font-bold text-gray-900">软件分类</h1>
+      <p class="text-gray-600 mt-2">按分类浏览和发现软件</p>
+    </div>
+
+    <!-- 分类网格 -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      {softwareCategories.map(category => (
+        <a href={`/categories/${category.id}`} class="group">
+          <Card hover={true} class="h-full">
+            <div class="text-center">
+              <!-- 分类图标 -->
+              <div class="text-5xl mb-4">
+                {category.icon}
+              </div>
+              
+              <!-- 分类名称 -->
+              <h3 class="text-lg font-semibold text-gray-900 group-hover:text-primary-600 transition-colors mb-2">
+                {category.name}
+              </h3>
+              
+              <!-- 软件数量 -->
+              <div class="flex items-center justify-center space-x-2 mb-4">
+                <Badge variant="secondary" size="sm" id={`count-${category.id}`}>
+                  加载中...
+                </Badge>
+              </div>
+              
+              <!-- 查看按钮 -->
+              <div class="text-sm text-primary-600 group-hover:text-primary-700 font-medium">
+                查看软件 →
+              </div>
+            </div>
+          </Card>
+        </a>
+      ))}
+    </div>
+
+    <!-- 最近更新的分类 -->
+    <section class="mt-16">
+      <h2 class="text-2xl font-bold text-gray-900 mb-6">最近更新</h2>
+      <div id="recent-updates-container">
+        <div class="flex justify-center py-8">
+          <div class="animate-spin w-6 h-6 border-2 border-primary-600 border-t-transparent rounded-full"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 热门标签 -->
+    <section class="mt-16">
+      <h2 class="text-2xl font-bold text-gray-900 mb-6">热门标签</h2>
+      <div id="popular-tags-container">
+        <div class="flex justify-center py-8">
+          <div class="animate-spin w-6 h-6 border-2 border-primary-600 border-t-transparent rounded-full"></div>
+        </div>
+      </div>
+    </section>
+  </div>
+</Layout>
+
+<script>
+  import { initializeApiClient, getApiClient } from '../../lib/api';
+  import { apiConfig, softwareCategories } from '../../lib/config';
+
+  // 初始化 API 客户端
+  initializeApiClient(apiConfig);
+
+  document.addEventListener('DOMContentLoaded', async () => {
+    await loadCategoryCounts();
+    await loadRecentUpdates();
+    await loadPopularTags();
+  });
+
+  // 加载各分类的软件数量
+  async function loadCategoryCounts() {
+    try {
+      const api = getApiClient();
+      
+      // 为每个分类获取软件数量
+      for (const category of softwareCategories) {
+        try {
+          const response = await api.getSoftwareList({
+            category: category.id,
+            page: 1,
+            limit: 1
+          });
+          
+          const countElement = document.getElementById(`count-${category.id}`);
+          if (countElement && response.success && response.pagination) {
+            countElement.textContent = `${response.pagination.total} 个软件`;
+          }
+        } catch (error) {
+          console.error(`加载分类 ${category.id} 数量失败:`, error);
+          const countElement = document.getElementById(`count-${category.id}`);
+          if (countElement) {
+            countElement.textContent = '- 个软件';
+          }
+        }
+      }
+    } catch (error) {
+      console.error('加载分类数量失败:', error);
+    }
+  }
+
+  // 加载最近更新的软件
+  async function loadRecentUpdates() {
+    const container = document.getElementById('recent-updates-container');
+    if (!container) return;
+
+    try {
+      const api = getApiClient();
+      const response = await api.getSoftwareList({
+        page: 1,
+        limit: 4,
+        sortBy: 'updatedAt',
+        sortOrder: 'desc'
+      });
+
+      if (response.success && response.data) {
+        const softwareList = response.data;
+        
+        if (softwareList.length === 0) {
+          container.innerHTML = `
+            <div class="text-center py-8">
+              <p class="text-gray-500">暂无最近更新的软件</p>
+            </div>
+          `;
+          return;
+        }
+
+        container.innerHTML = `
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            ${softwareList.map(software => `
+              <div class="bg-white rounded-lg border border-gray-200 p-4 hover:shadow-md transition-shadow">
+                <h4 class="font-semibold text-gray-900 mb-2">
+                  <a href="/software/${software.id}" class="hover:text-primary-600 transition-colors">
+                    ${software.name}
+                  </a>
+                </h4>
+                <p class="text-sm text-gray-600 mb-3 line-clamp-2">
+                  ${software.description || '暂无描述'}
+                </p>
+                <div class="flex items-center justify-between">
+                  <span class="text-xs text-gray-500">
+                    v${software.currentVersion}
+                  </span>
+                  ${software.category ? `
+                    <span class="inline-flex items-center rounded-full px-2 py-1 text-xs font-medium bg-gray-100 text-gray-800">
+                      ${software.category}
+                    </span>
+                  ` : ''}
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        `;
+      }
+    } catch (error) {
+      console.error('加载最近更新失败:', error);
+      container.innerHTML = `
+        <div class="text-center py-8">
+          <p class="text-red-600">加载失败，请稍后重试</p>
+        </div>
+      `;
+    }
+  }
+
+  // 加载热门标签
+  async function loadPopularTags() {
+    const container = document.getElementById('popular-tags-container');
+    if (!container) return;
+
+    try {
+      const api = getApiClient();
+      const response = await api.getSoftwareTags({
+        includeCount: true,
+        sortBy: 'count',
+        sortOrder: 'desc'
+      });
+
+      if (response.success && response.data) {
+        const tags = response.data.tags;
+        
+        if (!Array.isArray(tags) || tags.length === 0) {
+          container.innerHTML = `
+            <div class="text-center py-8">
+              <p class="text-gray-500">暂无标签数据</p>
+            </div>
+          `;
+          return;
+        }
+
+        // 取前20个热门标签
+        const popularTags = tags.slice(0, 20);
+        
+        container.innerHTML = `
+          <div class="flex flex-wrap gap-3">
+            ${popularTags.map(tag => {
+              const tagName = typeof tag === 'string' ? tag : tag.name;
+              const tagCount = typeof tag === 'object' && tag.count ? tag.count : '';
+              
+              return `
+                <a href="/tags/${encodeURIComponent(tagName)}" 
+                   class="inline-flex items-center px-3 py-2 rounded-full text-sm font-medium bg-gray-100 text-gray-800 hover:bg-primary-100 hover:text-primary-800 transition-colors">
+                  ${tagName}
+                  ${tagCount ? `<span class="ml-2 text-xs bg-gray-200 text-gray-600 px-2 py-0.5 rounded-full">${tagCount}</span>` : ''}
+                </a>
+              `;
+            }).join('')}
+          </div>
+        `;
+      }
+    } catch (error) {
+      console.error('加载热门标签失败:', error);
+      container.innerHTML = `
+        <div class="text-center py-8">
+          <p class="text-red-600">加载失败，请稍后重试</p>
+        </div>
+      `;
+    }
+  }
+</script>
+
+<style>
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  
+  .text-primary-600 {
+    color: var(--color-primary-600);
+  }
+  
+  .text-primary-700 {
+    color: var(--color-primary-700);
+  }
+  
+  .hover\:text-primary-600:hover {
+    color: var(--color-primary-600);
+  }
+  
+  .hover\:text-primary-700:hover {
+    color: var(--color-primary-700);
+  }
+  
+  .bg-primary-100 {
+    background-color: var(--color-primary-100);
+  }
+  
+  .text-primary-800 {
+    color: var(--color-primary-800);
+  }
+  
+  .hover\:bg-primary-100:hover {
+    background-color: var(--color-primary-100);
+  }
+  
+  .hover\:text-primary-800:hover {
+    color: var(--color-primary-800);
+  }
+  
+  .border-primary-600 {
+    border-color: var(--color-primary-600);
+  }
+</style>

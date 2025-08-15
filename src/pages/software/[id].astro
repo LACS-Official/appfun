@@ -1,0 +1,595 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Badge from '../../components/ui/Badge.astro';
+import Card from '../../components/ui/Card.astro';
+import LoadingSpinner from '../../components/ui/LoadingSpinner.astro';
+import ErrorMessage from '../../components/ui/ErrorMessage.astro';
+
+const { id } = Astro.params;
+
+if (!id || isNaN(Number(id))) {
+  return Astro.redirect('/');
+}
+---
+
+<Layout title="软件详情" description="查看软件的详细信息、版本历史和下载链接">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- 软件信息容器 -->
+    <div id="software-container">
+      <div class="flex justify-center py-12">
+        <LoadingSpinner size="lg" text="正在加载软件信息..." />
+      </div>
+    </div>
+
+    <!-- 版本历史 -->
+    <section class="mt-12" id="versions-section" style="display: none;">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-2xl font-bold text-gray-900">版本历史</h2>
+        <div class="flex items-center space-x-4">
+          <select id="version-filter" class="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-primary-500 focus:border-primary-500">
+            <option value="all">所有版本</option>
+            <option value="release">正式版</option>
+            <option value="beta">测试版</option>
+            <option value="alpha">内测版</option>
+          </select>
+        </div>
+      </div>
+      
+      <div id="versions-container">
+        <div class="flex justify-center py-8">
+          <LoadingSpinner size="md" text="正在加载版本历史..." />
+        </div>
+      </div>
+    </section>
+
+    <!-- 公告 -->
+    <section class="mt-12" id="announcements-section" style="display: none;">
+      <h2 class="text-2xl font-bold text-gray-900 mb-6">相关公告</h2>
+      <div id="announcements-container">
+        <div class="flex justify-center py-8">
+          <LoadingSpinner size="md" text="正在加载公告..." />
+        </div>
+      </div>
+    </section>
+  </div>
+</Layout>
+
+<script define:vars={{ id }}>
+  // 由于这是在浏览器中运行的脚本，我们需要直接定义这些函数而不是导入
+  // API 配置
+  const apiConfig = {
+    baseUrl: 'https://api-g.lacs.cc',
+    apiKey: '', // 暂时为空，因为API测试显示不需要API Key
+    timeout: 10000,
+  };
+
+  // 工具函数
+  function formatDate(date, options = {}) {
+    const dateObj = typeof date === 'string' ? new Date(date) : date;
+    const defaultOptions = {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    };
+    return dateObj.toLocaleDateString('zh-CN', { ...defaultOptions, ...options });
+  }
+
+  function getPriorityDownloadLink(downloadLinks) {
+    if (!downloadLinks) return null;
+    const priorities = ['official', 'github', 'quark', 'pan123', 'baidu', 'thunder'];
+    for (const priority of priorities) {
+      if (downloadLinks[priority]) {
+        return downloadLinks[priority];
+      }
+    }
+    if (downloadLinks.backup && downloadLinks.backup.length > 0) {
+      return downloadLinks.backup[0];
+    }
+    return null;
+  }
+
+  // API 客户端类
+  class ApiClient {
+    constructor(config) {
+      this.config = {
+        timeout: 10000,
+        ...config,
+      };
+    }
+
+    async request(endpoint, options = {}) {
+      const url = `${this.config.baseUrl}${endpoint}`;
+      const headers = {
+        'Content-Type': 'application/json',
+        ...options.headers,
+      };
+
+      if (this.config.apiKey) {
+        headers['X-API-Key'] = this.config.apiKey;
+      }
+
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), this.config.timeout);
+
+      try {
+        const response = await fetch(url, {
+          ...options,
+          headers,
+          signal: controller.signal,
+        });
+
+        clearTimeout(timeoutId);
+
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+
+        return await response.json();
+      } catch (error) {
+        clearTimeout(timeoutId);
+        if (error.name === 'AbortError') {
+          throw new Error('请求超时');
+        }
+        throw error;
+      }
+    }
+
+    async get(endpoint, params) {
+      const queryString = params ? new URLSearchParams(params).toString() : '';
+      const url = queryString ? `${endpoint}?${queryString}` : endpoint;
+      return this.request(url);
+    }
+
+    async getSoftwareById(id) {
+      return this.get(`/app/software/id/${id}`);
+    }
+
+    async getSoftwareVersions(softwareId, params) {
+      return this.get(`/app/software/id/${softwareId}/versions`, params);
+    }
+
+    async getSoftwareAnnouncements(softwareId, params) {
+      return this.get(`/app/software/id/${softwareId}/announcements`, params);
+    }
+  }
+
+  // 初始化 API 客户端
+  const apiClient = new ApiClient(apiConfig);
+
+  let softwareData = null;
+  let currentVersionFilter = 'all';
+
+  document.addEventListener('DOMContentLoaded', () => {
+    loadSoftwareDetails();
+    setupEventListeners();
+  });
+
+  // 设置事件监听器
+  function setupEventListeners() {
+    const versionFilter = document.getElementById('version-filter');
+    if (versionFilter) {
+      versionFilter.addEventListener('change', (e) => {
+        currentVersionFilter = e.target.value;
+        loadVersions();
+      });
+    }
+  }
+
+  // 加载软件详情
+  async function loadSoftwareDetails() {
+    const container = document.getElementById('software-container');
+    if (!container) {
+      console.error('软件容器元素未找到');
+      return;
+    }
+
+    console.log('开始加载软件详情，ID:', id);
+
+    try {
+      const response = await apiClient.getSoftwareById(parseInt(id));
+      console.log('API响应:', response);
+
+      if (response.success && response.data) {
+        softwareData = response.data;
+        renderSoftwareDetails(softwareData);
+        
+        // 显示其他部分
+        document.getElementById('versions-section').style.display = 'block';
+        document.getElementById('announcements-section').style.display = 'block';
+        
+        // 加载版本历史和公告
+        loadVersions();
+        loadAnnouncements();
+      } else {
+        throw new Error(response.message || '软件不存在');
+      }
+    } catch (error) {
+      console.error('加载软件详情失败:', error);
+      container.innerHTML = `
+        <div class="text-center py-12">
+          <div class="text-red-500 text-6xl mb-4">⚠️</div>
+          <h3 class="text-lg font-medium text-gray-900 mb-2">加载失败</h3>
+          <p class="text-gray-500 mb-4">${error.message || '无法加载软件信息，请稍后重试'}</p>
+          <div class="space-x-4">
+            <button onclick="loadSoftwareDetails()" class="btn btn-primary">
+              重新加载
+            </button>
+            <a href="/" class="btn btn-outline">
+              返回首页
+            </a>
+          </div>
+        </div>
+      `;
+    }
+  }
+
+  // 渲染软件详情
+  function renderSoftwareDetails(software) {
+    console.log('开始渲染软件详情:', software);
+    const container = document.getElementById('software-container');
+    if (!container) {
+      console.error('软件容器元素未找到');
+      return;
+    }
+
+    const downloadUrl = software.latestDownloadUrl || getPriorityDownloadLink(software.versions?.[0]?.downloadLinks);
+    const systemReqs = software.systemRequirements;
+    console.log('下载链接:', downloadUrl);
+    console.log('系统要求:', systemReqs);
+
+    container.innerHTML = `
+      <!-- 面包屑导航 -->
+      <nav class="flex items-center space-x-2 text-sm text-gray-500 mb-6">
+        <a href="/" class="hover:text-gray-700">首页</a>
+        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+          <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
+        </svg>
+        ${software.category ? `
+          <a href="/categories/${software.category}" class="hover:text-gray-700">${software.category}</a>
+          <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
+          </svg>
+        ` : ''}
+        <span class="text-gray-900">${software.name}</span>
+      </nav>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- 主要信息 -->
+        <div class="lg:col-span-2">
+          <!-- 软件标题 -->
+          <div class="mb-6">
+            <div class="flex items-start justify-between mb-4">
+              <div>
+                <h1 class="text-3xl font-bold text-gray-900 mb-2">${software.name}</h1>
+                ${software.nameEn ? `<p class="text-lg text-gray-600">${software.nameEn}</p>` : ''}
+              </div>
+              <div class="flex flex-col items-end space-y-2">
+                <span class="inline-flex items-center rounded-full px-3 py-1 text-sm font-medium bg-primary-100 text-primary-800">
+                  v${software.currentVersion}
+                </span>
+                ${software.category ? `
+                  <span class="inline-flex items-center rounded-full px-3 py-1 text-sm font-medium bg-gray-100 text-gray-800">
+                    ${software.category}
+                  </span>
+                ` : ''}
+              </div>
+            </div>
+
+            <!-- 标签 -->
+            ${software.tags && software.tags.length > 0 ? `
+              <div class="flex flex-wrap gap-2 mb-4">
+                ${software.tags.map(tag => `
+                  <a href="/tags/${encodeURIComponent(tag)}" 
+                     class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium bg-blue-100 text-blue-800 hover:bg-blue-200 transition-colors">
+                    ${tag}
+                  </a>
+                `).join('')}
+              </div>
+            ` : ''}
+
+            <!-- 操作按钮 -->
+            <div class="flex items-center space-x-4">
+              ${downloadUrl ? `
+                <a href="${downloadUrl}" target="_blank" rel="noopener noreferrer" 
+                   class="btn btn-primary btn-lg">
+                  <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                  </svg>
+                  立即下载
+                </a>
+              ` : ''}
+              
+              ${software.officialWebsite ? `
+                <a href="${software.officialWebsite}" target="_blank" rel="noopener noreferrer" 
+                   class="btn btn-outline">
+                  <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                  </svg>
+                  官方网站
+                </a>
+              ` : ''}
+            </div>
+          </div>
+
+          <!-- 软件描述 -->
+          <div class="bg-white rounded-lg border border-gray-200 p-6 mb-6">
+            <h3 class="text-lg font-semibold text-gray-900 mb-3">软件介绍</h3>
+            <div class="prose prose-sm max-w-none text-gray-600">
+              <p>${software.description || '暂无描述'}</p>
+              ${software.descriptionEn ? `<p class="mt-3 text-gray-500">${software.descriptionEn}</p>` : ''}
+            </div>
+          </div>
+
+          <!-- 系统要求 -->
+          ${systemReqs ? `
+            <div class="bg-white rounded-lg border border-gray-200 p-6">
+              <h3 class="text-lg font-semibold text-gray-900 mb-3">系统要求</h3>
+              <dl class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                ${systemReqs.os ? `
+                  <div>
+                    <dt class="text-sm font-medium text-gray-500">操作系统</dt>
+                    <dd class="mt-1 text-sm text-gray-900">${Array.isArray(systemReqs.os) ? systemReqs.os.join(', ') : systemReqs.os}</dd>
+                  </div>
+                ` : ''}
+                ${systemReqs.memory ? `
+                  <div>
+                    <dt class="text-sm font-medium text-gray-500">内存要求</dt>
+                    <dd class="mt-1 text-sm text-gray-900">${systemReqs.memory}</dd>
+                  </div>
+                ` : ''}
+                ${systemReqs.storage ? `
+                  <div>
+                    <dt class="text-sm font-medium text-gray-500">存储空间</dt>
+                    <dd class="mt-1 text-sm text-gray-900">${systemReqs.storage}</dd>
+                  </div>
+                ` : ''}
+              </dl>
+            </div>
+          ` : ''}
+        </div>
+
+        <!-- 侧边栏信息 -->
+        <div class="lg:col-span-1">
+          <div class="bg-white rounded-lg border border-gray-200 p-6 sticky top-8">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">软件信息</h3>
+            <dl class="space-y-3">
+              <div>
+                <dt class="text-sm font-medium text-gray-500">当前版本</dt>
+                <dd class="mt-1 text-sm text-gray-900">v${software.currentVersion}</dd>
+              </div>
+              
+              ${software.filetype ? `
+                <div>
+                  <dt class="text-sm font-medium text-gray-500">文件格式</dt>
+                  <dd class="mt-1 text-sm text-gray-900">${software.filetype.toUpperCase()}</dd>
+                </div>
+              ` : ''}
+              
+              ${software.openname ? `
+                <div>
+                  <dt class="text-sm font-medium text-gray-500">启动文件</dt>
+                  <dd class="mt-1 text-sm text-gray-900 font-mono">${software.openname}</dd>
+                </div>
+              ` : ''}
+              
+              <div>
+                <dt class="text-sm font-medium text-gray-500">最后更新</dt>
+                <dd class="mt-1 text-sm text-gray-900">${formatDate(software.updatedAt)}</dd>
+              </div>
+              
+              <div>
+                <dt class="text-sm font-medium text-gray-500">添加时间</dt>
+                <dd class="mt-1 text-sm text-gray-900">${formatDate(software.createdAt)}</dd>
+              </div>
+            </dl>
+          </div>
+        </div>
+      </div>
+    `;
+
+    // 更新页面标题
+    document.title = `${software.name} - 软件管理平台`;
+  }
+
+  // 加载版本历史
+  async function loadVersions() {
+    const container = document.getElementById('versions-container');
+    if (!container || !softwareData) return;
+
+    container.innerHTML = `
+      <div class="flex justify-center py-8">
+        <div class="animate-spin w-6 h-6 border-2 border-primary-600 border-t-transparent rounded-full"></div>
+      </div>
+    `;
+
+    try {
+      const params = {
+        page: 1,
+        limit: 10,
+        sortBy: 'releaseDate',
+        sortOrder: 'desc'
+      };
+
+      if (currentVersionFilter !== 'all') {
+        params.versionType = currentVersionFilter;
+      }
+
+      const response = await apiClient.getSoftwareVersions(softwareData.id, params);
+
+      if (response.success && response.data) {
+        const versions = response.data.versions || response.data;
+        
+        if (versions.length === 0) {
+          container.innerHTML = `
+            <div class="text-center py-8">
+              <p class="text-gray-500">暂无版本历史</p>
+            </div>
+          `;
+          return;
+        }
+
+        container.innerHTML = `
+          <div class="space-y-4">
+            ${versions.map(version => `
+              <div class="bg-white rounded-lg border border-gray-200 p-6">
+                <div class="flex items-start justify-between mb-3">
+                  <div>
+                    <h4 class="text-lg font-semibold text-gray-900">v${version.version}</h4>
+                    <p class="text-sm text-gray-500">${formatDate(version.releaseDate)}</p>
+                  </div>
+                  <div class="flex items-center space-x-2">
+                    <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
+                      version.versionType === 'release' ? 'bg-green-100 text-green-800' :
+                      version.versionType === 'beta' ? 'bg-yellow-100 text-yellow-800' :
+                      'bg-red-100 text-red-800'
+                    }">
+                      ${version.versionType === 'release' ? '正式版' : 
+                        version.versionType === 'beta' ? '测试版' : '内测版'}
+                    </span>
+                    ${version.isStable ? `
+                      <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium bg-blue-100 text-blue-800">
+                        稳定版
+                      </span>
+                    ` : ''}
+                  </div>
+                </div>
+                
+                ${version.releaseNotes ? `
+                  <div class="mb-4">
+                    <h5 class="text-sm font-medium text-gray-700 mb-2">更新内容</h5>
+                    <p class="text-sm text-gray-600">${version.releaseNotes}</p>
+                  </div>
+                ` : ''}
+                
+                ${version.downloadLinks ? `
+                  <div class="flex flex-wrap gap-2">
+                    ${Object.entries(version.downloadLinks).map(([platform, url]) => {
+                      if (!url) return '';
+                      const platformNames = {
+                        official: '官方下载',
+                        github: 'GitHub',
+                        quark: '夸克网盘',
+                        baidu: '百度网盘',
+                        pan123: '123网盘',
+                        thunder: '迅雷网盘'
+                      };
+                      return `
+                        <a href="${url}" target="_blank" rel="noopener noreferrer" 
+                           class="inline-flex items-center px-3 py-1 rounded-md text-xs font-medium bg-gray-100 text-gray-800 hover:bg-gray-200 transition-colors">
+                          ${platformNames[platform] || platform}
+                        </a>
+                      `;
+                    }).join('')}
+                  </div>
+                ` : ''}
+              </div>
+            `).join('')}
+          </div>
+        `;
+      }
+    } catch (error) {
+      console.error('加载版本历史失败:', error);
+      container.innerHTML = `
+        <div class="text-center py-8">
+          <p class="text-red-600">加载失败，请稍后重试</p>
+        </div>
+      `;
+    }
+  }
+
+  // 加载公告
+  async function loadAnnouncements() {
+    const container = document.getElementById('announcements-container');
+    if (!container || !softwareData) return;
+
+    try {
+      const response = await apiClient.getSoftwareAnnouncements(softwareData.id, {
+        page: 1,
+        limit: 5,
+        isPublished: true,
+        sortBy: 'publishedAt',
+        sortOrder: 'desc'
+      });
+
+      if (response.success && response.data) {
+        const announcements = response.data.announcements || response.data;
+        
+        if (announcements.length === 0) {
+          container.innerHTML = `
+            <div class="text-center py-8">
+              <p class="text-gray-500">暂无相关公告</p>
+            </div>
+          `;
+          return;
+        }
+
+        container.innerHTML = `
+          <div class="space-y-4">
+            ${announcements.map(announcement => `
+              <div class="bg-white rounded-lg border border-gray-200 p-6">
+                <div class="flex items-start justify-between mb-3">
+                  <h4 class="text-lg font-semibold text-gray-900">${announcement.title}</h4>
+                  <div class="flex items-center space-x-2">
+                    <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
+                      announcement.type === 'security' ? 'bg-red-100 text-red-800' :
+                      announcement.type === 'update' ? 'bg-green-100 text-green-800' :
+                      announcement.type === 'maintenance' ? 'bg-yellow-100 text-yellow-800' :
+                      'bg-blue-100 text-blue-800'
+                    }">
+                      ${announcement.type === 'security' ? '安全公告' :
+                        announcement.type === 'update' ? '更新通知' :
+                        announcement.type === 'maintenance' ? '维护通知' :
+                        announcement.type === 'feature' ? '功能介绍' :
+                        announcement.type === 'bugfix' ? '修复通知' : '一般公告'}
+                    </span>
+                    <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
+                      announcement.priority === 'urgent' ? 'bg-red-100 text-red-800' :
+                      announcement.priority === 'high' ? 'bg-orange-100 text-orange-800' :
+                      announcement.priority === 'normal' ? 'bg-blue-100 text-blue-800' :
+                      'bg-gray-100 text-gray-800'
+                    }">
+                      ${announcement.priority === 'urgent' ? '紧急' :
+                        announcement.priority === 'high' ? '高' :
+                        announcement.priority === 'normal' ? '普通' : '低'}
+                    </span>
+                  </div>
+                </div>
+                
+                <p class="text-sm text-gray-600 mb-3">${announcement.content}</p>
+                
+                <div class="flex items-center justify-between text-xs text-gray-500">
+                  <span>${formatDate(announcement.publishedAt)}</span>
+                  ${announcement.version ? `<span>版本: v${announcement.version}</span>` : ''}
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        `;
+      }
+    } catch (error) {
+      console.error('加载公告失败:', error);
+      container.innerHTML = `
+        <div class="text-center py-8">
+          <p class="text-red-600">加载失败，请稍后重试</p>
+        </div>
+      `;
+    }
+  }
+
+  // 全局函数，供按钮调用
+  window.loadSoftwareDetails = loadSoftwareDetails;
+</script>
+
+<style>
+  .bg-primary-100 {
+    background-color: var(--color-primary-100);
+  }
+  
+  .text-primary-800 {
+    color: var(--color-primary-800);
+  }
+  
+  .border-primary-600 {
+    border-color: var(--color-primary-600);
+  }
+</style>

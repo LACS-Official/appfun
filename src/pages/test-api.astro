@@ -1,0 +1,130 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="API 测试" description="测试API连接">
+  <div class="max-w-4xl mx-auto px-4 py-8">
+    <h1 class="text-3xl font-bold mb-8">API 测试</h1>
+    
+    <div class="space-y-6">
+      <div class="bg-white rounded-lg border p-6">
+        <h2 class="text-xl font-semibold mb-4">软件详情 API 测试</h2>
+        <button id="test-software-api" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+          测试获取软件ID=1的详情
+        </button>
+        <div id="software-result" class="mt-4 p-4 bg-gray-100 rounded"></div>
+      </div>
+      
+      <div class="bg-white rounded-lg border p-6">
+        <h2 class="text-xl font-semibold mb-4">版本历史 API 测试</h2>
+        <button id="test-versions-api" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
+          测试获取软件ID=1的版本历史
+        </button>
+        <div id="versions-result" class="mt-4 p-4 bg-gray-100 rounded"></div>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<script>
+  // API 配置
+  const apiConfig = {
+    baseUrl: 'https://api-g.lacs.cc',
+    apiKey: '',
+    timeout: 10000,
+  };
+
+  // API 客户端类
+  class ApiClient {
+    constructor(config) {
+      this.config = {
+        timeout: 10000,
+        ...config,
+      };
+    }
+
+    async request(endpoint, options = {}) {
+      const url = `${this.config.baseUrl}${endpoint}`;
+      const headers = {
+        'Content-Type': 'application/json',
+        ...options.headers,
+      };
+
+      if (this.config.apiKey) {
+        headers['X-API-Key'] = this.config.apiKey;
+      }
+
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), this.config.timeout);
+
+      try {
+        const response = await fetch(url, {
+          ...options,
+          headers,
+          signal: controller.signal,
+        });
+
+        clearTimeout(timeoutId);
+
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+
+        return await response.json();
+      } catch (error) {
+        clearTimeout(timeoutId);
+        if (error.name === 'AbortError') {
+          throw new Error('请求超时');
+        }
+        throw error;
+      }
+    }
+
+    async get(endpoint, params) {
+      const queryString = params ? new URLSearchParams(params).toString() : '';
+      const url = queryString ? `${endpoint}?${queryString}` : endpoint;
+      return this.request(url);
+    }
+
+    async getSoftwareById(id) {
+      return this.get(`/app/software/id/${id}`);
+    }
+
+    async getSoftwareVersions(softwareId, params) {
+      return this.get(`/app/software/id/${softwareId}/versions`, params);
+    }
+  }
+
+  const apiClient = new ApiClient(apiConfig);
+
+  document.addEventListener('DOMContentLoaded', () => {
+    // 测试软件详情API
+    document.getElementById('test-software-api').addEventListener('click', async () => {
+      const resultDiv = document.getElementById('software-result');
+      resultDiv.innerHTML = '正在加载...';
+      
+      try {
+        const response = await apiClient.getSoftwareById(1);
+        resultDiv.innerHTML = `<pre>${JSON.stringify(response, null, 2)}</pre>`;
+      } catch (error) {
+        resultDiv.innerHTML = `<div class="text-red-600">错误: ${error.message}</div>`;
+      }
+    });
+
+    // 测试版本历史API
+    document.getElementById('test-versions-api').addEventListener('click', async () => {
+      const resultDiv = document.getElementById('versions-result');
+      resultDiv.innerHTML = '正在加载...';
+      
+      try {
+        const response = await apiClient.getSoftwareVersions(1, {
+          page: 1,
+          limit: 5
+        });
+        resultDiv.innerHTML = `<pre>${JSON.stringify(response, null, 2)}</pre>`;
+      } catch (error) {
+        resultDiv.innerHTML = `<div class="text-red-600">错误: ${error.message}</div>`;
+      }
+    });
+  });
+</script>

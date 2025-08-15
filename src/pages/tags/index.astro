@@ -1,0 +1,358 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Badge from '../../components/ui/Badge.astro';
+import LoadingSpinner from '../../components/ui/LoadingSpinner.astro';
+---
+
+<Layout title="软件标签" description="按标签浏览软件">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- 页面标题 -->
+    <div class="mb-8">
+      <h1 class="text-3xl font-bold text-gray-900">软件标签</h1>
+      <p class="text-gray-600 mt-2">按标签发现和浏览软件</p>
+    </div>
+
+    <!-- 搜索标签 -->
+    <div class="mb-8">
+      <div class="max-w-md">
+        <div class="relative">
+          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+            </svg>
+          </div>
+          <input
+            type="text"
+            placeholder="搜索标签..."
+            class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
+            id="tag-search"
+          />
+        </div>
+      </div>
+    </div>
+
+    <!-- 标签统计 -->
+    <div class="bg-white rounded-lg border border-gray-200 p-6 mb-8">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+        <div>
+          <div class="text-2xl font-bold text-gray-900" id="total-tags">-</div>
+          <div class="text-sm text-gray-600">总标签数</div>
+        </div>
+        <div>
+          <div class="text-2xl font-bold text-gray-900" id="total-software-with-tags">-</div>
+          <div class="text-sm text-gray-600">已标记软件</div>
+        </div>
+        <div>
+          <div class="text-2xl font-bold text-gray-900" id="avg-tags-per-software">-</div>
+          <div class="text-sm text-gray-600">平均标签数</div>
+        </div>
+        <div>
+          <div class="text-2xl font-bold text-gray-900" id="most-used-tag">-</div>
+          <div class="text-sm text-gray-600">最热门标签</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 排序选项 -->
+    <div class="flex items-center justify-between mb-6">
+      <div class="text-sm text-gray-600">
+        <span id="showing-count">正在加载...</span>
+      </div>
+      <div class="flex items-center space-x-4">
+        <label for="sort-select" class="text-sm font-medium text-gray-700">排序:</label>
+        <select id="sort-select" class="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-primary-500 focus:border-primary-500">
+          <option value="count-desc">使用次数 (高到低)</option>
+          <option value="count-asc">使用次数 (低到高)</option>
+          <option value="name-asc">名称 A-Z</option>
+          <option value="name-desc">名称 Z-A</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- 标签云 -->
+    <div id="tags-container">
+      <div class="flex justify-center py-12">
+        <LoadingSpinner size="lg" text="正在加载标签..." />
+      </div>
+    </div>
+
+    <!-- 最近使用的标签 -->
+    <section class="mt-16">
+      <h2 class="text-2xl font-bold text-gray-900 mb-6">最近使用的标签</h2>
+      <div id="recent-tags-container">
+        <div class="flex justify-center py-8">
+          <div class="animate-spin w-6 h-6 border-2 border-primary-600 border-t-transparent rounded-full"></div>
+        </div>
+      </div>
+    </section>
+  </div>
+</Layout>
+
+<script>
+  import { initializeApiClient, getApiClient } from '../../lib/api';
+  import { apiConfig } from '../../lib/config';
+
+  // 初始化 API 客户端
+  initializeApiClient(apiConfig);
+
+  let allTags = [];
+  let filteredTags = [];
+  let currentSort = 'count-desc';
+  let currentSearch = '';
+
+  document.addEventListener('DOMContentLoaded', () => {
+    loadTags();
+    loadRecentTags();
+    setupEventListeners();
+  });
+
+  // 设置事件监听器
+  function setupEventListeners() {
+    // 搜索框
+    const searchInput = document.getElementById('tag-search');
+    if (searchInput) {
+      let searchTimeout;
+      searchInput.addEventListener('input', (e) => {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(() => {
+          currentSearch = e.target.value.trim().toLowerCase();
+          filterAndRenderTags();
+        }, 300);
+      });
+    }
+
+    // 排序选择
+    const sortSelect = document.getElementById('sort-select');
+    if (sortSelect) {
+      sortSelect.addEventListener('change', (e) => {
+        currentSort = e.target.value;
+        filterAndRenderTags();
+      });
+    }
+  }
+
+  // 加载标签
+  async function loadTags() {
+    try {
+      const api = getApiClient();
+      const response = await api.getSoftwareTags({
+        includeCount: true,
+        sortBy: 'count',
+        sortOrder: 'desc'
+      });
+
+      if (response.success && response.data) {
+        allTags = response.data.tags || [];
+        
+        // 更新统计信息
+        updateStatistics(response.data);
+        
+        // 初始渲染
+        filterAndRenderTags();
+      }
+    } catch (error) {
+      console.error('加载标签失败:', error);
+      const container = document.getElementById('tags-container');
+      if (container) {
+        container.innerHTML = `
+          <div class="text-center py-12">
+            <p class="text-red-600">加载失败，请稍后重试</p>
+          </div>
+        `;
+      }
+    }
+  }
+
+  // 更新统计信息
+  function updateStatistics(data) {
+    const totalTags = data.total || 0;
+    const totalSoftware = data.totalSoftware || 0;
+    
+    document.getElementById('total-tags').textContent = totalTags.toString();
+    document.getElementById('total-software-with-tags').textContent = totalSoftware.toString();
+    
+    // 计算平均标签数
+    const avgTags = totalSoftware > 0 ? (totalTags / totalSoftware).toFixed(1) : '0';
+    document.getElementById('avg-tags-per-software').textContent = avgTags;
+    
+    // 最热门标签
+    const mostUsedTag = Array.isArray(data.tags) && data.tags.length > 0 
+      ? (typeof data.tags[0] === 'string' ? data.tags[0] : data.tags[0].name)
+      : '-';
+    document.getElementById('most-used-tag').textContent = mostUsedTag;
+  }
+
+  // 筛选和渲染标签
+  function filterAndRenderTags() {
+    // 筛选标签
+    filteredTags = allTags.filter(tag => {
+      if (!currentSearch) return true;
+      const tagName = typeof tag === 'string' ? tag : tag.name;
+      return tagName.toLowerCase().includes(currentSearch);
+    });
+
+    // 排序标签
+    const [sortBy, sortOrder] = currentSort.split('-');
+    filteredTags.sort((a, b) => {
+      const aName = typeof a === 'string' ? a : a.name;
+      const bName = typeof b === 'string' ? b : b.name;
+      const aCount = typeof a === 'object' && a.count ? a.count : 0;
+      const bCount = typeof b === 'object' && b.count ? b.count : 0;
+
+      if (sortBy === 'name') {
+        const result = aName.localeCompare(bName);
+        return sortOrder === 'asc' ? result : -result;
+      } else if (sortBy === 'count') {
+        const result = aCount - bCount;
+        return sortOrder === 'asc' ? result : -result;
+      }
+      return 0;
+    });
+
+    // 更新显示计数
+    const showingCount = document.getElementById('showing-count');
+    if (showingCount) {
+      showingCount.textContent = `显示 ${filteredTags.length} 个标签`;
+    }
+
+    // 渲染标签
+    renderTags();
+  }
+
+  // 渲染标签
+  function renderTags() {
+    const container = document.getElementById('tags-container');
+    if (!container) return;
+
+    if (filteredTags.length === 0) {
+      container.innerHTML = `
+        <div class="text-center py-12">
+          <div class="text-6xl mb-4">🏷️</div>
+          <h3 class="text-lg font-medium text-gray-900 mb-2">
+            ${currentSearch ? '未找到匹配的标签' : '暂无标签'}
+          </h3>
+          <p class="text-gray-500">
+            ${currentSearch ? `没有找到包含 "${currentSearch}" 的标签` : '还没有任何标签'}
+          </p>
+        </div>
+      `;
+      return;
+    }
+
+    // 生成标签云
+    const tagElements = filteredTags.map(tag => {
+      const tagName = typeof tag === 'string' ? tag : tag.name;
+      const tagCount = typeof tag === 'object' && tag.count ? tag.count : 0;
+      
+      // 根据使用次数计算标签大小
+      const maxCount = Math.max(...filteredTags.map(t => typeof t === 'object' && t.count ? t.count : 0));
+      const minSize = 0.8;
+      const maxSize = 2;
+      const size = tagCount > 0 ? minSize + (tagCount / maxCount) * (maxSize - minSize) : minSize;
+      
+      return `
+        <a href="/tags/${encodeURIComponent(tagName)}" 
+           class="inline-block m-2 px-4 py-2 rounded-full bg-gray-100 hover:bg-primary-100 text-gray-800 hover:text-primary-800 transition-colors font-medium"
+           style="font-size: ${size}rem;">
+          ${tagName}
+          ${tagCount > 0 ? `<span class="ml-2 text-xs opacity-75">(${tagCount})</span>` : ''}
+        </a>
+      `;
+    }).join('');
+
+    container.innerHTML = `
+      <div class="text-center">
+        ${tagElements}
+      </div>
+    `;
+  }
+
+  // 加载最近使用的标签
+  async function loadRecentTags() {
+    const container = document.getElementById('recent-tags-container');
+    if (!container) return;
+
+    try {
+      const api = getApiClient();
+      
+      // 获取最近更新的软件的标签
+      const response = await api.getSoftwareList({
+        page: 1,
+        limit: 10,
+        sortBy: 'updatedAt',
+        sortOrder: 'desc'
+      });
+
+      if (response.success && response.data) {
+        const recentSoftware = response.data;
+        const recentTagsSet = new Set();
+        
+        // 收集最近软件的标签
+        recentSoftware.forEach(software => {
+          if (software.tags && Array.isArray(software.tags)) {
+            software.tags.forEach(tag => recentTagsSet.add(tag));
+          }
+        });
+
+        const recentTagsArray = Array.from(recentTagsSet).slice(0, 15);
+
+        if (recentTagsArray.length === 0) {
+          container.innerHTML = `
+            <div class="text-center py-8">
+              <p class="text-gray-500">暂无最近使用的标签</p>
+            </div>
+          `;
+          return;
+        }
+
+        container.innerHTML = `
+          <div class="flex flex-wrap gap-3">
+            ${recentTagsArray.map(tag => `
+              <a href="/tags/${encodeURIComponent(tag)}" 
+                 class="inline-flex items-center px-3 py-2 rounded-full text-sm font-medium bg-primary-50 text-primary-700 hover:bg-primary-100 transition-colors">
+                ${tag}
+              </a>
+            `).join('')}
+          </div>
+        `;
+      }
+    } catch (error) {
+      console.error('加载最近标签失败:', error);
+      container.innerHTML = `
+        <div class="text-center py-8">
+          <p class="text-red-600">加载失败，请稍后重试</p>
+        </div>
+      `;
+    }
+  }
+</script>
+
+<style>
+  .bg-primary-50 {
+    background-color: var(--color-primary-50);
+  }
+  
+  .text-primary-700 {
+    color: var(--color-primary-700);
+  }
+  
+  .hover\:bg-primary-100:hover {
+    background-color: var(--color-primary-100);
+  }
+  
+  .bg-primary-100 {
+    background-color: var(--color-primary-100);
+  }
+  
+  .text-primary-800 {
+    color: var(--color-primary-800);
+  }
+  
+  .hover\:text-primary-800:hover {
+    color: var(--color-primary-800);
+  }
+  
+  .border-primary-600 {
+    border-color: var(--color-primary-600);
+  }
+</style>

@@ -1,0 +1,316 @@
+---
+import Layout from '../layouts/Layout.astro';
+import SoftwareCard from '../components/software/SoftwareCard.astro';
+import LoadingSpinner from '../components/ui/LoadingSpinner.astro';
+import ErrorMessage from '../components/ui/ErrorMessage.astro';
+import Badge from '../components/ui/Badge.astro';
+import { appConfig } from '../lib/config';
+---
+
+<Layout title="首页" description="发现和下载最新的软件工具">
+  <!-- Hero Section -->
+  <section class="bg-gradient-to-r from-primary-600 to-primary-700 text-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+      <div class="text-center">
+        <h1 class="text-4xl md:text-6xl font-bold mb-6">
+          发现优质软件
+        </h1>
+        <p class="text-xl md:text-2xl text-primary-100 mb-8 max-w-3xl mx-auto">
+          探索、下载和管理各种实用的软件工具，让您的工作更加高效
+        </p>
+        
+        <!-- 搜索框 -->
+        <div class="max-w-2xl mx-auto">
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+              </svg>
+            </div>
+            <input
+              type="text"
+              placeholder="搜索软件名称、分类或标签..."
+              class="block w-full pl-10 pr-3 py-4 border border-transparent rounded-lg leading-5 bg-white text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-primary-600 text-lg"
+              id="hero-search"
+            />
+          </div>
+        </div>
+        
+        <!-- 快速分类 -->
+        <div class="mt-8 flex flex-wrap justify-center gap-3">
+          <a href="/categories/tools" class="bg-white bg-opacity-20 hover:bg-opacity-30 text-white px-4 py-2 rounded-full text-sm font-medium transition-all">
+            🔧 工具软件
+          </a>
+          <a href="/categories/development" class="bg-white bg-opacity-20 hover:bg-opacity-30 text-white px-4 py-2 rounded-full text-sm font-medium transition-all">
+            💻 开发工具
+          </a>
+          <a href="/categories/design" class="bg-white bg-opacity-20 hover:bg-opacity-30 text-white px-4 py-2 rounded-full text-sm font-medium transition-all">
+            🎨 设计软件
+          </a>
+          <a href="/categories/multimedia" class="bg-white bg-opacity-20 hover:bg-opacity-30 text-white px-4 py-2 rounded-full text-sm font-medium transition-all">
+            🎬 多媒体
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+
+  <!-- 最新软件 -->
+  <section class="py-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between mb-8">
+        <div>
+          <h2 class="text-3xl font-bold text-gray-900">最新软件</h2>
+          <p class="text-gray-600 mt-2">最近更新的软件工具</p>
+        </div>
+        <a href="/software" class="btn btn-outline">
+          查看全部
+          <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+          </svg>
+        </a>
+      </div>
+
+      <!-- 软件列表 -->
+      <div id="latest-software-container">
+        <div class="flex justify-center py-12">
+          <LoadingSpinner size="lg" text="正在加载最新软件..." />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 热门分类 -->
+  <section class="bg-gray-50 py-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl font-bold text-gray-900">热门分类</h2>
+        <p class="text-gray-600 mt-2">按分类浏览软件</p>
+      </div>
+
+      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+        <a href="/categories/tools" class="group bg-white rounded-lg p-6 text-center hover:shadow-md transition-shadow">
+          <div class="text-4xl mb-3">🔧</div>
+          <h3 class="font-semibold text-gray-900 group-hover:text-primary-600">工具软件</h3>
+          <p class="text-sm text-gray-600 mt-1">实用工具集合</p>
+        </a>
+        
+        <a href="/categories/development" class="group bg-white rounded-lg p-6 text-center hover:shadow-md transition-shadow">
+          <div class="text-4xl mb-3">💻</div>
+          <h3 class="font-semibold text-gray-900 group-hover:text-primary-600">开发工具</h3>
+          <p class="text-sm text-gray-600 mt-1">编程开发必备</p>
+        </a>
+        
+        <a href="/categories/design" class="group bg-white rounded-lg p-6 text-center hover:shadow-md transition-shadow">
+          <div class="text-4xl mb-3">🎨</div>
+          <h3 class="font-semibold text-gray-900 group-hover:text-primary-600">设计软件</h3>
+          <p class="text-sm text-gray-600 mt-1">创意设计工具</p>
+        </a>
+        
+        <a href="/categories/multimedia" class="group bg-white rounded-lg p-6 text-center hover:shadow-md transition-shadow">
+          <div class="text-4xl mb-3">🎬</div>
+          <h3 class="font-semibold text-gray-900 group-hover:text-primary-600">多媒体</h3>
+          <p class="text-sm text-gray-600 mt-1">音视频处理</p>
+        </a>
+        
+        <a href="/categories/productivity" class="group bg-white rounded-lg p-6 text-center hover:shadow-md transition-shadow">
+          <div class="text-4xl mb-3">📊</div>
+          <h3 class="font-semibold text-gray-900 group-hover:text-primary-600">办公软件</h3>
+          <p class="text-sm text-gray-600 mt-1">提升工作效率</p>
+        </a>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<script>
+  import { initializeApiClient, getApiClient } from '../lib/api';
+  import { apiConfig } from '../lib/config';
+
+  // 初始化 API 客户端
+  initializeApiClient(apiConfig);
+
+  // 页面加载完成后获取数据
+  document.addEventListener('DOMContentLoaded', async () => {
+    // 测试 API 连接
+    console.log('Testing API connection...');
+    console.log('API Base URL:', apiConfig.baseUrl);
+    console.log('API Key:', apiConfig.apiKey ? 'Set' : 'Not set');
+
+    await loadLatestSoftware();
+    setupSearch();
+  });
+
+  // 加载最新软件
+  async function loadLatestSoftware() {
+    const container = document.getElementById('latest-software-container');
+    if (!container) return;
+
+    try {
+      const api = getApiClient();
+      const response = await api.getSoftwareList({
+        page: 1,
+        limit: 6,
+        sortBy: 'updatedAt',
+        sortOrder: 'desc'
+      });
+
+      console.log('API Response:', response);
+
+      if (response.success) {
+        // 处理不同的响应数据结构
+        let softwareList = [];
+
+        if (response.data) {
+          if (Array.isArray(response.data)) {
+            // 如果 data 直接是数组
+            softwareList = response.data;
+          } else if (typeof response.data === 'object') {
+            // 如果 data 是对象，尝试找到软件数组
+            if (response.data.software && Array.isArray(response.data.software)) {
+              softwareList = response.data.software;
+            } else if (response.data.items && Array.isArray(response.data.items)) {
+              softwareList = response.data.items;
+            } else if (response.data.list && Array.isArray(response.data.list)) {
+              softwareList = response.data.list;
+            } else {
+              console.error('Unexpected data structure:', response.data);
+              container.innerHTML = `
+                <div class="text-center py-12">
+                  <p class="text-red-600">数据格式错误</p>
+                  <p class="text-sm text-gray-500 mt-2">请检查 API 响应格式</p>
+                </div>
+              `;
+              return;
+            }
+          }
+        } else {
+          console.warn('No data in response:', response);
+        }
+
+        if (softwareList.length === 0) {
+          container.innerHTML = `
+            <div class="text-center py-12">
+              <p class="text-gray-500">暂无软件数据</p>
+            </div>
+          `;
+          return;
+        }
+
+        // 渲染软件卡片
+        container.innerHTML = `
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            ${softwareList.map(software => `
+              <div class="bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow duration-200">
+                <div class="p-6">
+                  <div class="flex items-start justify-between mb-3">
+                    <div class="flex-1 min-w-0">
+                      <h3 class="text-lg font-semibold text-gray-900 truncate">
+                        <a href="/software/${software.id}" class="hover:text-primary-600 transition-colors">
+                          ${software.name}
+                        </a>
+                      </h3>
+                      ${software.nameEn ? `<p class="text-sm text-gray-500 truncate mt-1">${software.nameEn}</p>` : ''}
+                    </div>
+                    <div class="flex flex-col items-end space-y-1 ml-4">
+                      <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium bg-primary-100 text-primary-800">
+                        v${software.currentVersion}
+                      </span>
+                      ${software.category ? `
+                        <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium bg-gray-100 text-gray-800">
+                          ${software.category}
+                        </span>
+                      ` : ''}
+                    </div>
+                  </div>
+                  ${software.description ? `
+                    <p class="text-gray-600 text-sm mb-4 line-clamp-2">
+                      ${software.description}
+                    </p>
+                  ` : ''}
+                  <div class="flex items-center justify-between">
+                    <a href="/software/${software.id}" class="btn btn-outline btn-sm">
+                      查看详情
+                    </a>
+                    ${software.latestDownloadUrl ? `
+                      <a href="${software.latestDownloadUrl}" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm">
+                        下载
+                      </a>
+                    ` : ''}
+                  </div>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        `;
+      }
+    } catch (error) {
+      console.error('加载最新软件失败:', error);
+      console.error('Error details:', {
+        message: error.message,
+        stack: error.stack
+      });
+
+      container.innerHTML = `
+        <div class="text-center py-12">
+          <div class="text-red-500 text-6xl mb-4">⚠️</div>
+          <h3 class="text-lg font-medium text-gray-900 mb-2">加载失败</h3>
+          <p class="text-gray-500 mb-4">无法加载软件列表，请检查网络连接或稍后重试</p>
+          <button onclick="loadLatestSoftware()" class="btn btn-primary">
+            重新加载
+          </button>
+        </div>
+      `;
+    }
+  }
+
+  // 设置搜索功能
+  function setupSearch() {
+    const searchInput = document.getElementById('hero-search');
+    if (searchInput) {
+      searchInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          const query = (e.target as HTMLInputElement).value.trim();
+          if (query) {
+            window.location.href = `/search?q=${encodeURIComponent(query)}`;
+          }
+        }
+      });
+    }
+  }
+</script>
+
+<style>
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  
+  .bg-primary-600 {
+    background-color: var(--color-primary-600);
+  }
+  
+  .bg-primary-700 {
+    background-color: var(--color-primary-700);
+  }
+  
+  .text-primary-100 {
+    color: var(--color-primary-100);
+  }
+  
+  .text-primary-600 {
+    color: var(--color-primary-600);
+  }
+  
+  .bg-primary-100 {
+    background-color: var(--color-primary-100);
+  }
+  
+  .text-primary-800 {
+    color: var(--color-primary-800);
+  }
+</style>

@@ -1,0 +1,179 @@
+---
+import Badge from '../ui/Badge.astro';
+import { formatDate, formatFileSize, parseFileSize, getPriorityDownloadLink } from '../../lib/utils';
+import type { Software } from '../../types/api';
+
+interface Props {
+  software: Software;
+  showDescription?: boolean;
+  showTags?: boolean;
+  showDownload?: boolean;
+  class?: string;
+}
+
+const {
+  software,
+  showDescription = true,
+  showTags = true,
+  showDownload = true,
+  class: className = ''
+} = Astro.props;
+
+// 获取优先下载链接
+const downloadUrl = software.latestDownloadUrl || getPriorityDownloadLink(software.versions?.[0]?.downloadLinks);
+
+// 格式化文件大小
+const formatSoftwareFileSize = (version: any) => {
+  if (!version?.fileSize) return null;
+  
+  // 如果已经是格式化的字符串，直接返回
+  if (typeof version.fileSize === 'string' && /\d+\s*(B|KB|MB|GB|TB)/i.test(version.fileSize)) {
+    return version.fileSize;
+  }
+  
+  // 如果是数字，格式化为可读格式
+  if (typeof version.fileSize === 'number') {
+    return formatFileSize(version.fileSize);
+  }
+  
+  // 尝试解析字符串并格式化
+  try {
+    const bytes = parseFileSize(version.fileSize);
+    return bytes > 0 ? formatFileSize(bytes) : null;
+  } catch {
+    return version.fileSize;
+  }
+};
+
+const fileSize = formatSoftwareFileSize(software.versions?.[0]);
+---
+
+<div class={`bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow duration-200 ${className}`}>
+  <div class="p-6">
+    <!-- 软件标题和版本 -->
+    <div class="flex items-start justify-between mb-3">
+      <div class="flex-1 min-w-0">
+        <h3 class="text-lg font-semibold text-gray-900 truncate">
+          <a href={`/software/${software.id}`} class="hover:text-primary-600 transition-colors">
+            {software.name}
+          </a>
+        </h3>
+        {software.nameEn && (
+          <p class="text-sm text-gray-500 truncate mt-1">
+            {software.nameEn}
+          </p>
+        )}
+      </div>
+      
+      <div class="flex flex-col items-end space-y-1 ml-4">
+        <Badge variant="primary" size="sm">
+          v{software.currentVersion}
+        </Badge>
+        {software.category && (
+          <Badge variant="secondary" size="sm">
+            {software.category}
+          </Badge>
+        )}
+      </div>
+    </div>
+
+    <!-- 软件描述 -->
+    {showDescription && software.description && (
+      <p class="text-gray-600 text-sm mb-4 line-clamp-2">
+        {software.description}
+      </p>
+    )}
+
+    <!-- 软件标签 -->
+    {showTags && software.tags && software.tags.length > 0 && (
+      <div class="flex flex-wrap gap-1 mb-4">
+        {software.tags.slice(0, 3).map(tag => (
+          <Badge variant="info" size="sm">
+            {tag}
+          </Badge>
+        ))}
+        {software.tags.length > 3 && (
+          <Badge variant="secondary" size="sm">
+            +{software.tags.length - 3}
+          </Badge>
+        )}
+      </div>
+    )}
+
+    <!-- 软件信息 -->
+    <div class="flex items-center justify-between text-sm text-gray-500 mb-4">
+      <div class="flex items-center space-x-4">
+        {fileSize && (
+          <span class="flex items-center">
+            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10"></path>
+            </svg>
+            {fileSize}
+          </span>
+        )}
+        
+        {software.filetype && (
+          <span class="flex items-center">
+            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+            </svg>
+            {software.filetype.toUpperCase()}
+          </span>
+        )}
+      </div>
+      
+      <span>
+        {formatDate(software.updatedAt)}
+      </span>
+    </div>
+
+    <!-- 操作按钮 -->
+    <div class="flex items-center justify-between">
+      <div class="flex items-center space-x-2">
+        <a 
+          href={`/software/${software.id}`}
+          class="btn btn-outline btn-sm"
+        >
+          查看详情
+        </a>
+        
+        {software.officialWebsite && (
+          <a 
+            href={software.officialWebsite}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-gray-400 hover:text-gray-600 transition-colors"
+            title="官方网站"
+          >
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+            </svg>
+          </a>
+        )}
+      </div>
+
+      {showDownload && downloadUrl && (
+        <a 
+          href={downloadUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="btn btn-primary btn-sm"
+        >
+          <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+          </svg>
+          下载
+        </a>
+      )}
+    </div>
+  </div>
+</div>
+
+<style>
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+</style>
