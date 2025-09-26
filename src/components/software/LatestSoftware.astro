@@ -1,0 +1,298 @@
+---
+import SoftwareCard from './SoftwareCard.astro';
+import LoadingSpinner from '../ui/LoadingSpinner.astro';
+import ErrorMessage from '../ui/ErrorMessage.astro';
+import type { Software } from '../../types/api';
+
+interface Props {
+  title?: string;
+  limit?: number;
+  showViewAll?: boolean;
+  sortBy?: 'createdAt' | 'updatedAt';
+  class?: string;
+}
+
+const {
+  title = '🆕 最新软件',
+  limit = 6,
+  showViewAll = true,
+  sortBy = 'updatedAt',
+  class: className = ''
+} = Astro.props;
+---
+
+<section class={`${className}`}>
+  <div class="flex items-center justify-between mb-6">
+    <h2 class="text-2xl font-bold text-gray-900">{title}</h2>
+    {showViewAll && (
+      <a 
+        href="/software?sortBy=updatedAt&sortOrder=desc" 
+        class="text-primary-600 hover:text-primary-700 font-medium text-sm flex items-center"
+      >
+        查看全部
+        <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+        </svg>
+      </a>
+    )}
+  </div>
+
+  <!-- 加载状态 -->
+  <div id="latest-software-loading" class="flex justify-center py-12">
+    <LoadingSpinner size="lg" text="正在加载最新软件..." />
+  </div>
+
+  <!-- 错误状态 -->
+  <div id="latest-software-error" class="hidden">
+    <ErrorMessage 
+      title="加载失败" 
+      message="无法加载最新软件，请稍后重试"
+    />
+    <div class="text-center mt-4">
+      <button 
+        id="latest-software-retry" 
+        class="btn btn-primary"
+      >
+        重新加载
+      </button>
+    </div>
+  </div>
+
+  <!-- 软件列表 -->
+  <div id="latest-software-container" class="hidden">
+    <!-- 软件卡片将在这里动态加载 -->
+  </div>
+
+  <!-- 空状态 -->
+  <div id="latest-software-empty" class="hidden text-center py-12">
+    <div class="text-gray-400 text-6xl mb-4">📦</div>
+    <h3 class="text-lg font-medium text-gray-900 mb-2">暂无软件</h3>
+    <p class="text-gray-500">还没有添加任何软件</p>
+  </div>
+</section>
+
+<script>
+  import { getApiClient } from '../../lib/api';
+
+  class LatestSoftwareComponent {
+    private container: HTMLElement | null = null;
+    private loadingElement: HTMLElement | null = null;
+    private errorElement: HTMLElement | null = null;
+    private emptyElement: HTMLElement | null = null;
+    private retryButton: HTMLElement | null = null;
+    private limit: number;
+    private sortBy: string;
+
+    constructor(limit: number = 6, sortBy: string = 'updatedAt') {
+      this.limit = limit;
+      this.sortBy = sortBy;
+      this.init();
+    }
+
+    private init() {
+      this.container = document.getElementById('latest-software-container');
+      this.loadingElement = document.getElementById('latest-software-loading');
+      this.errorElement = document.getElementById('latest-software-error');
+      this.emptyElement = document.getElementById('latest-software-empty');
+      this.retryButton = document.getElementById('latest-software-retry');
+
+      if (this.retryButton) {
+        this.retryButton.addEventListener('click', () => this.loadLatestSoftware());
+      }
+
+      this.loadLatestSoftware();
+    }
+
+    private showLoading() {
+      this.hideAll();
+      this.loadingElement?.classList.remove('hidden');
+    }
+
+    private showError() {
+      this.hideAll();
+      this.errorElement?.classList.remove('hidden');
+    }
+
+    private showEmpty() {
+      this.hideAll();
+      this.emptyElement?.classList.remove('hidden');
+    }
+
+    private showContent() {
+      this.hideAll();
+      this.container?.classList.remove('hidden');
+    }
+
+    private hideAll() {
+      this.loadingElement?.classList.add('hidden');
+      this.errorElement?.classList.add('hidden');
+      this.emptyElement?.classList.add('hidden');
+      this.container?.classList.add('hidden');
+    }
+
+    private async loadLatestSoftware() {
+      this.showLoading();
+
+      try {
+        const api = getApiClient();
+        const response = await api.getSoftwareList({
+          page: 1,
+          limit: this.limit,
+          sortBy: this.sortBy,
+          sortOrder: 'desc'
+        });
+
+        if (response.success && response.data) {
+          const softwareList = response.data;
+          
+          if (!Array.isArray(softwareList) || softwareList.length === 0) {
+            this.showEmpty();
+            return;
+          }
+
+          this.renderSoftwareList(softwareList);
+          this.showContent();
+        } else {
+          throw new Error(response.message || '获取最新软件失败');
+        }
+      } catch (error) {
+        console.error('加载最新软件失败:', error);
+        this.showError();
+      }
+    }
+
+    private renderSoftwareList(softwareList: any[]) {
+      if (!this.container) return;
+
+      this.container.innerHTML = `
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          ${softwareList.map((software, index) => `
+            <div class="bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow duration-200 relative">
+              ${index === 0 ? `
+                <div class="absolute -top-2 -right-2 z-10">
+                  <div class="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center text-white text-xs font-bold">
+                    NEW
+                  </div>
+                </div>
+              ` : ''}
+              <div class="p-6">
+                <div class="flex items-start justify-between mb-3">
+                  <div class="flex-1 min-w-0">
+                    <h3 class="text-lg font-semibold text-gray-900 truncate">
+                      <a href="/software/${software.id}" class="hover:text-primary-600 transition-colors">
+                        ${software.name}
+                      </a>
+                    </h3>
+                    ${software.nameEn ? `<p class="text-sm text-gray-500 truncate mt-1">${software.nameEn}</p>` : ''}
+                  </div>
+                  <div class="flex flex-col items-end space-y-1 ml-4">
+                    <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium bg-primary-100 text-primary-800">
+                      v${software.currentVersion}
+                    </span>
+                    ${software.category ? `
+                      <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium bg-gray-100 text-gray-800">
+                        ${software.category}
+                      </span>
+                    ` : ''}
+                  </div>
+                </div>
+
+                ${software.description ? `
+                  <p class="text-gray-600 text-sm mb-4 line-clamp-2">
+                    ${software.description}
+                  </p>
+                ` : ''}
+
+                <div class="flex items-center justify-between text-sm text-gray-500 mb-4">
+                  <div class="flex items-center space-x-4">
+                    ${software.viewCount !== undefined ? `
+                      <span class="flex items-center">
+                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                        </svg>
+                        ${software.viewCount.toLocaleString()}
+                      </span>
+                    ` : ''}
+                    <span class="flex items-center text-green-600">
+                      <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                      </svg>
+                      ${this.getTimeAgo(software.updatedAt)}
+                    </span>
+                  </div>
+                </div>
+
+                <div class="flex items-center justify-between">
+                  <a href="/software/${software.id}" class="btn btn-outline btn-sm">
+                    查看详情
+                  </a>
+                  ${software.latestDownloadUrl ? `
+                    <button
+                      class="btn btn-primary btn-sm"
+                      data-download-url="${software.latestDownloadUrl}"
+                      data-show-login-prompt="true"
+                      type="button">
+                      <span class="download-text">下载</span>
+                      <span class="login-prompt-text hidden">登录下载</span>
+                    </button>
+                  ` : ''}
+                </div>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      `;
+
+      // 初始化新添加的下载按钮
+      this.initializeDownloadButtons();
+    }
+
+    private initializeDownloadButtons(): void {
+      // 等待全局下载按钮初始化函数可用
+      setTimeout(() => {
+        if (window.initializeDownloadButton) {
+          const downloadButtons = this.container.querySelectorAll('[data-download-url]');
+          downloadButtons.forEach(button => {
+            window.initializeDownloadButton(button);
+          });
+        }
+      }, 100);
+    }
+
+    private getTimeAgo(dateString: string): string {
+      try {
+        const date = new Date(dateString);
+        const now = new Date();
+        const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
+
+        if (diffInSeconds < 60) return '刚刚';
+        if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)}分钟前`;
+        if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)}小时前`;
+        if (diffInSeconds < 2592000) return `${Math.floor(diffInSeconds / 86400)}天前`;
+        
+        return date.toLocaleDateString('zh-CN', {
+          year: 'numeric',
+          month: 'short',
+          day: 'numeric'
+        });
+      } catch {
+        return dateString;
+      }
+    }
+  }
+
+  // 初始化组件
+  document.addEventListener('DOMContentLoaded', () => {
+    new LatestSoftwareComponent(6, 'updatedAt');
+  });
+</script>
+
+<style>
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+</style>

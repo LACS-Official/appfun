@@ -1,0 +1,294 @@
+---
+import LoadingSpinner from '../ui/LoadingSpinner.astro';
+import ErrorMessage from '../ui/ErrorMessage.astro';
+import type { Software } from '../../types/api';
+
+interface Props {
+  title?: string;
+  limit?: number;
+  showViewAll?: boolean;
+  class?: string;
+}
+
+const {
+  title = '全部软件',
+  limit = 12,
+  showViewAll = true,
+  class: className = ''
+} = Astro.props;
+---
+
+<section class={`${className}`}>
+  <div class="flex items-center justify-between mb-6">
+    <h2 class="text-2xl font-bold text-gray-900">{title}</h2>
+    {showViewAll && (
+      <a 
+        href="/software" 
+        class="text-primary-600 hover:text-primary-700 font-medium text-sm flex items-center"
+      >
+        查看全部
+        <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+        </svg>
+      </a>
+    )}
+  </div>
+
+  <!-- 加载状态 -->
+  <div id="all-software-loading" class="flex justify-center py-12">
+    <LoadingSpinner size="lg" text="正在加载软件列表..." />
+  </div>
+
+  <!-- 错误状态 -->
+  <div id="all-software-error" class="hidden">
+    <ErrorMessage 
+      title="加载失败" 
+      message="无法加载软件列表，请稍后重试"
+    />
+    <div class="text-center mt-4">
+      <button 
+        id="all-software-retry" 
+        class="btn btn-primary"
+      >
+        重新加载
+      </button>
+    </div>
+  </div>
+
+  <!-- 软件网格 -->
+  <div id="all-software-container" class="hidden">
+    <!-- 软件卡片将在这里动态加载 -->
+  </div>
+
+  <!-- 空状态 -->
+  <div id="all-software-empty" class="hidden text-center py-12">
+    <div class="text-gray-400 text-6xl mb-4">📦</div>
+    <h3 class="text-lg font-medium text-gray-900 mb-2">暂无软件</h3>
+    <p class="text-gray-500">还没有添加任何软件</p>
+  </div>
+</section>
+
+<script>
+  class AllSoftwareGridComponent {
+    constructor(limit = 12) {
+      this.container = null;
+      this.loadingElement = null;
+      this.errorElement = null;
+      this.emptyElement = null;
+      this.retryButton = null;
+      this.limit = limit;
+      this.init();
+    }
+
+    init() {
+      this.container = document.getElementById('all-software-container');
+      this.loadingElement = document.getElementById('all-software-loading');
+      this.errorElement = document.getElementById('all-software-error');
+      this.emptyElement = document.getElementById('all-software-empty');
+      this.retryButton = document.getElementById('all-software-retry');
+
+      if (this.retryButton) {
+        this.retryButton.addEventListener('click', () => this.loadAllSoftware());
+      }
+
+      this.loadAllSoftware();
+    }
+
+    private showLoading() {
+      this.hideAll();
+      this.loadingElement?.classList.remove('hidden');
+    }
+
+    showError() {
+      this.hideAll();
+      this.errorElement?.classList.remove('hidden');
+    }
+
+    showEmpty() {
+      this.hideAll();
+      this.emptyElement?.classList.remove('hidden');
+    }
+
+    showContent() {
+      this.hideAll();
+      this.container?.classList.remove('hidden');
+    }
+
+    hideAll() {
+      this.loadingElement?.classList.add('hidden');
+      this.errorElement?.classList.add('hidden');
+      this.emptyElement?.classList.add('hidden');
+      this.container?.classList.add('hidden');
+    }
+
+    async loadAllSoftware() {
+      this.showLoading();
+
+      try {
+        // 获取全局API客户端
+        const api = window.apiClient;
+        if (!api) {
+          throw new Error('API客户端未初始化');
+        }
+        const response = await api.getSoftwareList({
+          page: 1,
+          limit: this.limit
+        });
+
+        console.log('API Response:', response); // 调试日志
+
+        if (response.success && response.data && response.data.software) {
+          const softwareList = response.data.software;
+          console.log('Software List:', softwareList); // 调试日志
+
+          if (!Array.isArray(softwareList) || softwareList.length === 0) {
+            console.log('No software found or not an array'); // 调试日志
+            this.showEmpty();
+            return;
+          }
+
+          this.renderSoftwareGrid(softwareList);
+          this.showContent();
+        } else {
+          console.error('API Response Error:', response); // 调试日志
+          throw new Error(response.message || '获取软件列表失败');
+        }
+      } catch (error) {
+        console.error('加载软件列表失败:', error);
+        this.showError();
+      }
+    }
+
+    renderSoftwareGrid(softwareList) {
+      if (!this.container) return;
+
+      this.container.innerHTML = `
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          ${softwareList.map((software) => `
+            <div class="bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow duration-200">
+              <div class="p-6">
+                <!-- 软件标题和版本 -->
+                <div class="flex items-start justify-between mb-4">
+                  <div class="flex-1 min-w-0">
+                    <h3 class="text-xl font-semibold text-gray-900 truncate">
+                      <a href="/software/${software.id}" class="hover:text-primary-600 transition-colors">
+                        ${software.name}
+                      </a>
+                    </h3>
+                    ${software.nameEn ? `<p class="text-sm text-gray-500 truncate mt-1">${software.nameEn}</p>` : ''}
+                  </div>
+                  <div class="flex flex-col items-end space-y-2 ml-4">
+                    <span class="inline-flex items-center rounded-full px-3 py-1 text-sm font-medium bg-primary-100 text-primary-800">
+                      v${software.currentVersion}
+                    </span>
+                    ${software.category ? `
+                      <span class="inline-flex items-center rounded-full px-3 py-1 text-sm font-medium bg-gray-100 text-gray-800">
+                        ${software.category}
+                      </span>
+                    ` : ''}
+                  </div>
+                </div>
+
+                <!-- 软件描述 -->
+                ${software.description ? `
+                  <p class="text-gray-600 text-sm mb-4 line-clamp-3">
+                    ${software.description}
+                  </p>
+                ` : `
+                  <p class="text-gray-400 text-sm mb-4 italic">
+                    暂无描述
+                  </p>
+                `}
+
+                <!-- 标签 -->
+                ${software.tags && software.tags.length > 0 ? `
+                  <div class="flex flex-wrap gap-1 mb-4">
+                    ${software.tags.slice(0, 3).map(tag => `
+                      <span class="inline-flex items-center rounded-full px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800">
+                        #${tag}
+                      </span>
+                    `).join('')}
+                    ${software.tags.length > 3 ? `
+                      <span class="inline-flex items-center rounded-full px-2 py-1 text-xs font-medium bg-gray-100 text-gray-600">
+                        +${software.tags.length - 3}
+                      </span>
+                    ` : ''}
+                  </div>
+                ` : ''}
+
+                <!-- 统计信息 -->
+                <div class="flex items-center justify-between text-sm text-gray-500 mb-4">
+                  <div class="flex items-center space-x-4">
+                    ${software.viewCount !== undefined ? `
+                      <span class="flex items-center">
+                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                        </svg>
+                        ${software.viewCount.toLocaleString()}
+                      </span>
+                    ` : ''}
+                    ${software.updatedAt ? `
+                      <span class="flex items-center">
+                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        ${this.formatTimeAgo(software.updatedAt)}
+                      </span>
+                    ` : ''}
+                  </div>
+                </div>
+
+                <!-- 操作按钮 -->
+                <div class="flex items-center justify-between pt-2 border-t border-gray-100">
+                  <a href="/software/${software.id}" class="btn btn-outline">
+                    查看详情
+                  </a>
+                  ${software.latestDownloadUrl ? `
+                    <a href="${software.latestDownloadUrl}" target="_blank" rel="noopener noreferrer" class="btn btn-primary">
+                      立即下载
+                    </a>
+                  ` : ''}
+                </div>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      `;
+    }
+
+    formatTimeAgo(dateString) {
+      try {
+        const date = new Date(dateString);
+        const now = new Date();
+        const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
+
+        if (diffInSeconds < 60) return '刚刚';
+        if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)}分钟前`;
+        if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)}小时前`;
+        if (diffInSeconds < 2592000) return `${Math.floor(diffInSeconds / 86400)}天前`;
+
+        return date.toLocaleDateString('zh-CN', {
+          month: 'short',
+          day: 'numeric'
+        });
+      } catch {
+        return dateString;
+      }
+    }
+  }
+
+  // 初始化组件
+  document.addEventListener('DOMContentLoaded', () => {
+    new AllSoftwareGridComponent(12);
+  });
+</script>
+
+<style>
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+</style>

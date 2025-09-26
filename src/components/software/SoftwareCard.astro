@@ -103,6 +103,25 @@ const fileSize = formatSoftwareFileSize(software.versions?.[0]);
     <!-- 软件信息 -->
     <div class="flex items-center justify-between text-sm text-gray-500 mb-4">
       <div class="flex items-center space-x-4">
+        {software.viewCount !== undefined && (
+          <span class="flex items-center">
+            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+            </svg>
+            {software.viewCount.toLocaleString()}
+          </span>
+        )}
+
+        {software.rank && (
+          <span class="flex items-center text-orange-600">
+            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+            </svg>
+            #{software.rank}
+          </span>
+        )}
+
         {fileSize && (
           <span class="flex items-center">
             <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -111,7 +130,7 @@ const fileSize = formatSoftwareFileSize(software.versions?.[0]);
             {fileSize}
           </span>
         )}
-        
+
         {software.filetype && (
           <span class="flex items-center">
             <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -121,7 +140,7 @@ const fileSize = formatSoftwareFileSize(software.versions?.[0]);
           </span>
         )}
       </div>
-      
+
       <span>
         {formatDate(software.updatedAt)}
       </span>
@@ -153,17 +172,18 @@ const fileSize = formatSoftwareFileSize(software.versions?.[0]);
       </div>
 
       {showDownload && downloadUrl && (
-        <a 
-          href={downloadUrl}
-          target="_blank"
-          rel="noopener noreferrer"
+        <button
           class="btn btn-primary btn-sm"
+          data-download-url={downloadUrl}
+          data-show-login-prompt="true"
+          type="button"
         >
           <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
           </svg>
-          下载
-        </a>
+          <span class="download-text">下载</span>
+          <span class="login-prompt-text hidden">需要登录</span>
+        </button>
       )}
     </div>
   </div>

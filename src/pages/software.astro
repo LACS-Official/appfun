@@ -1,0 +1,63 @@
+---
+import Layout from '../layouts/Layout.astro';
+import SoftwareListByTags from '../components/software/SoftwareListByTags.astro';
+import { initializeApiClient } from '../lib/api';
+import { apiConfig } from '../lib/config';
+
+// 初始化 API 客户端
+initializeApiClient(apiConfig);
+
+const title = '全部软件';
+const description = '浏览所有可用的软件工具，按时间倒序排列，发现最新最热门的软件';
+---
+
+<Layout title={title} description={description}>
+  <!-- 页面头部 -->
+  <section class="bg-gradient-to-r from-gray-600 to-gray-800 text-white py-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center">
+        <div class="flex justify-center mb-4">
+          <div class="bg-white/20 p-4 rounded-full">
+            <span class="text-4xl">📦</span>
+          </div>
+        </div>
+        <h1 class="text-4xl font-bold mb-4">{title}</h1>
+        <p class="text-xl text-gray-100 max-w-3xl mx-auto">
+          {description}
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 软件列表 -->
+  <section class="py-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <SoftwareListByTags
+        title="全部软件"
+        description="按时间倒序排列，最新发布的软件在最前面"
+        tags=""
+        limit={24}
+        sortBy="updatedAt"
+        sortOrder="desc"
+        showViewAll={false}
+        class="w-full"
+      />
+    </div>
+  </section>
+</Layout>
+
+<script>
+  import { initializeApiClient, getApiClient } from '../lib/api';
+  import { apiConfig } from '../lib/config';
+
+  // 初始化 API 客户端
+  initializeApiClient(apiConfig);
+
+  // 页面加载完成后的处理
+  document.addEventListener('DOMContentLoaded', () => {
+    console.log('全部软件页面已加载');
+
+    // 设置全局API客户端
+    window.apiClient = getApiClient();
+  });
+</script>

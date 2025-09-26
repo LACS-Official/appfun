@@ -1,0 +1,244 @@
+---
+import SoftwareCard from './SoftwareCard.astro';
+import LoadingSpinner from '../ui/LoadingSpinner.astro';
+import ErrorMessage from '../ui/ErrorMessage.astro';
+import type { Software } from '../../types/api';
+
+interface Props {
+  title?: string;
+  limit?: number;
+  showViewAll?: boolean;
+  class?: string;
+}
+
+const {
+  title = '🎓 大学专业软件',
+  limit = 6,
+  showViewAll = true,
+  class: className = ''
+} = Astro.props;
+---
+
+<section class={`${className}`}>
+  <div class="flex items-center justify-between mb-4">
+    <h2 class="text-xl font-bold text-gray-900">{title}</h2>
+    {showViewAll && (
+      <a
+        href="/software?tags=stu_app"
+        class="text-primary-600 hover:text-primary-700 font-medium text-sm flex items-center"
+      >
+        查看全部
+        <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+        </svg>
+      </a>
+    )}
+  </div>
+
+  <!-- 加载状态 -->
+  <div id="student-apps-loading" class="flex justify-center py-12">
+    <LoadingSpinner size="lg" text="正在加载学生应用..." />
+  </div>
+
+  <!-- 错误状态 -->
+  <div id="student-apps-error" class="hidden">
+    <ErrorMessage 
+      title="加载失败" 
+      message="无法加载学生应用，请稍后重试"
+    />
+    <div class="text-center mt-4">
+      <button 
+        id="student-apps-retry" 
+        class="btn btn-primary"
+      >
+        重新加载
+      </button>
+    </div>
+  </div>
+
+  <!-- 软件列表 -->
+  <div id="student-apps-container" class="hidden">
+    <!-- 软件卡片将在这里动态加载 -->
+  </div>
+
+  <!-- 空状态 -->
+  <div id="student-apps-empty" class="hidden text-center py-12">
+    <div class="text-gray-400 text-6xl mb-4">🎓</div>
+    <h3 class="text-lg font-medium text-gray-900 mb-2">暂无学生应用</h3>
+    <p class="text-gray-500">还没有学生应用软件</p>
+  </div>
+</section>
+
+<script>
+  import { getApiClient } from '../../lib/api';
+
+  class StudentAppsComponent {
+    private container: HTMLElement | null = null;
+    private loadingElement: HTMLElement | null = null;
+    private errorElement: HTMLElement | null = null;
+    private emptyElement: HTMLElement | null = null;
+    private retryButton: HTMLElement | null = null;
+    private limit: number;
+
+    constructor(limit: number = 6) {
+      this.limit = limit;
+      this.init();
+    }
+
+    private init() {
+      this.container = document.getElementById('student-apps-container');
+      this.loadingElement = document.getElementById('student-apps-loading');
+      this.errorElement = document.getElementById('student-apps-error');
+      this.emptyElement = document.getElementById('student-apps-empty');
+      this.retryButton = document.getElementById('student-apps-retry');
+
+      if (this.retryButton) {
+        this.retryButton.addEventListener('click', () => this.loadStudentApps());
+      }
+
+      this.loadStudentApps();
+    }
+
+    private showLoading() {
+      this.hideAll();
+      this.loadingElement?.classList.remove('hidden');
+    }
+
+    private showError() {
+      this.hideAll();
+      this.errorElement?.classList.remove('hidden');
+    }
+
+    private showEmpty() {
+      this.hideAll();
+      this.emptyElement?.classList.remove('hidden');
+    }
+
+    private showContent() {
+      this.hideAll();
+      this.container?.classList.remove('hidden');
+    }
+
+    private hideAll() {
+      this.loadingElement?.classList.add('hidden');
+      this.errorElement?.classList.add('hidden');
+      this.emptyElement?.classList.add('hidden');
+      this.container?.classList.add('hidden');
+    }
+
+    private async loadStudentApps() {
+      this.showLoading();
+
+      try {
+        const api = getApiClient();
+        const response = await api.getSoftwareList({
+          page: 1,
+          limit: this.limit,
+          tags: 'stu_app',
+          sortBy: 'updatedAt',
+          sortOrder: 'desc'
+        });
+
+        if (response.success && response.data) {
+          const softwareList = response.data;
+          
+          if (!Array.isArray(softwareList) || softwareList.length === 0) {
+            this.showEmpty();
+            return;
+          }
+
+          this.renderSoftwareList(softwareList);
+          this.showContent();
+        } else {
+          throw new Error(response.message || '获取学生应用失败');
+        }
+      } catch (error) {
+        console.error('加载学生应用失败:', error);
+        this.showError();
+      }
+    }
+
+    private renderSoftwareList(softwareList: any[]) {
+      if (!this.container) return;
+
+      this.container.innerHTML = `
+        <div class="space-y-4">
+          ${softwareList.map((software, index) => `
+            <div class="bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow duration-200 relative">
+              <div class="absolute -top-2 -right-2 z-10">
+                <div class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white text-xs font-bold">
+                  学生
+                </div>
+              </div>
+              <div class="p-4">
+                <div class="flex items-center justify-between mb-2">
+                  <div class="flex-1 min-w-0">
+                    <h3 class="text-base font-semibold text-gray-900 truncate">
+                      <a href="/software/${software.id}" class="hover:text-primary-600 transition-colors">
+                        ${software.name}
+                      </a>
+                    </h3>
+                  </div>
+                  <div class="flex items-center space-x-2 ml-3">
+                    <span class="inline-flex items-center rounded-full px-2 py-1 text-xs font-medium bg-primary-100 text-primary-800">
+                      v${software.currentVersion}
+                    </span>
+                    ${software.viewCount !== undefined ? `
+                      <span class="text-xs text-gray-500">
+                        ${software.viewCount.toLocaleString()} 次浏览
+                      </span>
+                    ` : ''}
+                  </div>
+                </div>
+
+                ${software.description ? `
+                  <p class="text-gray-600 text-sm mb-3 line-clamp-1">
+                    ${software.description}
+                  </p>
+                ` : ''}
+
+                <div class="flex items-center justify-between">
+                  <a href="/software/${software.id}" class="text-primary-600 hover:text-primary-700 text-sm font-medium">
+                    查看详情 →
+                  </a>
+                  ${software.latestDownloadUrl ? `
+                    <a href="${software.latestDownloadUrl}" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm">
+                      下载
+                    </a>
+                  ` : ''}
+                </div>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      `;
+    }
+
+    private formatDate(dateString: string): string {
+      try {
+        const date = new Date(dateString);
+        return date.toLocaleDateString('zh-CN', {
+          year: 'numeric',
+          month: 'short',
+          day: 'numeric'
+        });
+      } catch {
+        return dateString;
+      }
+    }
+  }
+
+  // 初始化组件
+  document.addEventListener('DOMContentLoaded', () => {
+    new StudentAppsComponent(6);
+  });
+</script>
+
+<style>
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+</style>

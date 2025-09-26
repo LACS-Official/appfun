@@ -1,6 +1,9 @@
 ---
 import Header from '../components/layout/Header.astro';
 import Footer from '../components/layout/Footer.astro';
+import LoginPrompt from '../components/auth/LoginPrompt.astro';
+import AuthStatusIndicator from '../components/auth/AuthStatusIndicator.astro';
+import AuthStateManager from '../components/AuthStateManager.astro';
 import { appConfig } from '../lib/config';
 import '../styles/global.css';
 
@@ -56,9 +59,12 @@ const fullTitle = title === appConfig.title ? title : `${title} - ${appConfig.ti
     
     <!-- Theme Color -->
     <meta name="theme-color" content={appConfig.theme.primaryColor} />
-    
+
     <!-- Viewport Meta for Mobile -->
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+
+    <!-- Umami Analytics -->
+    <script defer src="https://umami.lacs.cc/script.js" data-website-id="99e40abd-3eaa-47a1-a6b4-84fc6831aa4e"></script>
     
     <!-- Prevent FOUC (Flash of Unstyled Content) -->
     <style>
@@ -70,11 +76,17 @@ const fullTitle = title === appConfig.title ? title : `${title} - ${appConfig.ti
   </head>
   
   <body class="min-h-screen bg-gray-50 text-gray-900">
+    <!-- 认证状态管理器 -->
+    <AuthStateManager />
+
+    <!-- 认证状态指示器 -->
+    <AuthStatusIndicator />
+
     <!-- Skip to main content link for accessibility -->
     <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-primary-600 text-white px-4 py-2 rounded-md z-50">
       跳转到主要内容
     </a>
-    
+
     <!-- Header -->
     <Header title={appConfig.title} showSearch={showSearch} />
     
@@ -85,19 +97,30 @@ const fullTitle = title === appConfig.title ? title : `${title} - ${appConfig.ti
     
     <!-- Footer -->
     <Footer />
-    
+
+    <!-- Login Prompt Component -->
+    <LoginPrompt />
+
     <!-- Loading indicator -->
     <div id="loading-indicator" class="fixed top-0 left-0 w-full h-1 bg-primary-600 transform scale-x-0 transition-transform duration-300 z-50"></div>
-    
+
     <!-- Toast notifications container -->
     <div id="toast-container" class="fixed top-4 right-4 z-50 space-y-2"></div>
     
     <!-- Global Scripts -->
     <script>
+      // 导入认证模块
+      import { supabaseAuthManager as authManager } from '../lib/supabase-auth';
+      import { appConfig } from '../lib/config';
+
       // Remove FOUC prevention
       document.addEventListener('DOMContentLoaded', () => {
         document.documentElement.style.visibility = 'visible';
         document.documentElement.style.opacity = '1';
+
+        // 设置全局变量
+        window.authManager = authManager;
+        window.appConfig = appConfig;
       });
       
       // Global loading indicator

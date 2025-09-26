@@ -1,55 +1,98 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import SoftwareCard from '../components/software/SoftwareCard.astro';
-import LoadingSpinner from '../components/ui/LoadingSpinner.astro';
-import ErrorMessage from '../components/ui/ErrorMessage.astro';
-import Badge from '../components/ui/Badge.astro';
+import DynamicCarousel from '../components/ui/DynamicCarousel.astro';
+import PopularSoftware from '../components/software/PopularSoftware.astro';
+import LatestSoftware from '../components/software/LatestSoftware.astro';
+import OriginalApps from '../components/software/OriginalApps.astro';
+import StudentApps from '../components/software/StudentApps.astro';
+import AllSoftwareGrid from '../components/software/AllSoftwareGrid.astro';
 import { appConfig } from '../lib/config';
 ---
 
 <Layout title="首页" description="发现和下载最新的软件工具">
-  <!-- Hero Section -->
-  <section class="bg-gradient-to-r from-primary-600 to-primary-700 text-white">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-      <div class="text-center">
-        <h1 class="text-4xl md:text-6xl font-bold mb-6">
-          发现优质软件
-        </h1>
-        <p class="text-xl md:text-2xl text-primary-100 mb-8 max-w-3xl mx-auto">
-          探索、下载和管理各种实用的软件工具，让您的工作更加高效
-        </p>
-        
-        <!-- 搜索框 -->
-        <div class="max-w-2xl mx-auto">
-          <div class="relative">
-            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-              </svg>
-            </div>
-            <input
-              type="text"
-              placeholder="搜索软件名称、分类或标签..."
-              class="block w-full pl-10 pr-3 py-4 border border-transparent rounded-lg leading-5 bg-white text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-primary-600 text-lg"
-              id="hero-search"
-            />
+  <!-- 上部分区域 (30%高度) - 三列水平排列 -->
+  <section class="min-h-[30vh] bg-gray-50 py-6">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <!-- 桌面端：三列布局 -->
+      <div class="hidden lg:grid lg:grid-cols-3 gap-6 min-h-[25vh]">
+        <!-- 第一列：轮播图展示区域 -->
+        <div class="flex items-center justify-center">
+          <DynamicCarousel
+            websiteId={1}
+            autoPlay={true}
+            interval={5000}
+            class="w-full"
+            limit={10}
+          />
+        </div>
+
+        <!-- 第二列：最热门软件 -->
+        <div class="bg-white rounded-lg p-5 shadow-sm flex flex-col min-h-0">
+          <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center flex-shrink-0">
+            🔥 最热门软件
+            <a href="/ranking" class="ml-auto text-sm text-primary-600 hover:text-primary-700">
+              更多 →
+            </a>
+          </h3>
+          <div id="top-popular-container" class="flex-1 overflow-y-auto min-h-0">
+            <!-- 热门软件列表将在这里加载 -->
           </div>
         </div>
-        
-        <!-- 快速分类 -->
-        <div class="mt-8 flex flex-wrap justify-center gap-3">
-          <a href="/categories/tools" class="bg-white bg-opacity-20 hover:bg-opacity-30 text-white px-4 py-2 rounded-full text-sm font-medium transition-all">
-            🔧 工具软件
-          </a>
-          <a href="/categories/development" class="bg-white bg-opacity-20 hover:bg-opacity-30 text-white px-4 py-2 rounded-full text-sm font-medium transition-all">
-            💻 开发工具
-          </a>
-          <a href="/categories/design" class="bg-white bg-opacity-20 hover:bg-opacity-30 text-white px-4 py-2 rounded-full text-sm font-medium transition-all">
-            🎨 设计软件
-          </a>
-          <a href="/categories/multimedia" class="bg-white bg-opacity-20 hover:bg-opacity-30 text-white px-4 py-2 rounded-full text-sm font-medium transition-all">
-            🎬 多媒体
-          </a>
+
+        <!-- 第三列：最新软件 -->
+        <div class="bg-white rounded-lg p-5 shadow-sm flex flex-col min-h-0">
+          <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center flex-shrink-0">
+            🆕 最新软件
+            <a href="/software?sortBy=updatedAt&sortOrder=desc" class="ml-auto text-sm text-primary-600 hover:text-primary-700">
+              更多 →
+            </a>
+          </h3>
+          <div id="top-latest-container" class="flex-1 overflow-y-auto min-h-0">
+            <!-- 最新软件列表将在这里加载 -->
+          </div>
+        </div>
+      </div>
+
+      <!-- 移动端：垂直堆叠布局 -->
+      <div class="lg:hidden space-y-6">
+        <!-- 轮播图 -->
+        <div class="flex items-center justify-center">
+          <DynamicCarousel
+            websiteId={1}
+            autoPlay={true}
+            interval={5000}
+            class="w-full max-w-sm"
+            limit={10}
+          />
+        </div>
+
+        <!-- 热门和最新软件 -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <!-- 最热门软件 -->
+          <div class="bg-white rounded-lg p-4 shadow-sm">
+            <h3 class="text-base font-semibold text-gray-900 mb-3 flex items-center">
+              🔥 最热门
+              <a href="/ranking" class="ml-auto text-xs text-primary-600 hover:text-primary-700">
+                更多 →
+              </a>
+            </h3>
+            <div id="top-popular-container-mobile" class="space-y-2 max-h-48 overflow-y-auto">
+              <!-- 热门软件列表将在这里加载 -->
+            </div>
+          </div>
+
+          <!-- 最新软件 -->
+          <div class="bg-white rounded-lg p-4 shadow-sm">
+            <h3 class="text-base font-semibold text-gray-900 mb-3 flex items-center">
+              🆕 最新
+              <a href="/software?sortBy=updatedAt&sortOrder=desc" class="ml-auto text-xs text-primary-600 hover:text-primary-700">
+                更多 →
+              </a>
+            </h3>
+            <div id="top-latest-container-mobile" class="space-y-2 max-h-48 overflow-y-auto">
+              <!-- 最新软件列表将在这里加载 -->
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -57,72 +100,47 @@ import { appConfig } from '../lib/config';
 
 
 
-  <!-- 最新软件 -->
-  <section class="py-16">
+  <!-- 中部区域 (20%高度) - 严格高度限制 -->
+  <section class="max-h-[10vh] py-6 bg-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex items-center justify-between mb-8">
-        <div>
-          <h2 class="text-3xl font-bold text-gray-900">最新软件</h2>
-          <p class="text-gray-600 mt-2">最近更新的软件工具</p>
-        </div>
-        <a href="/software" class="btn btn-outline">
-          查看全部
-          <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-          </svg>
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- 左侧：大学专业软件 -->
+        <a href="/stu_app" class="bg-gray-50 rounded-lg p-5 shadow-sm hover:bg-gray-100 transition-colors cursor-pointer block">
+          <div class="flex items-center">
+            <div class="bg-blue-100 p-3 rounded-lg mr-4">
+              <span class="text-2xl">🎓</span>
+            </div>
+            <div>
+              <h3 class="text-lg font-semibold text-gray-900">大学专业软件</h3>
+              <p class="text-sm text-gray-600">点击查看所有大学专业相关软件</p>
+            </div>
+          </div>
         </a>
-      </div>
 
-      <!-- 软件列表 -->
-      <div id="latest-software-container">
-        <div class="flex justify-center py-12">
-          <LoadingSpinner size="lg" text="正在加载最新软件..." />
-        </div>
+        <!-- 右侧：原创软件 -->
+        <a href="/original_app" class="bg-gray-50 rounded-lg p-5 shadow-sm hover:bg-gray-100 transition-colors cursor-pointer block">
+          <div class="flex items-center">
+            <div class="bg-green-100 p-3 rounded-lg mr-4">
+              <span class="text-2xl">🎨</span>
+            </div>
+            <div>
+              <h3 class="text-lg font-semibold text-gray-900">原创软件</h3>
+              <p class="text-sm text-gray-600">点击查看所有原创软件作品</p>
+            </div>
+          </div>
+        </a>
       </div>
     </div>
   </section>
 
-  <!-- 热门分类 -->
-  <section class="bg-gray-50 py-16">
+  <!-- 下部区域 (50%高度) -->
+  <section class="min-h-[60vh] bg-gray-50 py-8">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="text-center mb-12">
-        <h2 class="text-3xl font-bold text-gray-900">热门分类</h2>
-        <p class="text-gray-600 mt-2">按分类浏览软件</p>
-      </div>
-
-      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
-        <a href="/categories/tools" class="group bg-white rounded-lg p-6 text-center hover:shadow-md transition-shadow">
-          <div class="text-4xl mb-3">🔧</div>
-          <h3 class="font-semibold text-gray-900 group-hover:text-primary-600">工具软件</h3>
-          <p class="text-sm text-gray-600 mt-1">实用工具集合</p>
-        </a>
-        
-        <a href="/categories/development" class="group bg-white rounded-lg p-6 text-center hover:shadow-md transition-shadow">
-          <div class="text-4xl mb-3">💻</div>
-          <h3 class="font-semibold text-gray-900 group-hover:text-primary-600">开发工具</h3>
-          <p class="text-sm text-gray-600 mt-1">编程开发必备</p>
-        </a>
-        
-        <a href="/categories/design" class="group bg-white rounded-lg p-6 text-center hover:shadow-md transition-shadow">
-          <div class="text-4xl mb-3">🎨</div>
-          <h3 class="font-semibold text-gray-900 group-hover:text-primary-600">设计软件</h3>
-          <p class="text-sm text-gray-600 mt-1">创意设计工具</p>
-        </a>
-        
-        <a href="/categories/multimedia" class="group bg-white rounded-lg p-6 text-center hover:shadow-md transition-shadow">
-          <div class="text-4xl mb-3">🎬</div>
-          <h3 class="font-semibold text-gray-900 group-hover:text-primary-600">多媒体</h3>
-          <p class="text-sm text-gray-600 mt-1">音视频处理</p>
-        </a>
-        
-        <a href="/categories/productivity" class="group bg-white rounded-lg p-6 text-center hover:shadow-md transition-shadow">
-          <div class="text-4xl mb-3">📊</div>
-          <h3 class="font-semibold text-gray-900 group-hover:text-primary-600">办公软件</h3>
-          <p class="text-sm text-gray-600 mt-1">提升工作效率</p>
-        </a>
-      </div>
+      <AllSoftwareGrid limit={20} />
     </div>
   </section>
+
+
 </Layout>
 
 <script>
@@ -132,154 +150,176 @@ import { appConfig } from '../lib/config';
   // 初始化 API 客户端
   initializeApiClient(apiConfig);
 
-  // 页面加载完成后获取数据
-  document.addEventListener('DOMContentLoaded', async () => {
+  // 立即设置全局API客户端，确保在DOMContentLoaded之前就可用
+  window.apiClient = getApiClient();
+
+  // 页面加载完成后设置功能
+  document.addEventListener('DOMContentLoaded', () => {
     // 测试 API 连接
     console.log('Testing API connection...');
     console.log('API Base URL:', apiConfig.baseUrl);
     console.log('API Key:', apiConfig.apiKey ? 'Set' : 'Not set');
+    console.log('API Client ready:', !!window.apiClient);
 
-    await loadLatestSoftware();
-    setupSearch();
+    loadTopSoftware();
   });
 
-  // 加载最新软件
-  async function loadLatestSoftware() {
-    const container = document.getElementById('latest-software-container');
-    if (!container) return;
+  // 加载顶部区域的热门和最新软件
+  async function loadTopSoftware() {
+    await Promise.all([
+      loadTopPopular(),
+      loadTopLatest()
+    ]);
+  }
+
+  // 加载热门软件（右上）
+  async function loadTopPopular() {
+    const container = document.getElementById('top-popular-container');
+    const mobileContainer = document.getElementById('top-popular-container-mobile');
+    if (!container && !mobileContainer) return;
+
+    try {
+      const api = getApiClient();
+      const response = await api.getSoftwareRanking({
+        page: 1,
+        limit: 3,
+        sortBy: 'viewCount',
+        sortOrder: 'desc'
+      });
+
+      if (response.success && response.data) {
+        const softwareList = response.data;
+
+        if (Array.isArray(softwareList) && softwareList.length > 0) {
+          const content = `
+            <div class="space-y-3">
+              ${softwareList.map((software, index) => `
+                <div class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-50 transition-colors">
+                  <div class="flex-shrink-0">
+                    <div class="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-bold ${
+                      index === 0 ? 'bg-yellow-500' :
+                      index === 1 ? 'bg-gray-400' :
+                      'bg-orange-500'
+                    }">
+                      ${index + 1}
+                    </div>
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <h4 class="text-sm font-medium text-gray-900 truncate">
+                      <a href="/software/${software.id}" class="hover:text-primary-600">
+                        ${software.name}
+                      </a>
+                    </h4>
+                    <p class="text-xs text-gray-500 flex items-center">
+                      <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                      </svg>
+                      ${software.viewCount?.toLocaleString() || 0}
+                    </p>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          `;
+
+          if (container) container.innerHTML = content;
+          if (mobileContainer) mobileContainer.innerHTML = content;
+        } else {
+          const emptyContent = '<p class="text-sm text-gray-500">暂无热门软件</p>';
+          if (container) container.innerHTML = emptyContent;
+          if (mobileContainer) mobileContainer.innerHTML = emptyContent;
+        }
+      }
+    } catch (error) {
+      console.error('加载热门软件失败:', error);
+      const errorContent = '<p class="text-sm text-red-500">加载失败</p>';
+      if (container) container.innerHTML = errorContent;
+      if (mobileContainer) mobileContainer.innerHTML = errorContent;
+    }
+  }
+
+  // 加载最新软件（右下）
+  async function loadTopLatest() {
+    const container = document.getElementById('top-latest-container');
+    const mobileContainer = document.getElementById('top-latest-container-mobile');
+    if (!container && !mobileContainer) return;
 
     try {
       const api = getApiClient();
       const response = await api.getSoftwareList({
         page: 1,
-        limit: 6,
+        limit: 3,
         sortBy: 'updatedAt',
         sortOrder: 'desc'
       });
 
-      console.log('API Response:', response);
+      if (response.success && response.data && response.data.software) {
+        const softwareList = response.data.software;
 
-      if (response.success) {
-        // 处理不同的响应数据结构
-        let softwareList = [];
-
-        if (response.data) {
-          if (Array.isArray(response.data)) {
-            // 如果 data 直接是数组
-            softwareList = response.data;
-          } else if (typeof response.data === 'object') {
-            // 如果 data 是对象，尝试找到软件数组
-            if (response.data.software && Array.isArray(response.data.software)) {
-              softwareList = response.data.software;
-            } else if (response.data.items && Array.isArray(response.data.items)) {
-              softwareList = response.data.items;
-            } else if (response.data.list && Array.isArray(response.data.list)) {
-              softwareList = response.data.list;
-            } else {
-              console.error('Unexpected data structure:', response.data);
-              container.innerHTML = `
-                <div class="text-center py-12">
-                  <p class="text-red-600">数据格式错误</p>
-                  <p class="text-sm text-gray-500 mt-2">请检查 API 响应格式</p>
+        if (Array.isArray(softwareList) && softwareList.length > 0) {
+          const content = `
+            <div class="space-y-3">
+              ${softwareList.map((software, index) => `
+                <div class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-50 transition-colors">
+                  <div class="flex-shrink-0">
+                    <div class="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center text-white text-xs font-bold">
+                      NEW
+                    </div>
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <h4 class="text-sm font-medium text-gray-900 truncate">
+                      <a href="/software/${software.id}" class="hover:text-primary-600">
+                        ${software.name}
+                      </a>
+                    </h4>
+                    <p class="text-xs text-gray-500">
+                      v${software.currentVersion} • ${formatTimeAgo(software.updatedAt)}
+                    </p>
+                  </div>
                 </div>
-              `;
-              return;
-            }
-          }
-        } else {
-          console.warn('No data in response:', response);
-        }
-
-        if (softwareList.length === 0) {
-          container.innerHTML = `
-            <div class="text-center py-12">
-              <p class="text-gray-500">暂无软件数据</p>
+              `).join('')}
             </div>
           `;
-          return;
-        }
 
-        // 渲染软件卡片
-        container.innerHTML = `
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            ${softwareList.map(software => `
-              <div class="bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow duration-200">
-                <div class="p-6">
-                  <div class="flex items-start justify-between mb-3">
-                    <div class="flex-1 min-w-0">
-                      <h3 class="text-lg font-semibold text-gray-900 truncate">
-                        <a href="/software/${software.id}" class="hover:text-primary-600 transition-colors">
-                          ${software.name}
-                        </a>
-                      </h3>
-                      ${software.nameEn ? `<p class="text-sm text-gray-500 truncate mt-1">${software.nameEn}</p>` : ''}
-                    </div>
-                    <div class="flex flex-col items-end space-y-1 ml-4">
-                      <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium bg-primary-100 text-primary-800">
-                        v${software.currentVersion}
-                      </span>
-                      ${software.category ? `
-                        <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium bg-gray-100 text-gray-800">
-                          ${software.category}
-                        </span>
-                      ` : ''}
-                    </div>
-                  </div>
-                  ${software.description ? `
-                    <p class="text-gray-600 text-sm mb-4 line-clamp-2">
-                      ${software.description}
-                    </p>
-                  ` : ''}
-                  <div class="flex items-center justify-between">
-                    <a href="/software/${software.id}" class="btn btn-outline btn-sm">
-                      查看详情
-                    </a>
-                    ${software.latestDownloadUrl ? `
-                      <a href="${software.latestDownloadUrl}" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm">
-                        下载
-                      </a>
-                    ` : ''}
-                  </div>
-                </div>
-              </div>
-            `).join('')}
-          </div>
-        `;
+          if (container) container.innerHTML = content;
+          if (mobileContainer) mobileContainer.innerHTML = content;
+        } else {
+          const emptyContent = '<p class="text-sm text-gray-500">暂无最新软件</p>';
+          if (container) container.innerHTML = emptyContent;
+          if (mobileContainer) mobileContainer.innerHTML = emptyContent;
+        }
       }
     } catch (error) {
       console.error('加载最新软件失败:', error);
-      console.error('Error details:', {
-        message: error.message,
-        stack: error.stack
-      });
-
-      container.innerHTML = `
-        <div class="text-center py-12">
-          <div class="text-red-500 text-6xl mb-4">⚠️</div>
-          <h3 class="text-lg font-medium text-gray-900 mb-2">加载失败</h3>
-          <p class="text-gray-500 mb-4">无法加载软件列表，请检查网络连接或稍后重试</p>
-          <button onclick="loadLatestSoftware()" class="btn btn-primary">
-            重新加载
-          </button>
-        </div>
-      `;
+      const errorContent = '<p class="text-sm text-red-500">加载失败</p>';
+      if (container) container.innerHTML = errorContent;
+      if (mobileContainer) mobileContainer.innerHTML = errorContent;
     }
   }
 
-  // 设置搜索功能
-  function setupSearch() {
-    const searchInput = document.getElementById('hero-search');
-    if (searchInput) {
-      searchInput.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') {
-          const query = (e.target as HTMLInputElement).value.trim();
-          if (query) {
-            window.location.href = `/search?q=${encodeURIComponent(query)}`;
-          }
-        }
+  // 格式化时间
+  function formatTimeAgo(dateString) {
+    try {
+      const date = new Date(dateString);
+      const now = new Date();
+      const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
+
+      if (diffInSeconds < 60) return '刚刚';
+      if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)}分钟前`;
+      if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)}小时前`;
+      if (diffInSeconds < 2592000) return `${Math.floor(diffInSeconds / 86400)}天前`;
+
+      return date.toLocaleDateString('zh-CN', {
+        month: 'short',
+        day: 'numeric'
       });
+    } catch {
+      return dateString;
     }
   }
+
+
 </script>
 
 <style>

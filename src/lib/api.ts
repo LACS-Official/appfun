@@ -1,13 +1,19 @@
 import type {
   ApiResponse,
   PaginatedResponse,
+  SoftwareListResponse,
   Software,
   SoftwareQueryParams,
+  RankingQueryParams,
+  RankingResponse,
   SoftwareVersion,
   VersionQueryParams,
   Announcement,
   AnnouncementQueryParams,
   TagsResponse,
+  Banner,
+  BannerQueryParams,
+  BannerListResponse,
 } from '../types/api';
 import { buildQueryString } from './utils';
 
@@ -45,9 +51,13 @@ export class ApiClient {
     const headers = {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
-      'X-API-Key': this.config.apiKey,
       ...options.headers,
     };
+
+    // 只在有API密钥时才添加
+    if (this.config.apiKey) {
+      headers['X-API-Key'] = this.config.apiKey;
+    }
 
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), this.config.timeout);
@@ -92,8 +102,8 @@ export class ApiClient {
   /**
    * 获取软件列表
    */
-  async getSoftwareList(params?: SoftwareQueryParams): Promise<PaginatedResponse<Software>> {
-    return this.get<PaginatedResponse<Software>>('/app/software', params);
+  async getSoftwareList(params?: SoftwareQueryParams): Promise<SoftwareListResponse> {
+    return this.get<SoftwareListResponse>('/app/software', params);
   }
 
   /**
@@ -120,6 +130,13 @@ export class ApiClient {
    */
   async getSoftwareByName(name: string): Promise<ApiResponse<Software>> {
     return this.get<ApiResponse<Software>>(`/app/software/${encodeURIComponent(name)}`);
+  }
+
+  /**
+   * 获取软件访问量排行榜
+   */
+  async getSoftwareRanking(params?: RankingQueryParams): Promise<RankingResponse> {
+    return this.get<RankingResponse>('/app/software/ranking', params);
   }
 
   // ==================== 版本管理 API ====================
@@ -176,7 +193,19 @@ export class ApiClient {
     );
   }
 
+  /**
+   * 获取轮播图列表
+   */
+  async getBanners(websiteId: number, params?: BannerQueryParams): Promise<BannerListResponse> {
+    return this.get<BannerListResponse>(`/api/websites/${websiteId}/banners`, params);
+  }
 
+  /**
+   * 获取轮播图详情
+   */
+  async getBannerById(websiteId: number, bannerId: number): Promise<ApiResponse<Banner>> {
+    return this.get<ApiResponse<Banner>>(`/api/websites/${websiteId}/banners/${bannerId}`);
+  }
 }
 
 /**

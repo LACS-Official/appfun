@@ -327,7 +327,7 @@ const query = url.searchParams.get('q') || '';
                       查看详情
                     </a>
                     ${software.latestDownloadUrl ? `
-                      <a href="${software.latestDownloadUrl}" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm">
+                      <a href="${software.latestDownloadUrl}" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm" data-protected-download="true">
                         下载
                       </a>
                     ` : ''}

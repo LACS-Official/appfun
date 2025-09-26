@@ -1,6 +1,6 @@
-# 软件管理平台
+# APPFUN
 
-基于 Astro 框架和 LACS API 构建的现代化软件管理平台，提供软件发布、管理、下载和激活码管理等功能。
+基于 Astro 框架和 LACS API 构建的现代化APPFUN，提供软件发布、管理、下载和激活码管理等功能。
 
 ## ✨ 特性
 
@@ -89,8 +89,8 @@
    ```env
    VITE_API_BASE_URL=https://api-g.lacs.cc
    VITE_API_KEY=your-api-key-here
-   VITE_APP_TITLE=软件管理平台
-   VITE_APP_DESCRIPTION=基于 LACS API 的软件管理平台
+   VITE_APP_TITLE=APPFUN
+   VITE_APP_DESCRIPTION=基于 LACS API 的APPFUN
    ```
 
 4. **启动开发服务器**

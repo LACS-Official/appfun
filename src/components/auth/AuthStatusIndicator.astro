@@ -1,0 +1,119 @@
+<!-- 认证状态指示器 -->
+<div id="auth-status-indicator" class="hidden fixed top-0 left-0 right-0 z-50 bg-blue-600 text-white text-center py-2 text-sm">
+  <span id="auth-status-message">正在更新认证状态...</span>
+</div>
+
+<script>
+  class AuthStatusIndicator {
+    private indicator: HTMLElement | null = null;
+    private message: HTMLElement | null = null;
+    private hideTimeout: number | null = null;
+
+    constructor() {
+      this.indicator = document.getElementById('auth-status-indicator');
+      this.message = document.getElementById('auth-status-message');
+      this.init();
+    }
+
+    private init(): void {
+      // 监听认证状态变化
+      window.addEventListener('authStateChanged', (event: any) => {
+        this.handleAuthStateChange(event.detail);
+      });
+
+      // 监听登录成功事件
+      window.addEventListener('crossDomainLoginSuccess', () => {
+        this.showMessage('登录成功！正在更新页面...', 'success');
+      });
+
+      // 监听退出登录事件
+      window.addEventListener('crossDomainLogout', () => {
+        this.showMessage('已退出登录', 'info');
+      });
+    }
+
+    private handleAuthStateChange(detail: any): void {
+      if (detail.event === 'SIGNED_IN') {
+        this.showMessage('登录成功！', 'success');
+      } else if (detail.event === 'SIGNED_OUT') {
+        this.showMessage('已退出登录', 'info');
+      } else if (detail.event === 'TOKEN_REFRESHED') {
+        // 静默刷新，不显示消息
+        return;
+      } else if (detail.passwordUpdated) {
+        this.showMessage('密码更新成功！', 'success');
+      } else if (detail.profileUpdated) {
+        this.showMessage('个人资料更新成功！', 'success');
+      } else if (detail.emailConfirmed) {
+        this.showMessage('邮箱确认成功！', 'success');
+      }
+    }
+
+    private showMessage(text: string, type: 'success' | 'info' | 'warning' | 'error' = 'info'): void {
+      if (!this.indicator || !this.message) return;
+
+      // 清除之前的隐藏定时器
+      if (this.hideTimeout) {
+        clearTimeout(this.hideTimeout);
+      }
+
+      // 设置消息文本
+      this.message.textContent = text;
+
+      // 设置样式
+      this.indicator.className = 'fixed top-0 left-0 right-0 z-50 text-white text-center py-2 text-sm transition-all duration-300';
+      
+      switch (type) {
+        case 'success':
+          this.indicator.classList.add('bg-green-600');
+          break;
+        case 'warning':
+          this.indicator.classList.add('bg-yellow-600');
+          break;
+        case 'error':
+          this.indicator.classList.add('bg-red-600');
+          break;
+        default:
+          this.indicator.classList.add('bg-blue-600');
+      }
+
+      // 显示指示器
+      this.indicator.classList.remove('hidden');
+
+      // 3秒后自动隐藏
+      this.hideTimeout = window.setTimeout(() => {
+        this.hide();
+      }, 3000);
+    }
+
+    private hide(): void {
+      if (!this.indicator) return;
+      
+      this.indicator.classList.add('hidden');
+      this.hideTimeout = null;
+    }
+
+    public showCustomMessage(text: string, type: 'success' | 'info' | 'warning' | 'error' = 'info'): void {
+      this.showMessage(text, type);
+    }
+  }
+
+  // 页面加载完成后初始化
+  document.addEventListener('DOMContentLoaded', () => {
+    const authStatusIndicator = new AuthStatusIndicator();
+    
+    // 将实例添加到全局对象，以便其他脚本可以使用
+    (window as any).authStatusIndicator = authStatusIndicator;
+  });
+</script>
+
+<style>
+  #auth-status-indicator {
+    transform: translateY(-100%);
+    transition: transform 0.3s ease-in-out;
+  }
+
+  #auth-status-indicator:not(.hidden) {
+    transform: translateY(0);
+  }
+</style>

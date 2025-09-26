@@ -5,7 +5,7 @@ import Badge from '../components/ui/Badge.astro';
 import { appConfig } from '../lib/config';
 ---
 
-<Layout title="关于我们" description="了解软件管理平台的使命、愿景和团队">
+<Layout title="关于我们" description="了解APPFUN的使命、愿景和团队">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
     <!-- 页面标题 -->
     <div class="text-center mb-16">
@@ -15,6 +15,78 @@ import { appConfig } from '../lib/config';
       </p>
     </div>
 
+    <!-- 网站统计数据 -->
+    <section class="mb-16">
+      <div class="bg-white rounded-2xl shadow-lg border border-gray-100 p-8">
+        <div class="text-center mb-8">
+          <h2 class="text-2xl font-bold text-gray-900 mb-2">网站统计</h2>
+          <p class="text-gray-600">实时访问数据统计</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <!-- 总访问量 -->
+          <div class="text-center p-6 bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl">
+            <div class="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center mx-auto mb-4">
+              <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+              </svg>
+            </div>
+            <div class="text-2xl font-bold text-gray-900 mb-1" id="total-pageviews">
+              <div class="animate-pulse bg-gray-200 h-8 w-16 mx-auto rounded"></div>
+            </div>
+            <p class="text-sm text-gray-600">总访问量</p>
+          </div>
+
+          <!-- 独立访客 -->
+          <div class="text-center p-6 bg-gradient-to-br from-green-50 to-green-100 rounded-xl">
+            <div class="w-12 h-12 bg-green-600 rounded-lg flex items-center justify-center mx-auto mb-4">
+              <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
+              </svg>
+            </div>
+            <div class="text-2xl font-bold text-gray-900 mb-1" id="unique-visitors">
+              <div class="animate-pulse bg-gray-200 h-8 w-16 mx-auto rounded"></div>
+            </div>
+            <p class="text-sm text-gray-600">独立访客</p>
+          </div>
+
+          <!-- 今日访问 -->
+          <div class="text-center p-6 bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl">
+            <div class="w-12 h-12 bg-purple-600 rounded-lg flex items-center justify-center mx-auto mb-4">
+              <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+              </svg>
+            </div>
+            <div class="text-2xl font-bold text-gray-900 mb-1" id="today-pageviews">
+              <div class="animate-pulse bg-gray-200 h-8 w-16 mx-auto rounded"></div>
+            </div>
+            <p class="text-sm text-gray-600">今日访问</p>
+          </div>
+
+          <!-- 在线用户 -->
+          <div class="text-center p-6 bg-gradient-to-br from-orange-50 to-orange-100 rounded-xl">
+            <div class="w-12 h-12 bg-orange-600 rounded-lg flex items-center justify-center mx-auto mb-4">
+              <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.636 18.364a9 9 0 010-12.728m12.728 0a9 9 0 010 12.728m-9.9-2.829a5 5 0 010-7.07m7.072 0a5 5 0 010 7.07M13 12a1 1 0 11-2 0 1 1 0 012 0z"></path>
+              </svg>
+            </div>
+            <div class="text-2xl font-bold text-gray-900 mb-1" id="active-visitors">
+              <div class="animate-pulse bg-gray-200 h-8 w-16 mx-auto rounded"></div>
+            </div>
+            <p class="text-sm text-gray-600">在线用户</p>
+          </div>
+        </div>
+
+        <!-- 数据更新时间 -->
+        <div class="text-center mt-6 pt-6 border-t border-gray-200">
+          <p class="text-sm text-gray-500">
+            数据更新时间：<span id="last-updated" class="font-medium">加载中...</span>
+          </p>
+        </div>
+      </div>
+    </section>
+
     <!-- 平台介绍 -->
     <section class="mb-16">
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
@@ -22,7 +94,7 @@ import { appConfig } from '../lib/config';
           <h2 class="text-3xl font-bold text-gray-900 mb-6">我们的平台</h2>
           <div class="space-y-4 text-gray-600">
             <p>
-              {appConfig.title} 是一个基于现代技术栈构建的软件管理平台，旨在为开发者和用户提供便捷的软件发布、管理和下载服务。
+              {appConfig.title} 是一个基于现代技术栈构建的APPFUN，旨在为开发者和用户提供便捷的软件发布、管理和下载服务。
             </p>
             <p>
               我们使用 Astro 框架构建前端界面，集成了强大的 LACS API 服务，为用户提供流畅的软件浏览和管理体验。
@@ -257,3 +329,95 @@ import { appConfig } from '../lib/config';
     color: var(--color-primary-700);
   }
 </style>
+
+<script>
+  // 网站统计数据获取和显示
+  document.addEventListener('DOMContentLoaded', async () => {
+    const totalPageviewsEl = document.getElementById('total-pageviews');
+    const uniqueVisitorsEl = document.getElementById('unique-visitors');
+    const todayPageviewsEl = document.getElementById('today-pageviews');
+    const activeVisitorsEl = document.getElementById('active-visitors');
+    const lastUpdatedEl = document.getElementById('last-updated');
+
+    // 模拟统计数据（在实际环境中，这里应该调用 Umami API）
+    function getRandomStats() {
+      return {
+        totalPageviews: Math.floor(Math.random() * 50000) + 10000,
+        uniqueVisitors: Math.floor(Math.random() * 8000) + 2000,
+        todayPageviews: Math.floor(Math.random() * 500) + 100,
+        activeVisitors: Math.floor(Math.random() * 20) + 5
+      };
+    }
+
+    // 格式化数字显示
+    function formatNumber(num) {
+      if (num >= 10000) {
+        return (num / 1000).toFixed(1) + 'K';
+      }
+      return num.toLocaleString();
+    }
+
+    // 获取统计数据
+    async function fetchStats() {
+      try {
+        // 调用统计数据 API
+        const response = await fetch('/api/umami/stats');
+
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+
+        const result = await response.json();
+
+        if (!result.success) {
+          throw new Error(result.message || '获取统计数据失败');
+        }
+
+        const stats = result.data;
+
+        // 更新显示
+        if (totalPageviewsEl) totalPageviewsEl.textContent = formatNumber(stats.totalPageviews);
+        if (uniqueVisitorsEl) uniqueVisitorsEl.textContent = formatNumber(stats.uniqueVisitors);
+        if (todayPageviewsEl) todayPageviewsEl.textContent = formatNumber(stats.todayPageviews);
+        if (activeVisitorsEl) activeVisitorsEl.textContent = stats.activeVisitors.toString();
+
+        // 更新时间
+        if (lastUpdatedEl) {
+          const updateTime = new Date(stats.lastUpdated);
+          lastUpdatedEl.textContent = updateTime.toLocaleString('zh-CN');
+        }
+
+        console.log('统计数据已更新:', stats);
+      } catch (error) {
+        console.error('获取统计数据失败:', error);
+
+        // 显示错误状态
+        if (totalPageviewsEl) totalPageviewsEl.textContent = '--';
+        if (uniqueVisitorsEl) uniqueVisitorsEl.textContent = '--';
+        if (todayPageviewsEl) todayPageviewsEl.textContent = '--';
+        if (activeVisitorsEl) activeVisitorsEl.textContent = '--';
+        if (lastUpdatedEl) lastUpdatedEl.textContent = '获取失败';
+      }
+    }
+
+    // 初始加载
+    await fetchStats();
+
+    // 每30秒更新一次数据
+    setInterval(fetchStats, 30000);
+  });
+
+  // Umami 事件跟踪（如果需要）
+  function trackEvent(eventName, eventData = {}) {
+    if (typeof umami !== 'undefined') {
+      umami.track(eventName, eventData);
+    }
+  }
+
+  // 跟踪页面停留时间
+  let startTime = Date.now();
+  window.addEventListener('beforeunload', () => {
+    const timeSpent = Math.round((Date.now() - startTime) / 1000);
+    trackEvent('page-time', { duration: timeSpent, page: 'about' });
+  });
+</script>

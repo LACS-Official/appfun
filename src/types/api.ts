@@ -21,6 +21,46 @@ export interface PaginatedResponse<T> extends ApiResponse<T[]> {
   pagination: Pagination;
 }
 
+// 软件列表响应（匹配实际API结构）
+export interface SoftwareListResponse extends ApiResponse<{
+  software: Software[];
+  pagination: Pagination;
+}> {}
+
+// 轮播图数据结构
+export interface Banner {
+  id: number;
+  title: string;
+  description?: string;
+  imageUrl: string;
+  imageAlt?: string;
+  linkUrl?: string;
+  linkTarget?: '_self' | '_blank';
+  sortOrder: number;
+  isActive: boolean;
+  viewCount: number;
+  clickCount: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+// 轮播图查询参数
+export interface BannerQueryParams {
+  page?: number;
+  limit?: number;
+  isActive?: boolean;
+}
+
+// 轮播图列表响应
+export interface BannerListResponse extends ApiResponse<{
+  website: {
+    id: number;
+    name: string;
+  };
+  banners: Banner[];
+  pagination: Pagination;
+}> {}
+
 // 软件相关类型
 export interface Software {
   id: number;
@@ -36,6 +76,8 @@ export interface Software {
   officialWebsite?: string;
   openname?: string;
   filetype?: string;
+  viewCount?: number; // 浏览量统计
+  rank?: number; // 排行榜排名
   systemRequirements?: {
     os?: string[];
     memory?: string;
@@ -111,6 +153,22 @@ export interface SoftwareQueryParams {
   search?: string;
   sortBy?: string;
   sortOrder?: 'asc' | 'desc';
+  minViewCount?: number; // 最小浏览量筛选
+  timeRange?: 'all' | 'today' | 'week' | 'month' | 'year'; // 时间范围
+}
+
+// 排行榜查询参数
+export interface RankingQueryParams extends SoftwareQueryParams {
+  // 继承所有软件查询参数，用于排行榜筛选
+}
+
+// 排行榜响应数据
+export interface RankingResponse extends PaginatedResponse<Software> {
+  summary?: {
+    totalSoftware: number;
+    totalViews: number;
+    averageViews: number;
+  };
 }
 
 export interface VersionQueryParams {

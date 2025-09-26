@@ -1,0 +1,495 @@
+---
+import LoadingSpinner from './LoadingSpinner.astro';
+import ErrorMessage from './ErrorMessage.astro';
+
+interface Props {
+  websiteId?: number;
+  autoPlay?: boolean;
+  interval?: number;
+  class?: string;
+  limit?: number;
+}
+
+const {
+  websiteId = 1,
+  autoPlay = true,
+  interval = 5000,
+  class: className = '',
+  limit = 10
+} = Astro.props;
+---
+
+<div class={`relative w-full h-full overflow-hidden rounded-lg bg-gray-100 ${className}`} id="dynamic-carousel">
+  <!-- 加载状态 -->
+  <div id="carousel-loading" class="flex items-center justify-center h-full">
+    <div class="text-center">
+      <LoadingSpinner size="lg" />
+      <p id="loading-message" class="mt-4 text-gray-600">正在加载轮播图...</p>
+    </div>
+  </div>
+
+  <!-- 错误状态 -->
+  <div id="carousel-error" class="hidden flex items-center justify-center h-full">
+    <div class="text-center p-6">
+      <div class="text-6xl mb-4">⚠️</div>
+      <h3 class="text-lg font-medium text-gray-900 mb-2">轮播图加载失败</h3>
+      <p id="error-message" class="text-gray-600 mb-4">无法加载轮播图，请稍后重试</p>
+      <button
+        id="carousel-retry"
+        class="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 transition-colors"
+      >
+        重新加载
+      </button>
+    </div>
+  </div>
+
+  <!-- 空状态 -->
+  <div id="carousel-empty" class="hidden flex items-center justify-center h-full">
+    <div class="text-center text-gray-500">
+      <div class="text-6xl mb-4">🖼️</div>
+      <h3 class="text-lg font-medium mb-2">暂无轮播图</h3>
+      <p class="text-sm">还没有添加任何轮播图内容</p>
+    </div>
+  </div>
+
+  <!-- 轮播图容器 -->
+  <div id="carousel-content" class="hidden relative w-full h-full">
+    <!-- 轮播图片容器 -->
+    <div id="slides-container" class="relative w-full h-full">
+      <!-- 动态生成的轮播图将在这里 -->
+    </div>
+
+    <!-- 导航点容器 -->
+    <div id="dots-container" class="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
+      <!-- 动态生成的导航点将在这里 -->
+    </div>
+
+    <!-- 左右箭头 -->
+    <button 
+      class="absolute left-4 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-30 hover:bg-opacity-50 text-white p-2 rounded-full transition-all duration-300"
+      id="carousel-prev-btn"
+      aria-label="上一张"
+    >
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+      </svg>
+    </button>
+
+    <button 
+      class="absolute right-4 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-30 hover:bg-opacity-50 text-white p-2 rounded-full transition-all duration-300"
+      id="carousel-next-btn"
+      aria-label="下一张"
+    >
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+      </svg>
+    </button>
+  </div>
+</div>
+
+<script define:vars={{ websiteId, autoPlay, interval, limit }}>
+  class DynamicCarouselComponent {
+    constructor() {
+      this.websiteId = websiteId;
+      this.autoPlay = autoPlay;
+      this.interval = interval;
+      this.limit = limit;
+      this.currentSlide = 0;
+      this.totalSlides = 0;
+      this.autoPlayTimer = null;
+      this.banners = [];
+      
+      this.loadingElement = document.getElementById('carousel-loading');
+      this.errorElement = document.getElementById('carousel-error');
+      this.emptyElement = document.getElementById('carousel-empty');
+      this.contentElement = document.getElementById('carousel-content');
+      this.slidesContainer = document.getElementById('slides-container');
+      this.dotsContainer = document.getElementById('dots-container');
+      this.retryButton = document.getElementById('carousel-retry');
+      this.prevButton = document.getElementById('carousel-prev-btn');
+      this.nextButton = document.getElementById('carousel-next-btn');
+      
+      this.init();
+    }
+
+    init() {
+      this.setupEventListeners();
+      this.loadBanners();
+    }
+
+    setupEventListeners() {
+      if (this.retryButton) {
+        this.retryButton.addEventListener('click', () => this.loadBanners());
+      }
+
+      if (this.prevButton) {
+        this.prevButton.addEventListener('click', () => this.prevSlide());
+      }
+
+      if (this.nextButton) {
+        this.nextButton.addEventListener('click', () => this.nextSlide());
+      }
+
+      // 鼠标悬停暂停自动播放
+      const carousel = document.getElementById('dynamic-carousel');
+      if (carousel) {
+        carousel.addEventListener('mouseenter', () => this.stopAutoPlay());
+        carousel.addEventListener('mouseleave', () => {
+          if (this.autoPlay && this.totalSlides > 1) {
+            this.startAutoPlay();
+          }
+        });
+      }
+    }
+
+    showLoading(message = '正在加载轮播图...') {
+      this.hideAll();
+      this.loadingElement?.classList.remove('hidden');
+
+      // 更新加载消息
+      const loadingMessageEl = document.getElementById('loading-message');
+      if (loadingMessageEl) {
+        loadingMessageEl.textContent = message;
+      }
+    }
+
+    showError(message = '无法加载轮播图，请稍后重试') {
+      this.hideAll();
+      this.errorElement?.classList.remove('hidden');
+
+      // 更新错误消息
+      const errorMessageEl = document.getElementById('error-message');
+      if (errorMessageEl) {
+        errorMessageEl.textContent = message;
+      }
+    }
+
+    showEmpty() {
+      this.hideAll();
+      this.emptyElement?.classList.remove('hidden');
+    }
+
+    showContent() {
+      this.hideAll();
+      this.contentElement?.classList.remove('hidden');
+    }
+
+    hideAll() {
+      this.loadingElement?.classList.add('hidden');
+      this.errorElement?.classList.add('hidden');
+      this.emptyElement?.classList.add('hidden');
+      this.contentElement?.classList.add('hidden');
+    }
+
+    async loadBanners(retryCount = 0) {
+      if (retryCount === 0) {
+        this.showLoading('正在初始化API客户端...');
+      } else {
+        this.showLoading(`正在重试加载轮播图 (${retryCount + 1}/3)...`);
+      }
+
+      try {
+        // 等待API客户端就绪
+        const api = await this.waitForApiClient();
+
+        this.showLoading('正在获取轮播图数据...');
+
+        const response = await api.getBanners(this.websiteId, {
+          limit: this.limit,
+          isActive: true
+        });
+
+        console.log('Banners Response:', response);
+
+        if (response.success && response.data && response.data.banners) {
+          this.banners = response.data.banners.filter(banner => banner.isActive);
+
+          if (this.banners.length === 0) {
+            this.showEmpty();
+            return;
+          }
+
+          // 按sortOrder排序
+          this.banners.sort((a, b) => a.sortOrder - b.sortOrder);
+
+          this.totalSlides = this.banners.length;
+          this.renderCarousel();
+          this.showContent();
+
+          if (this.autoPlay && this.totalSlides > 1) {
+            this.startAutoPlay();
+          }
+        } else {
+          throw new Error(response.message || '获取轮播图失败');
+        }
+      } catch (error) {
+        console.error(`加载轮播图失败 (尝试 ${retryCount + 1}):`, error);
+
+        // 如果是网络错误且重试次数少于3次，则自动重试
+        if (retryCount < 2 && (error.message.includes('网络') || error.message.includes('timeout') || error.message.includes('fetch'))) {
+          console.log(`将在 ${(retryCount + 1) * 1000}ms 后自动重试...`);
+          setTimeout(() => {
+            this.loadBanners(retryCount + 1);
+          }, (retryCount + 1) * 1000);
+        } else {
+          this.showError(`加载失败: ${error.message}`);
+        }
+      }
+    }
+
+    // 等待API客户端就绪
+    async waitForApiClient(maxAttempts = 30, interval = 100) {
+      return new Promise((resolve, reject) => {
+        let attempts = 0;
+
+        const checkApiClient = () => {
+          attempts++;
+
+          if (window.apiClient) {
+            resolve(window.apiClient);
+          } else if (attempts >= maxAttempts) {
+            reject(new Error('API客户端初始化超时'));
+          } else {
+            setTimeout(checkApiClient, interval);
+          }
+        };
+
+        checkApiClient();
+      });
+    }
+
+    renderCarousel() {
+      if (!this.slidesContainer || !this.dotsContainer) return;
+
+      // 渲染轮播图片
+      this.slidesContainer.innerHTML = this.banners.map((banner, index) => `
+        <div
+          class="absolute inset-0 transition-opacity duration-500 ${index === 0 ? 'opacity-100' : 'opacity-0'}"
+          data-slide="${index}"
+        >
+          ${banner.linkUrl ? `
+            <a href="${banner.linkUrl}" target="${banner.linkTarget || '_self'}" class="block w-full h-full" data-banner-id="${banner.id}">
+              ${this.renderSlideContent(banner)}
+            </a>
+          ` : `
+            <div class="w-full h-full">
+              ${this.renderSlideContent(banner)}
+            </div>
+          `}
+        </div>
+      `).join('');
+
+      // 渲染导航点
+      this.dotsContainer.innerHTML = this.banners.map((_, index) => `
+        <button
+          class="w-3 h-3 rounded-full transition-all duration-300 ${
+            index === 0 ? 'bg-white' : 'bg-white bg-opacity-50'
+          }"
+          data-slide-to="${index}"
+          aria-label="切换到第 ${index + 1} 张图片"
+        ></button>
+      `).join('');
+
+      // 绑定导航点事件
+      this.dotsContainer.querySelectorAll('[data-slide-to]').forEach(dot => {
+        dot.addEventListener('click', (e) => {
+          const slideIndex = parseInt(e.target.getAttribute('data-slide-to'));
+          this.goToSlide(slideIndex);
+        });
+      });
+
+      // 绑定轮播图点击事件
+      this.slidesContainer.querySelectorAll('[data-banner-id]').forEach(link => {
+        link.addEventListener('click', (e) => {
+          const bannerId = parseInt(e.currentTarget.getAttribute('data-banner-id'));
+          this.trackClick(bannerId);
+        });
+      });
+
+      // 如果只有一张图片，隐藏导航控件
+      if (this.totalSlides <= 1) {
+        this.dotsContainer.style.display = 'none';
+        if (this.prevButton) this.prevButton.style.display = 'none';
+        if (this.nextButton) this.nextButton.style.display = 'none';
+      }
+    }
+
+    renderSlideContent(banner) {
+      return `
+        <div class="relative w-full h-full">
+          <img
+            src="${banner.imageUrl}"
+            alt="${banner.imageAlt || banner.title}"
+            class="w-full h-full object-cover"
+            onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+          />
+          <!-- 图片加载失败时的备用内容 -->
+          <div class="hidden w-full h-full bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center">
+            <div class="text-center text-white p-8">
+              <div class="text-6xl mb-4">🖼️</div>
+              <h3 class="text-2xl font-bold mb-2">${banner.title}</h3>
+              ${banner.description ? `<p class="text-primary-100">${banner.description}</p>` : ''}
+            </div>
+          </div>
+          <!-- 文字覆盖层 -->
+          ${banner.title || banner.description ? `
+            <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-6">
+              <div class="text-white">
+                ${banner.title ? `<h3 class="text-xl font-bold mb-2">${banner.title}</h3>` : ''}
+                ${banner.description ? `<p class="text-sm text-gray-200">${banner.description}</p>` : ''}
+              </div>
+            </div>
+          ` : ''}
+        </div>
+      `;
+    }
+
+    goToSlide(index) {
+      if (index < 0 || index >= this.totalSlides) return;
+
+      // 隐藏当前幻灯片
+      const currentSlideEl = this.slidesContainer.querySelector(`[data-slide="${this.currentSlide}"]`);
+      if (currentSlideEl) {
+        currentSlideEl.classList.remove('opacity-100');
+        currentSlideEl.classList.add('opacity-0');
+      }
+
+      // 更新当前导航点
+      const currentDot = this.dotsContainer.querySelector(`[data-slide-to="${this.currentSlide}"]`);
+      if (currentDot) {
+        currentDot.classList.remove('bg-white');
+        currentDot.classList.add('bg-white', 'bg-opacity-50');
+      }
+
+      // 显示新幻灯片
+      this.currentSlide = index;
+      const newSlideEl = this.slidesContainer.querySelector(`[data-slide="${this.currentSlide}"]`);
+      if (newSlideEl) {
+        newSlideEl.classList.remove('opacity-0');
+        newSlideEl.classList.add('opacity-100');
+      }
+
+      // 更新新导航点
+      const newDot = this.dotsContainer.querySelector(`[data-slide-to="${this.currentSlide}"]`);
+      if (newDot) {
+        newDot.classList.remove('bg-opacity-50');
+        newDot.classList.add('bg-white');
+      }
+    }
+
+    nextSlide() {
+      const nextIndex = (this.currentSlide + 1) % this.totalSlides;
+      this.goToSlide(nextIndex);
+    }
+
+    prevSlide() {
+      const prevIndex = (this.currentSlide - 1 + this.totalSlides) % this.totalSlides;
+      this.goToSlide(prevIndex);
+    }
+
+    startAutoPlay() {
+      this.stopAutoPlay();
+      if (this.totalSlides > 1) {
+        this.autoPlayTimer = setInterval(() => {
+          this.nextSlide();
+        }, this.interval);
+      }
+    }
+
+    stopAutoPlay() {
+      if (this.autoPlayTimer) {
+        clearInterval(this.autoPlayTimer);
+        this.autoPlayTimer = null;
+      }
+    }
+
+    trackClick(bannerId) {
+      // 可以在这里添加点击统计逻辑
+      console.log(`Banner ${bannerId} clicked`);
+    }
+  }
+
+  // 等待API客户端就绪的函数
+  function waitForApiClient(maxAttempts = 50, interval = 100) {
+    return new Promise((resolve, reject) => {
+      let attempts = 0;
+
+      const checkApiClient = () => {
+        attempts++;
+
+        if (window.apiClient) {
+          console.log(`API客户端就绪，尝试次数: ${attempts}`);
+          resolve(window.apiClient);
+        } else if (attempts >= maxAttempts) {
+          console.error(`API客户端初始化超时，已尝试 ${attempts} 次`);
+          reject(new Error('API客户端初始化超时'));
+        } else {
+          setTimeout(checkApiClient, interval);
+        }
+      };
+
+      checkApiClient();
+    });
+  }
+
+  // 初始化轮播图
+  document.addEventListener('DOMContentLoaded', async () => {
+    try {
+      // 等待API客户端就绪
+      await waitForApiClient();
+      // 创建轮播图组件
+      new DynamicCarouselComponent();
+    } catch (error) {
+      console.error('轮播图初始化失败:', error);
+      // 即使API客户端未就绪，也创建组件（会显示错误状态）
+      new DynamicCarouselComponent();
+    }
+  });
+</script>
+
+<style>
+  /* 强制16:9宽高比 */
+  #dynamic-carousel {
+    aspect-ratio: 16/9;
+    width: 100%;
+    height: auto;
+  }
+
+  /* 确保在小屏幕上也保持合理的最小高度 */
+  @media (max-width: 768px) {
+    #dynamic-carousel {
+      min-height: 200px;
+    }
+  }
+
+  @media (min-width: 769px) {
+    #dynamic-carousel {
+      min-height: 250px;
+    }
+  }
+
+  /* 平滑过渡效果 */
+  [data-slide] {
+    transition: opacity 0.5s ease-in-out;
+  }
+
+  /* 导航点悬停效果 */
+  [data-slide-to]:hover {
+    transform: scale(1.2);
+  }
+
+  /* 箭头按钮悬停效果 */
+  #carousel-prev-btn:hover,
+  #carousel-next-btn:hover {
+    transform: translateY(-50%) scale(1.1);
+  }
+
+  /* 图片样式 */
+  img {
+    transition: transform 0.3s ease;
+  }
+
+  img:hover {
+    transform: scale(1.02);
+  }
+</style>

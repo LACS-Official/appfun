@@ -1,5 +1,6 @@
 ---
 import { appConfig } from '../../lib/config';
+import UserStatus from '../auth/UserStatus.astro';
 
 interface Props {
   title?: string;
@@ -43,21 +44,26 @@ const { title = appConfig.title, showSearch = true } = Astro.props;
         </div>
       )}
 
-      <!-- 导航菜单 -->
-      <nav class="hidden md:flex items-center space-x-8">
-        <a href="/" class="text-gray-700 hover:text-primary-600 px-3 py-2 text-sm font-medium transition-colors">
-          首页
-        </a>
-        <a href="/categories" class="text-gray-700 hover:text-primary-600 px-3 py-2 text-sm font-medium transition-colors">
-          分类
-        </a>
-        <a href="/tags" class="text-gray-700 hover:text-primary-600 px-3 py-2 text-sm font-medium transition-colors">
-          标签
-        </a>
-        <a href="/about" class="text-gray-700 hover:text-primary-600 px-3 py-2 text-sm font-medium transition-colors">
-          关于
-        </a>
-      </nav>
+      <!-- 导航菜单和用户状态 -->
+      <div class="flex items-center space-x-4">
+        <nav class="hidden md:flex items-center space-x-8">
+          <a href="/" class="text-gray-700 hover:text-primary-600 px-3 py-2 text-sm font-medium transition-colors">
+            首页
+          </a>
+          <a href="/categories" class="text-gray-700 hover:text-primary-600 px-3 py-2 text-sm font-medium transition-colors">
+            分类
+          </a>
+          <a href="/tags" class="text-gray-700 hover:text-primary-600 px-3 py-2 text-sm font-medium transition-colors">
+            标签
+          </a>
+          <a href="/about" class="text-gray-700 hover:text-primary-600 px-3 py-2 text-sm font-medium transition-colors">
+            关于
+          </a>
+        </nav>
+
+        <!-- 用户状态 -->
+        <UserStatus />
+      </div>
 
       <!-- 移动端菜单按钮 -->
       <div class="md:hidden">

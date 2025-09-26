@@ -1,0 +1,272 @@
+---
+/**
+ * 登录提示组件
+ * 用于显示需要登录的提示信息和跳转按钮
+ */
+
+interface Props {
+  message?: string;
+  showModal?: boolean;
+  returnUrl?: string;
+}
+
+const { 
+  message = '需要登录才能下载',
+  showModal = false,
+  returnUrl = ''
+} = Astro.props;
+---
+
+<!-- 登录提示模态框 -->
+<div id="login-prompt-modal" class="fixed inset-0 z-50 hidden">
+  <!-- 背景遮罩 -->
+  <div class="fixed inset-0 bg-black bg-opacity-50 transition-opacity" id="modal-backdrop"></div>
+  
+  <!-- 模态框内容 -->
+  <div class="fixed inset-0 flex items-center justify-center p-4">
+    <div class="bg-white rounded-lg shadow-xl max-w-md w-full mx-auto transform transition-all">
+      <!-- 头部 -->
+      <div class="px-6 py-4 border-b border-gray-200">
+        <div class="flex items-center justify-between">
+          <h3 class="text-lg font-semibold text-gray-900">需要登录</h3>
+          <button type="button" class="text-gray-400 hover:text-gray-600" id="close-modal-btn">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+      
+      <!-- 内容 -->
+      <div class="px-6 py-4">
+        <div class="flex items-center mb-4">
+          <div class="flex-shrink-0">
+            <svg class="w-8 h-8 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+            </svg>
+          </div>
+          <div class="ml-3">
+            <p class="text-sm text-gray-700" id="login-prompt-message">
+              {message}
+            </p>
+          </div>
+        </div>
+        
+        <div class="text-sm text-gray-600 mb-4">
+          <p>登录后您可以：</p>
+          <ul class="list-disc list-inside mt-2 space-y-1">
+            <li>下载所有软件资源</li>
+            <li>收藏喜欢的软件</li>
+            <li>获取更新通知</li>
+            <li>享受更多专属功能</li>
+          </ul>
+        </div>
+      </div>
+      
+      <!-- 底部按钮 -->
+      <div class="px-6 py-4 bg-gray-50 rounded-b-lg flex justify-end space-x-3">
+        <button type="button" class="btn btn-outline" id="cancel-login-btn">
+          取消
+        </button>
+        <button type="button" class="btn btn-primary" id="go-login-btn">
+          立即登录
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 内联登录提示 -->
+<div id="inline-login-prompt" class="hidden bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
+  <div class="flex items-center">
+    <div class="flex-shrink-0">
+      <svg class="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+        <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+      </svg>
+    </div>
+    <div class="ml-3 flex-1">
+      <p class="text-sm text-yellow-800">
+        <span id="inline-prompt-message">{message}</span>
+        <a href="#" class="font-medium underline hover:text-yellow-900 ml-2" id="inline-login-link">
+          立即登录
+        </a>
+      </p>
+    </div>
+  </div>
+</div>
+
+<script>
+  import { downloadAuthManager } from '../../lib/auth';
+  import { appConfig } from '../../lib/config';
+
+  class LoginPromptManager {
+    private modal: HTMLElement | null = null;
+    private backdrop: HTMLElement | null = null;
+    private isInitialized = false;
+
+    constructor() {
+      this.init();
+    }
+
+    private init(): void {
+      if (this.isInitialized) return;
+      
+      document.addEventListener('DOMContentLoaded', () => {
+        this.setupElements();
+        this.bindEvents();
+        this.isInitialized = true;
+      });
+    }
+
+    private setupElements(): void {
+      this.modal = document.getElementById('login-prompt-modal');
+      this.backdrop = document.getElementById('modal-backdrop');
+    }
+
+    private bindEvents(): void {
+      // 关闭模态框按钮
+      const closeBtn = document.getElementById('close-modal-btn');
+      const cancelBtn = document.getElementById('cancel-login-btn');
+      
+      if (closeBtn) {
+        closeBtn.addEventListener('click', () => this.hideModal());
+      }
+      
+      if (cancelBtn) {
+        cancelBtn.addEventListener('click', () => this.hideModal());
+      }
+
+      // 背景点击关闭
+      if (this.backdrop) {
+        this.backdrop.addEventListener('click', () => this.hideModal());
+      }
+
+      // 登录按钮
+      const loginBtn = document.getElementById('go-login-btn');
+      const inlineLoginLink = document.getElementById('inline-login-link');
+      
+      if (loginBtn) {
+        loginBtn.addEventListener('click', () => this.goToLogin());
+      }
+      
+      if (inlineLoginLink) {
+        inlineLoginLink.addEventListener('click', (e) => {
+          e.preventDefault();
+          this.goToLogin();
+        });
+      }
+
+      // ESC键关闭
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && this.isModalVisible()) {
+          this.hideModal();
+        }
+      });
+    }
+
+    public showModal(message?: string): void {
+      if (!this.modal) return;
+
+      // 更新消息
+      if (message) {
+        const messageEl = document.getElementById('login-prompt-message');
+        if (messageEl) {
+          messageEl.textContent = message;
+        }
+      }
+
+      this.modal.classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+      
+      // 聚焦到登录按钮
+      setTimeout(() => {
+        const loginBtn = document.getElementById('go-login-btn');
+        if (loginBtn) {
+          loginBtn.focus();
+        }
+      }, 100);
+    }
+
+    public hideModal(): void {
+      if (!this.modal) return;
+
+      this.modal.classList.add('hidden');
+      document.body.style.overflow = '';
+    }
+
+    public showInlinePrompt(message?: string): void {
+      const inlinePrompt = document.getElementById('inline-login-prompt');
+      if (!inlinePrompt) return;
+
+      // 更新消息
+      if (message) {
+        const messageEl = document.getElementById('inline-prompt-message');
+        if (messageEl) {
+          messageEl.textContent = message;
+        }
+      }
+
+      inlinePrompt.classList.remove('hidden');
+    }
+
+    public hideInlinePrompt(): void {
+      const inlinePrompt = document.getElementById('inline-login-prompt');
+      if (inlinePrompt) {
+        inlinePrompt.classList.add('hidden');
+      }
+    }
+
+    private isModalVisible(): boolean {
+      return this.modal ? !this.modal.classList.contains('hidden') : false;
+    }
+
+    private goToLogin(): void {
+      this.hideModal();
+
+      // 使用跨域认证管理器启动登录流程
+      if (appConfig.auth.crossDomain.enabled && window.crossDomainAuthManager) {
+        window.crossDomainAuthManager.startLogin(window.location.href);
+      } else {
+        // 降级处理：直接跳转到登录页面
+        const currentUrl = window.location.href;
+        const returnUrl = encodeURIComponent(currentUrl);
+        const loginUrl = `${appConfig.auth.loginUrl}?${appConfig.auth.returnUrlParam}=${returnUrl}`;
+        window.location.href = loginUrl;
+      }
+    }
+  }
+
+  // 创建全局实例
+  const loginPromptManager = new LoginPromptManager();
+
+  // 导出到全局
+  window.loginPromptManager = loginPromptManager;
+
+  // 全局函数
+  window.showLoginPrompt = (message?: string, useModal = true) => {
+    if (useModal) {
+      loginPromptManager.showModal(message);
+    } else {
+      loginPromptManager.showInlinePrompt(message);
+    }
+  };
+
+  window.hideLoginPrompt = () => {
+    loginPromptManager.hideModal();
+    loginPromptManager.hideInlinePrompt();
+  };
+</script>
+
+<style>
+  .btn {
+    @apply inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 transition-colors;
+  }
+
+  .btn-primary {
+    @apply text-white bg-blue-600 hover:bg-blue-700 focus:ring-blue-500;
+  }
+
+  .btn-outline {
+    @apply text-gray-700 bg-white border-gray-300 hover:bg-gray-50 focus:ring-blue-500;
+  }
+</style>

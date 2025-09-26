@@ -1,0 +1,65 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import LoginFormWrapper from '../../components/auth/LoginFormWrapper.astro';
+---
+
+<Layout title="登录 - APPFUN">
+  <div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-md w-full space-y-8">
+      <div class="text-center">
+        <h1 class="text-3xl font-bold text-gray-900 mb-2">欢迎回来</h1>
+        <p class="text-gray-600">登录您的账号以继续使用</p>
+      </div>
+      
+      <!-- 备案审核模式提示 -->
+      <div id="review-mode-notice" class="hidden bg-yellow-50 border border-yellow-200 rounded-lg p-6">
+        <div class="flex items-start space-x-3">
+          <svg class="w-6 h-6 text-yellow-600 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.5 0L4.268 15.5c-.77.833.192 2.5 1.732 2.5z"></path>
+          </svg>
+          <div>
+            <h3 class="text-lg font-medium text-yellow-800 mb-2">系统维护中</h3>
+            <p class="text-yellow-700 mb-4">
+              系统正在进行备案审核，暂时无法登录。请稍后再试。
+            </p>
+            <a href="/" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-yellow-800 bg-yellow-100 hover:bg-yellow-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500">
+              返回首页
+            </a>
+          </div>
+        </div>
+      </div>
+      
+      <LoginFormWrapper />
+
+      <!-- Supabase 未配置提示 -->
+      <div id="config-warning" class="hidden bg-yellow-50 border border-yellow-200 rounded-lg p-6">
+        <div class="flex items-start space-x-3">
+          <svg class="w-6 h-6 text-yellow-600 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.5 0L4.268 15.5c-.77.833.192 2.5 1.732 2.5z"></path>
+          </svg>
+          <div>
+            <h3 class="text-lg font-medium text-yellow-800 mb-2">认证系统未配置</h3>
+            <p class="text-yellow-700 mb-4">
+              Supabase 认证服务尚未配置。请先配置 Supabase 项目以启用登录功能。
+            </p>
+            <a href="/auth/setup" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-yellow-800 bg-yellow-100 hover:bg-yellow-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500">
+              配置认证系统
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // 检查是否处于备案审核模式
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('under_review') === 'true') {
+        // 显示备案审核提示，隐藏登录表单
+        document.getElementById('review-mode-notice').classList.remove('hidden');
+        document.querySelector('#login-form-container').style.display = 'none';
+      }
+    });
+  </script>
+</Layout>

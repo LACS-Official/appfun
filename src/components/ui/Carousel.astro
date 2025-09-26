@@ -1,0 +1,228 @@
+---
+interface Props {
+  images?: string[];
+  autoPlay?: boolean;
+  interval?: number;
+  class?: string;
+}
+
+const {
+  images = [
+    '/placeholder-1.jpg',
+    '/placeholder-2.jpg', 
+    '/placeholder-3.jpg'
+  ],
+  autoPlay = true,
+  interval = 5000,
+  class: className = ''
+} = Astro.props;
+---
+
+<div class={`relative w-full h-full overflow-hidden rounded-lg bg-gray-100 ${className}`} id="carousel">
+  <!-- 轮播图片容器 -->
+  <div class="relative w-full h-full">
+    {images.map((image, index) => (
+      <div 
+        class={`absolute inset-0 transition-opacity duration-500 ${index === 0 ? 'opacity-100' : 'opacity-0'}`}
+        data-slide={index}
+      >
+        <div class="w-full h-full bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center">
+          <div class="text-center text-white">
+            <div class="text-6xl mb-4">🚀</div>
+            <h3 class="text-2xl font-bold mb-2">软件展示 {index + 1}</h3>
+            <p class="text-primary-100">发现优质软件工具</p>
+          </div>
+        </div>
+      </div>
+    ))}
+  </div>
+
+  <!-- 导航点 -->
+  <div class="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
+    {images.map((_, index) => (
+      <button
+        class={`w-3 h-3 rounded-full transition-all duration-300 ${
+          index === 0 ? 'bg-white' : 'bg-white bg-opacity-50'
+        }`}
+        data-slide-to={index}
+        aria-label={`切换到第 ${index + 1} 张图片`}
+      ></button>
+    ))}
+  </div>
+
+  <!-- 左右箭头 -->
+  <button 
+    class="absolute left-4 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-30 hover:bg-opacity-50 text-white p-2 rounded-full transition-all duration-300"
+    id="prev-btn"
+    aria-label="上一张"
+  >
+    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+    </svg>
+  </button>
+
+  <button 
+    class="absolute right-4 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-30 hover:bg-opacity-50 text-white p-2 rounded-full transition-all duration-300"
+    id="next-btn"
+    aria-label="下一张"
+  >
+    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+    </svg>
+  </button>
+</div>
+
+<script define:vars={{ autoPlay, interval, totalSlides: images.length }}>
+  class CarouselComponent {
+    constructor() {
+      this.currentSlide = 0;
+      this.totalSlides = totalSlides;
+      this.autoPlay = autoPlay;
+      this.interval = interval;
+      this.autoPlayTimer = null;
+      
+      this.init();
+    }
+
+    init() {
+      this.setupEventListeners();
+      if (this.autoPlay) {
+        this.startAutoPlay();
+      }
+    }
+
+    setupEventListeners() {
+      // 导航点点击
+      const dots = document.querySelectorAll('[data-slide-to]');
+      dots.forEach(dot => {
+        dot.addEventListener('click', (e) => {
+          const slideIndex = parseInt(e.target.getAttribute('data-slide-to'));
+          this.goToSlide(slideIndex);
+        });
+      });
+
+      // 左右箭头点击
+      const prevBtn = document.getElementById('prev-btn');
+      const nextBtn = document.getElementById('next-btn');
+      
+      if (prevBtn) {
+        prevBtn.addEventListener('click', () => this.prevSlide());
+      }
+      
+      if (nextBtn) {
+        nextBtn.addEventListener('click', () => this.nextSlide());
+      }
+
+      // 鼠标悬停暂停自动播放
+      const carousel = document.getElementById('carousel');
+      if (carousel) {
+        carousel.addEventListener('mouseenter', () => this.stopAutoPlay());
+        carousel.addEventListener('mouseleave', () => {
+          if (this.autoPlay) {
+            this.startAutoPlay();
+          }
+        });
+      }
+    }
+
+    goToSlide(index) {
+      if (index < 0 || index >= this.totalSlides) return;
+      
+      // 隐藏当前幻灯片
+      const currentSlideEl = document.querySelector(`[data-slide="${this.currentSlide}"]`);
+      if (currentSlideEl) {
+        currentSlideEl.classList.remove('opacity-100');
+        currentSlideEl.classList.add('opacity-0');
+      }
+
+      // 更新当前导航点
+      const currentDot = document.querySelector(`[data-slide-to="${this.currentSlide}"]`);
+      if (currentDot) {
+        currentDot.classList.remove('bg-white');
+        currentDot.classList.add('bg-white', 'bg-opacity-50');
+      }
+
+      // 显示新幻灯片
+      this.currentSlide = index;
+      const newSlideEl = document.querySelector(`[data-slide="${this.currentSlide}"]`);
+      if (newSlideEl) {
+        newSlideEl.classList.remove('opacity-0');
+        newSlideEl.classList.add('opacity-100');
+      }
+
+      // 更新新导航点
+      const newDot = document.querySelector(`[data-slide-to="${this.currentSlide}"]`);
+      if (newDot) {
+        newDot.classList.remove('bg-opacity-50');
+        newDot.classList.add('bg-white');
+      }
+    }
+
+    nextSlide() {
+      const nextIndex = (this.currentSlide + 1) % this.totalSlides;
+      this.goToSlide(nextIndex);
+    }
+
+    prevSlide() {
+      const prevIndex = (this.currentSlide - 1 + this.totalSlides) % this.totalSlides;
+      this.goToSlide(prevIndex);
+    }
+
+    startAutoPlay() {
+      this.stopAutoPlay();
+      this.autoPlayTimer = setInterval(() => {
+        this.nextSlide();
+      }, this.interval);
+    }
+
+    stopAutoPlay() {
+      if (this.autoPlayTimer) {
+        clearInterval(this.autoPlayTimer);
+        this.autoPlayTimer = null;
+      }
+    }
+  }
+
+  // 初始化轮播图
+  document.addEventListener('DOMContentLoaded', () => {
+    new CarouselComponent();
+  });
+</script>
+
+<style>
+  /* 强制16:9宽高比 */
+  #carousel {
+    aspect-ratio: 16/9;
+    width: 100%;
+    height: auto;
+  }
+
+  /* 确保在小屏幕上也保持合理的最小高度 */
+  @media (max-width: 768px) {
+    #carousel {
+      min-height: 200px;
+    }
+  }
+
+  @media (min-width: 769px) {
+    #carousel {
+      min-height: 250px;
+    }
+  }
+
+  /* 平滑过渡效果 */
+  [data-slide] {
+    transition: opacity 0.5s ease-in-out;
+  }
+
+  /* 导航点悬停效果 */
+  [data-slide-to]:hover {
+    transform: scale(1.2);
+  }
+
+  /* 箭头按钮悬停效果 */
+  #prev-btn:hover,
+  #next-btn:hover {
+    transform: translateY(-50%) scale(1.1);
+  }
+</style>

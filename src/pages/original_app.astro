@@ -1,0 +1,166 @@
+---
+import Layout from '../layouts/Layout.astro';
+import SoftwareListByTags from '../components/software/SoftwareListByTags.astro';
+import { initializeApiClient } from '../lib/api';
+import { apiConfig } from '../lib/config';
+
+// 初始化 API 客户端
+initializeApiClient(apiConfig);
+
+const title = '原创软件';
+const description = '独立开发者和团队精心打造的原创软件作品，创新实用，值得体验';
+const tags = 'original_app';
+---
+
+<Layout title={title} description={description}>
+  <!-- 页面头部 -->
+  <section class="bg-gradient-to-r from-green-600 to-green-800 text-white py-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center">
+        <div class="flex justify-center mb-4">
+          <div class="bg-white/20 p-4 rounded-full">
+            <span class="text-4xl">🎨</span>
+          </div>
+        </div>
+        <h1 class="text-4xl font-bold mb-4">{title}</h1>
+        <p class="text-xl text-green-100 max-w-3xl mx-auto">
+          {description}
+        </p>
+        <div class="mt-6 flex justify-center">
+          <div class="bg-white/20 rounded-full px-4 py-2">
+            <span class="text-sm font-medium">独立开发 · 原创作品</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 特色介绍 -->
+  <section class="py-12 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div class="text-center">
+          <div class="bg-green-100 p-3 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+            <span class="text-2xl">💡</span>
+          </div>
+          <h3 class="text-lg font-semibold text-gray-900 mb-2">创新设计</h3>
+          <p class="text-gray-600">独特的创意和设计理念，带来全新体验</p>
+        </div>
+        <div class="text-center">
+          <div class="bg-blue-100 p-3 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+            <span class="text-2xl">🛠️</span>
+          </div>
+          <h3 class="text-lg font-semibold text-gray-900 mb-2">精心打造</h3>
+          <p class="text-gray-600">每一个细节都经过精心设计和优化</p>
+        </div>
+        <div class="text-center">
+          <div class="bg-purple-100 p-3 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+            <span class="text-2xl">🚀</span>
+          </div>
+          <h3 class="text-lg font-semibold text-gray-900 mb-2">持续更新</h3>
+          <p class="text-gray-600">开发者持续维护，功能不断完善</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 软件列表 -->
+  <section class="py-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <SoftwareListByTags
+        title="原创软件作品"
+        description="独立开发者和团队的精心之作，每一款都值得体验"
+        tags={tags}
+        limit={24}
+        sortBy="updatedAt"
+        sortOrder="desc"
+        showViewAll={false}
+        class="w-full"
+      />
+    </div>
+  </section>
+
+  <!-- 开发者支持 -->
+  <section class="py-12 bg-green-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-8">
+        <h2 class="text-3xl font-bold text-gray-900 mb-4">支持独立开发者</h2>
+        <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+          这些软件都是独立开发者和小团队的心血之作，您的使用和反馈是对他们最大的支持
+        </p>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div class="bg-white rounded-lg p-6 shadow-sm">
+          <h3 class="text-lg font-semibold text-gray-900 mb-3">如何支持开发者</h3>
+          <ul class="space-y-2 text-gray-600">
+            <li class="flex items-center">
+              <span class="text-green-500 mr-2">✓</span>
+              下载使用并分享给朋友
+            </li>
+            <li class="flex items-center">
+              <span class="text-green-500 mr-2">✓</span>
+              提供使用反馈和建议
+            </li>
+            <li class="flex items-center">
+              <span class="text-green-500 mr-2">✓</span>
+              在社交媒体上推荐
+            </li>
+            <li class="flex items-center">
+              <span class="text-green-500 mr-2">✓</span>
+              参与软件的测试和改进
+            </li>
+          </ul>
+        </div>
+        
+        <div class="bg-white rounded-lg p-6 shadow-sm">
+          <h3 class="text-lg font-semibold text-gray-900 mb-3">成为开发者</h3>
+          <p class="text-gray-600 mb-4">
+            如果您也是开发者，欢迎提交您的原创作品到我们的平台
+          </p>
+          <div class="flex space-x-4">
+            <a href="/software" class="btn btn-outline">
+              了解更多
+            </a>
+            <a href="/search" class="btn btn-primary">
+              提交作品
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<script>
+  import { initializeApiClient, getApiClient } from '../lib/api';
+  import { apiConfig } from '../lib/config';
+
+  // 初始化 API 客户端
+  initializeApiClient(apiConfig);
+
+  // 页面加载完成后的处理
+  document.addEventListener('DOMContentLoaded', () => {
+    console.log('原创软件页面已加载');
+
+    // 设置全局API客户端
+    window.apiClient = getApiClient();
+
+    // 可以在这里添加页面特定的交互逻辑
+    // 比如统计页面访问量、用户行为追踪等
+  });
+</script>
+
+<style>
+  .btn {
+    @apply inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 transition-colors;
+  }
+
+  .btn-primary {
+    @apply text-white bg-green-600 hover:bg-green-700 focus:ring-green-500;
+  }
+
+  .btn-outline {
+    @apply text-green-700 bg-white border-green-300 hover:bg-green-50 focus:ring-green-500;
+  }
+</style>
