@@ -90,7 +90,7 @@
    VITE_API_BASE_URL=https://api-g.lacs.cc
    VITE_API_KEY=your-api-key-here
    VITE_APP_TITLE=APPFUN
-   VITE_APP_DESCRIPTION=基于 LACS API 的APPFUN
+   VITE_APP_DESCRIPTION=APPFUN.FUN,APP TOO FUN,有趣软件
    ```
 
 4. **启动开发服务器**

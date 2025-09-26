@@ -36,7 +36,7 @@ export const apiConfig = {
  */
 export const appConfig = {
   title: import.meta.env.VITE_APP_TITLE || 'APPFUN',
-  description: import.meta.env.VITE_APP_DESCRIPTION || '基于 LACS API 的APPFUN',
+  description: import.meta.env.VITE_APP_DESCRIPTION || 'APPFUN.FUN,APP TOO FUN,有趣软件',
   version: '1.0.0',
   author: 'LACS Team',
   
