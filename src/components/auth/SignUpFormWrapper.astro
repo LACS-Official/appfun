@@ -25,11 +25,26 @@
 </div>
 
 <script>
+  // 扩展Window接口
+  interface Window {
+    authUtils?: {
+      isLoggedIn: () => boolean;
+    };
+    authManager?: {
+      getAuthState: () => any;
+      signUp: (email: string, password: string) => Promise<{ success: boolean; error?: string; user?: any }>;
+    };
+    authStatusIndicator?: {
+      showCustomMessage: (message: string, type: string) => void;
+    };
+  }
+
   // 使用纯 JavaScript 创建注册表单
   document.addEventListener('DOMContentLoaded', () => {
     // 检查用户是否已登录，如果已登录则直接跳转到主页
-    if (typeof window !== 'undefined' && window.authUtils && typeof window.authUtils.isLoggedIn === 'function') {
-      if (window.authUtils.isLoggedIn()) {
+    if (typeof window !== 'undefined' && (window as any).authUtils && typeof (window as any).authUtils.isLoggedIn === 'function') {
+      const authUtils = (window as any).authUtils;
+      if (authUtils.isLoggedIn()) {
         console.log('用户已登录，重定向到主页');
         window.location.href = '/';
         return;
@@ -42,8 +57,9 @@
       const warning = document.getElementById('config-warning');
 
       // 再次检查登录状态（防止状态恢复延迟）
-      if (typeof window !== 'undefined' && window.authUtils && typeof window.authUtils.isLoggedIn === 'function') {
-        if (window.authUtils.isLoggedIn()) {
+      if (typeof window !== 'undefined' && (window as any).authUtils && typeof (window as any).authUtils.isLoggedIn === 'function') {
+        const authUtils = (window as any).authUtils;
+        if (authUtils.isLoggedIn()) {
           console.log('用户已登录（延迟检查），重定向到主页');
           window.location.href = '/';
           return;
@@ -226,8 +242,9 @@
 
               // 邀请码验证通过，开始注册
               // 检查 authManager 是否存在 signUp 方法
-              if (typeof window !== 'undefined' && window.authManager && typeof window.authManager.signUp === 'function') {
-                const result = await window.authManager.signUp(email, password);
+              const authManager = (window as any).authManager;
+              if (typeof window !== 'undefined' && authManager && typeof authManager.signUp === 'function') {
+                const result = await authManager.signUp(email, password);
 
                 if (result.success && result.user) {
                   // 注册成功，标记邀请码为已使用
@@ -248,8 +265,9 @@
                   }
 
                   // 显示成功消息
-                  if (window.authStatusIndicator) {
-                    window.authStatusIndicator.showCustomMessage('注册成功！请检查邮箱确认', 'success');
+                  const statusIndicator = (window as any).authStatusIndicator;
+                  if (statusIndicator) {
+                    statusIndicator.showCustomMessage('注册成功！请检查邮箱确认', 'success');
                   }
 
                   // 跳转到成功页面

@@ -319,8 +319,13 @@ export const downloadAuthManager = DownloadAuthManager.getInstance();
 // 全局类型声明
 declare global {
   interface Window {
-    authManager: AuthManager;
-    downloadAuthManager: DownloadAuthManager;
+    authManager: {
+      getAuthState: () => any;
+      resetPassword: (email: string) => Promise<{ success: boolean; error?: string | undefined; }>;
+      isLoggedIn: () => boolean;
+    };
+    authUtils?: any;
     showToast?: (message: string, type?: string, duration?: number) => void;
+    downloadAuthManager?: DownloadAuthManager;
   }
 }

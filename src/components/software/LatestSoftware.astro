@@ -74,6 +74,14 @@ const {
 <script>
   import { getApiClient } from '../../lib/api';
 
+  // 扩展Window接口
+  interface Window {
+    initializeDownloadButton?: (button: HTMLElement) => void;
+  }
+
+  // 类型断言
+  declare const window: Window & typeof globalThis;
+
   class LatestSoftwareComponent {
     private container: HTMLElement | null = null;
     private loadingElement: HTMLElement | null = null;
@@ -251,10 +259,13 @@ const {
     private initializeDownloadButtons(): void {
       // 等待全局下载按钮初始化函数可用
       setTimeout(() => {
-        if (window.initializeDownloadButton) {
-          const downloadButtons = this.container.querySelectorAll('[data-download-url]');
+        const initFn = window.initializeDownloadButton;
+        if (typeof initFn === 'function') {
+          const downloadButtons = this.container?.querySelectorAll('[data-download-url]') || [];
           downloadButtons.forEach(button => {
-            window.initializeDownloadButton(button);
+            if (button instanceof HTMLElement) {
+              initFn(button);
+            }
           });
         }
       }, 100);

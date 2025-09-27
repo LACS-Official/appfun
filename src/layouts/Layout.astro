@@ -113,6 +113,15 @@ const fullTitle = title === appConfig.title ? title : `${title} - ${appConfig.ti
       import { supabaseAuthManager as authManager } from '../lib/supabase-auth';
       import { appConfig } from '../lib/config';
 
+      // 扩展Window接口
+      interface Window {
+        authManager: typeof authManager;
+        appConfig: typeof appConfig;
+        showLoading: () => void;
+        hideLoading: () => void;
+        showToast: (message: string, type?: 'success'|'error'|'warning'|'info', duration?: number) => void;
+      }
+
       // Remove FOUC prevention
       document.addEventListener('DOMContentLoaded', () => {
         document.documentElement.style.visibility = 'visible';
@@ -126,7 +135,7 @@ const fullTitle = title === appConfig.title ? title : `${title} - ${appConfig.ti
       // Global loading indicator
       let loadingCount = 0;
       
-      window.showLoading = () => {
+      (window as any).showLoading = () => {
         loadingCount++;
         const indicator = document.getElementById('loading-indicator');
         if (indicator) {
@@ -134,7 +143,7 @@ const fullTitle = title === appConfig.title ? title : `${title} - ${appConfig.ti
         }
       };
       
-      window.hideLoading = () => {
+      (window as any).hideLoading = () => {
         loadingCount = Math.max(0, loadingCount - 1);
         if (loadingCount === 0) {
           const indicator = document.getElementById('loading-indicator');
@@ -191,13 +200,15 @@ const fullTitle = title === appConfig.title ? title : `${title} - ${appConfig.ti
       
       // Smooth scroll for anchor links
       document.addEventListener('click', (e) => {
-        const target = e.target;
-        if (target.tagName === 'A' && target.getAttribute('href')?.startsWith('#')) {
+        const target = e.target as HTMLElement | null;
+        if (target?.tagName === 'A' && target.getAttribute('href')?.startsWith('#')) {
           e.preventDefault();
-          const id = target.getAttribute('href').substring(1);
-          const element = document.getElementById(id);
-          if (element) {
-            element.scrollIntoView({ behavior: 'smooth' });
+          const id = target.getAttribute('href')?.substring(1);
+          if (id) {
+            const element = document.getElementById(id);
+            if (element) {
+              element.scrollIntoView({ behavior: 'smooth' });
+            }
           }
         }
       });

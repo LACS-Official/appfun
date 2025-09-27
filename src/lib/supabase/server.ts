@@ -43,24 +43,6 @@ export function createClient(cookies: AstroCookies) {
             }
           }
 
-          // 如果有 getAll 方法，也尝试使用它
-          if (typeof cookies.getAll === 'function') {
-            try {
-              const allFromGetAll = cookies.getAll();
-              for (const cookie of allFromGetAll) {
-                if (cookie.name.startsWith('sb-') &&
-                    !allCookies.some(c => c.name === cookie.name)) {
-                  allCookies.push({
-                    name: cookie.name,
-                    value: cookie.value
-                  });
-                }
-              }
-            } catch (error) {
-              console.debug('getAll method failed:', error);
-            }
-          }
-
           return allCookies;
         } catch (error) {
           console.warn('Failed to get cookies:', error);
@@ -83,4 +65,28 @@ export function createClient(cookies: AstroCookies) {
       },
     },
   });
+}
+
+/**
+ * 从Cookie中获取所有Supabase相关的Cookie
+ */
+export function getSupabaseCookies(cookies: AstroCookies): Record<string, string> {
+  const supabaseCookies: Record<string, string> = {};
+  
+  // 检查cookies是否有getAll方法，如果没有则使用替代方法
+  try {
+    // 直接使用cookies.get获取所需的Supabase cookie
+    const cookieKeys = ['sb-access-token', 'sb-refresh-token', 'sb-account'];
+    
+    for (const key of cookieKeys) {
+      const value = cookies.get(key);
+      if (value && typeof value === 'object' && 'value' in value) {
+        supabaseCookies[key] = value.value;
+      }
+    }
+  } catch (error) {
+    console.error('获取Supabase cookies失败:', error);
+  }
+  
+  return supabaseCookies;
 }

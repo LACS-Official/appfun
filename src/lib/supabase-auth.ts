@@ -147,7 +147,7 @@ export class SupabaseAuthManager {
       }
 
       // 监听认证状态变化
-      this.supabase.auth.onAuthStateChange((event, session) => {
+      this.supabase.auth.onAuthStateChange((event: string, session: { user?: any } | null) => {
         console.log('认证状态变化:', event, session?.user?.email);
 
         if (session?.user) {
@@ -203,10 +203,15 @@ export class SupabaseAuthManager {
    */
   private transformSupabaseUser(supabaseUser: SupabaseUser): User {
     return {
-      id: supabaseUser.id,
+      id: typeof supabaseUser.id === 'string' ? parseInt(supabaseUser.id, 10) : supabaseUser.id,
+      auth_user_id: supabaseUser.id,
       username: supabaseUser.user_metadata?.username || supabaseUser.email?.split('@')[0] || 'User',
-      email: supabaseUser.email,
-      avatar: supabaseUser.user_metadata?.avatar_url,
+      email: supabaseUser.email || '',
+      avatar: supabaseUser.user_metadata?.avatar_url || '',
+      full_name: '',
+      email_confirmed_at: null,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
       isLoggedIn: true,
       loginTime: Date.now(),
       expiresAt: Date.now() + (24 * 60 * 60 * 1000), // 24小时过期

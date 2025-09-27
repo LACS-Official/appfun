@@ -54,10 +54,6 @@ export class ApiClient {
       ...options.headers,
     };
 
-    // 只在有API密钥时才添加
-    if (this.config.apiKey) {
-      headers['X-API-Key'] = this.config.apiKey;
-    }
 
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), this.config.timeout);

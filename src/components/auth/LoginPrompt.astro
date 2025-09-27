@@ -99,6 +99,16 @@ const {
   import { downloadAuthManager } from '../../lib/auth';
   import { appConfig } from '../../lib/config';
 
+  // 扩展Window接口
+  interface Window {
+    crossDomainAuthManager?: {
+      startLogin: (returnUrl: string) => void;
+    };
+    loginPromptManager?: any;
+    showLoginPrompt?: (message?: string, useModal?: boolean) => void;
+    hideLoginPrompt?: () => void;
+  }
+
   class LoginPromptManager {
     private modal: HTMLElement | null = null;
     private backdrop: HTMLElement | null = null;
@@ -224,8 +234,10 @@ const {
       this.hideModal();
 
       // 使用跨域认证管理器启动登录流程
-      if (typeof window !== 'undefined' && appConfig.auth.crossDomain && appConfig.auth.crossDomain.enabled && window.crossDomainAuthManager) {
-        window.crossDomainAuthManager.startLogin(window.location.href);
+      const crossDomainAuthManager = (window as any).crossDomainAuthManager;
+      // 检查是否有跨域认证管理器
+      if (typeof window !== 'undefined' && crossDomainAuthManager && typeof crossDomainAuthManager.startLogin === 'function') {
+        crossDomainAuthManager.startLogin(window.location.href);
       } else {
         // 降级处理：直接跳转到登录页面
         const currentUrl = window.location.href;
@@ -241,7 +253,7 @@ const {
 
   // 导出到全局
   if (typeof window !== 'undefined') {
-    window.loginPromptManager = loginPromptManager;
+    (window as any).loginPromptManager = loginPromptManager;
 
     // 全局函数
     window.showLoginPrompt = (message?: string, useModal = true) => {
@@ -252,7 +264,7 @@ const {
       }
     };
 
-    window.hideLoginPrompt = () => {
+    (window as any).hideLoginPrompt = () => {
       loginPromptManager.hideModal();
       loginPromptManager.hideInlinePrompt();
     };

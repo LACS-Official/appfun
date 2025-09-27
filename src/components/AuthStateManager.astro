@@ -6,6 +6,38 @@
 ---
 
 <script>
+  // 扩展Window接口
+  interface Window {
+    authUtils?: {
+      getCurrentUser: () => any;
+      isLoggedIn: () => boolean;
+      onAuthStateChange: (callback: (isLoggedIn: boolean, user: any) => void) => () => void;
+      logout: () => void;
+      getUserDisplayName: (user: any) => string;
+    };
+    authManager?: {
+      getAuthState: () => any;
+      resetPassword: (email: string) => Promise<{ success: boolean; error?: string | undefined; }>;
+      isLoggedIn: () => boolean;
+      signOut?: () => Promise<{ success: boolean; error?: string }>;
+    };
+  }
+
+  // 类型断言辅助函数
+  const asHTMLElement = (el: Element | null): HTMLElement | null => 
+    el instanceof HTMLElement ? el : null;
+    
+  const asHTMLImageElement = (el: Element | null): HTMLImageElement | null => 
+    el instanceof HTMLImageElement ? el : null;
+    
+  const asHTMLElementWithStyle = (el: Element | null): HTMLElement | null => {
+    const element = asHTMLElement(el);
+    if (element) {
+      return element; // HTML元素自然有style属性
+    }
+    return null;
+  };
+
   // 等待认证管理器加载完成后再初始化
   async function initializeAuth() {
     try {
@@ -18,7 +50,7 @@
       const cleanup = setupPageAuth();
 
       // 监听认证状态变化
-      const unsubscribe = onAuthStateChange((isLoggedIn, user) => {
+      const unsubscribe = onAuthStateChange((isLoggedIn: boolean, user: any) => {
         console.log('认证状态变化:', { isLoggedIn, user: user ? getUserDisplayName(user) : null });
 
         // 更新页面中的用户信息显示
@@ -41,7 +73,7 @@
       updateUserDisplay(!!currentUser, currentUser);
 
       // 将工具函数设置为全局可用
-      window.authUtils = {
+      (window as any).authUtils = {
         getCurrentUser,
         isLoggedIn: () => !!getCurrentUser(),
         onAuthStateChange,
@@ -70,7 +102,7 @@
   /**
    * 更新页面中的用户信息显示
    */
-  function updateUserDisplay(isLoggedIn, user) {
+  function updateUserDisplay(isLoggedIn: boolean, user: any) {
     // 更新导航栏中的用户信息
     updateNavUserInfo(isLoggedIn, user);
     
@@ -81,7 +113,13 @@
   /**
    * 更新导航栏用户信息
    */
-  function updateNavUserInfo(isLoggedIn, user) {
+  function updateNavUserInfo(isLoggedIn: boolean, user: any) {
+    // 类型断言
+    const getUserDisplayName = (user: any): string => {
+      if (!user) return '';
+      return user.full_name || user.username || user.email || '';
+    };
+
     // 查找导航栏中的用户信息元素
     const userNameElement = document.querySelector('[data-user-name]');
     const userEmailElement = document.querySelector('[data-user-email]');
@@ -106,24 +144,29 @@
       }
       if (userAvatarElement) {
         const avatarUrl = user.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(getUserDisplayName(user))}&background=random`;
-        if (userAvatarElement.tagName === 'IMG') {
-          userAvatarElement.src = avatarUrl;
-        } else {
-          userAvatarElement.style.backgroundImage = `url(${avatarUrl})`;
+        const imgElement = asHTMLImageElement(userAvatarElement);
+        const divElement = asHTMLElement(userAvatarElement);
+        
+        if (imgElement) {
+          imgElement.src = avatarUrl;
+        } else if (divElement) {
+          divElement.style.backgroundImage = `url(${avatarUrl})`;
         }
       }
       
       // 显示/隐藏相关按钮
-      if (loginButton) loginButton.style.display = 'none';
-      if (logoutButton) logoutButton.style.display = 'block';
-      if (userMenu) userMenu.style.display = 'block';
+      if (loginButton) asHTMLElementWithStyle(loginButton)!.style.display = 'none';
+      if (logoutButton) asHTMLElementWithStyle(logoutButton)!.style.display = 'block';
+      if (userMenu) asHTMLElementWithStyle(userMenu)!.style.display = 'block';
       
       // 显示个人中心链接
       const profileLinks = document.querySelectorAll('[data-profile-link]');
       profileLinks.forEach(link => {
-        link.style.display = 'block';
-        if (link.tagName === 'A' && !link.getAttribute('href')) {
-          link.setAttribute('href', '/profile');
+        if (link instanceof HTMLElement) {
+          link.style.display = 'block';
+          if (link.tagName === 'A' && !link.getAttribute('href')) {
+            link.setAttribute('href', '/profile');
+          }
         }
       });
       
@@ -133,22 +176,27 @@
       if (userEmailElement) userEmailElement.textContent = '';
       if (userIdElement) userIdElement.textContent = '';
       if (userAvatarElement) {
-        if (userAvatarElement.tagName === 'IMG') {
-          userAvatarElement.src = '';
-        } else {
-          userAvatarElement.style.backgroundImage = '';
+        const imgElement = asHTMLImageElement(userAvatarElement);
+        const divElement = asHTMLElement(userAvatarElement);
+        
+        if (imgElement) {
+          imgElement.src = '';
+        } else if (divElement) {
+          divElement.style.backgroundImage = '';
         }
       }
       
       // 显示/隐藏相关按钮
-      if (loginButton) loginButton.style.display = 'block';
-      if (logoutButton) logoutButton.style.display = 'none';
-      if (userMenu) userMenu.style.display = 'none';
+      if (loginButton) asHTMLElementWithStyle(loginButton)!.style.display = 'block';
+      if (logoutButton) asHTMLElementWithStyle(logoutButton)!.style.display = 'none';
+      if (userMenu) asHTMLElementWithStyle(userMenu)!.style.display = 'none';
       
       // 隐藏个人中心链接
       const profileLinks = document.querySelectorAll('[data-profile-link]');
       profileLinks.forEach(link => {
-        link.style.display = 'none';
+        if (link instanceof HTMLElement) {
+          link.style.display = 'none';
+        }
       });
     }
   }
@@ -156,17 +204,23 @@
   /**
    * 更新页面中的登录状态相关元素
    */
-  function updateLoginStateElements(isLoggedIn, user) {
+  function updateLoginStateElements(isLoggedIn: boolean, user: any) {
     // 查找需要登录才显示的元素
     const loginRequiredElements = document.querySelectorAll('[data-require-login]');
     const loggedOutElements = document.querySelectorAll('[data-require-logout]');
     
     loginRequiredElements.forEach(element => {
-      element.style.display = isLoggedIn ? 'block' : 'none';
+      const htmlElement = asHTMLElementWithStyle(element);
+      if (htmlElement) {
+        htmlElement.style.display = isLoggedIn ? 'block' : 'none';
+      }
     });
     
     loggedOutElements.forEach(element => {
-      element.style.display = isLoggedIn ? 'none' : 'block';
+      const htmlElement = asHTMLElementWithStyle(element);
+      if (htmlElement) {
+        htmlElement.style.display = isLoggedIn ? 'none' : 'block';
+      }
     });
     
     // 更新用户特定信息
@@ -176,7 +230,7 @@
       if (isLoggedIn && user && infoType) {
         switch (infoType) {
           case 'name':
-            element.textContent = getUserDisplayName(user);
+            element.textContent = (window as any).authUtils?.getUserDisplayName(user) || '';
             break;
           case 'email':
             element.textContent = user.email || '';
@@ -204,10 +258,13 @@
   /**
    * 处理登出按钮点击
    */
-  function handleLogout() {
+  async function handleLogout() {
     // 使用全局的 authManager 实例
-    if (window.authManager) {
-      window.authManager.signOut().then((result) => {
+    const authManager = window.authManager;
+    // 使用类型断言和更严格的检查来避免TypeScript错误
+    if (authManager && 'signOut' in authManager && typeof authManager.signOut === 'function') {
+      try {
+        const result = await (authManager as any).signOut();
         if (result.success) {
           console.log('登出成功');
           // 重定向到首页或登录页
@@ -216,13 +273,24 @@
           console.error('登出失败:', result.error);
           alert('登出失败，请重试');
         }
-      });
+      } catch (error) {
+        console.error('登出过程发生错误:', error);
+        // 降级处理
+        fallbackLogout();
+      }
     } else {
       // 降级：直接清除本地存储
-      localStorage.removeItem('supabase_auth_data');
-      console.log('登出成功（降级模式）');
-      window.location.href = '/';
+      fallbackLogout();
     }
+  }
+  
+  /**
+   * 降级登出处理
+   */
+  function fallbackLogout() {
+    localStorage.removeItem('supabase_auth_data');
+    console.log('登出成功（降级模式）');
+    window.location.href = '/';
   }
 
   // 绑定登出按钮事件
