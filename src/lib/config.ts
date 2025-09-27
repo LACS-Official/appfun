@@ -8,8 +8,6 @@ interface ImportMetaEnv {
   readonly VITE_API_KEY: string;
   readonly VITE_APP_TITLE: string;
   readonly VITE_APP_DESCRIPTION: string;
-  readonly VITE_ACCOUNT_LOGIN_URL: string;
-  readonly VITE_REQUIRE_LOGIN_FOR_DOWNLOAD: string;
   readonly VITE_DEV_MODE: string;
   readonly VITE_DEBUG: string;
   readonly DEV: boolean;
@@ -88,38 +86,6 @@ export const appConfig = {
     support: 'https://support.lacs.cc',
     github: 'https://github.com/lacs-team',
     website: 'https://lacs.cc',
-    account: 'https://account.lacs.cc',
-  },
-
-  // 认证配置
-  auth: {
-    loginUrl: '/auth/login',
-    signUpUrl: '/auth/sign-up',
-    forgotPasswordUrl: '/auth/forgot-password',
-    requireLoginForDownload: import.meta.env.VITE_REQUIRE_LOGIN_FOR_DOWNLOAD === 'true',
-    sessionStorageKey: 'supabase-auth-session',
-    returnUrlParam: 'redirect',
-    // 添加微信小程序备案相关配置
-    wechatMiniprogram: {
-      // 微信小程序环境中使用特定的登录方式
-      enableWechatLogin: true,
-      // 备案审核模式 - 在审核期间启用特殊处理
-     备案审核Mode: false,
-      // 审核期间显示的提示信息
-      reviewNotice: '系统正在维护中，请稍后再试',
-      // 允许匿名访问的内容（备案审核要求）
-      allowAnonymousPaths: [
-        '/',
-        '/about',
-        '/software',
-        '/software/*',
-        '/categories',
-        '/categories/*',
-        '/tags',
-        '/tags/*',
-        '/search'
-      ]
-    }
   },
 
   // 开发配置
@@ -159,8 +125,6 @@ export const storageKeys = {
   cache: 'app-cache',
   recentSearches: 'recent-searches',
   favorites: 'user-favorites',
-  userSession: 'lacs-user-session',
-  returnUrl: 'lacs-return-url',
 } as const;
 
 /**
@@ -188,7 +152,6 @@ export const successMessages = {
   uploaded: '上传成功',
   downloaded: '下载成功',
   activated: '激活成功',
-  verified: '验证成功',
 } as const;
 
 /**

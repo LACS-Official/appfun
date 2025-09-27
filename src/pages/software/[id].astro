@@ -613,27 +613,16 @@ if (!id || isNaN(Number(id))) {
 
   // 初始化下载按钮
   function initializeDownloadButtons() {
-    // 等待模块加载完成
-    setTimeout(() => {
-      if (window.authManager && window.appConfig) {
-        initDownloadButtonsWithModules();
-      } else {
-        // 如果模块还没加载完成，再等一会
-        setTimeout(initializeDownloadButtons, 1000);
-      }
-    }, 100);
+    // 直接初始化，不再依赖authManager
+    initDownloadButtonsWithModules();
   }
 
   function initDownloadButtonsWithModules() {
-    const { authManager } = window;
-    const { appConfig } = window;
-
     // 下载按钮管理器类
     class DownloadButtonManager {
       constructor(button) {
         this.button = button;
         this.downloadUrl = button.dataset.downloadUrl || '';
-        this.showLoginPrompt = button.dataset.showLoginPrompt === 'true';
         this.downloadText = button.querySelector('.download-text');
         this.loginPromptText = button.querySelector('.login-prompt-text');
 
@@ -643,56 +632,15 @@ if (!id || isNaN(Number(id))) {
       init() {
         this.updateButtonState();
         this.button.addEventListener('click', (e) => this.handleClick(e));
-
-        // 监听认证状态变化
-        if (authManager && authManager.addListener) {
-          authManager.addListener(() => {
-            this.updateButtonState();
-          });
-        }
-
-        // 监听认证状态变化事件
-        window.addEventListener('authStateChanged', () => {
-          this.updateButtonState();
-        });
       }
 
       updateButtonState() {
-        // 检查认证系统是否可用
-        if (authManager && authManager.getAuthState) {
-          const authState = authManager.getAuthState();
-          if (authState.error && authState.error.includes('Supabase 未配置')) {
-            // Supabase 未配置，显示配置提示
-            this.setConfigWarningState();
-            return;
-          }
-        }
-
-        const isLoggedIn = authManager ? authManager.isLoggedIn() : false;
-        const requireLogin = appConfig ? appConfig.auth.requireLoginForDownload : false;
-
-        if (requireLogin && !isLoggedIn) {
-          this.setDisabledState();
-        } else {
-          this.setEnabledState();
-        }
-      }
-
-      setDisabledState() {
-        this.button.disabled = false; // 保持可点击状态
-        this.button.classList.remove('bg-blue-600', 'hover:bg-blue-700');
-        this.button.classList.add('bg-orange-500', 'hover:bg-orange-600', 'text-white');
-
-        if (this.downloadText && this.loginPromptText) {
-          this.downloadText.classList.add('hidden');
-          this.loginPromptText.classList.remove('hidden');
-        }
-
-        this.button.title = '点击登录后下载';
+        this.setEnabledState();
       }
 
       setEnabledState() {
         this.button.disabled = false;
+
         this.button.classList.remove('bg-orange-500', 'hover:bg-orange-600', 'bg-gray-400', 'hover:bg-gray-500');
         this.button.classList.add('bg-blue-600', 'hover:bg-blue-700', 'text-white');
 
@@ -704,52 +652,9 @@ if (!id || isNaN(Number(id))) {
         this.button.removeAttribute('title');
       }
 
-      setConfigWarningState() {
-        this.button.disabled = true;
-        this.button.classList.remove('bg-blue-600', 'hover:bg-blue-700', 'bg-orange-500', 'hover:bg-orange-600');
-        this.button.classList.add('bg-gray-400', 'hover:bg-gray-500', 'text-white', 'cursor-not-allowed');
-
-        if (this.downloadText && this.loginPromptText) {
-          this.downloadText.classList.add('hidden');
-          this.loginPromptText.classList.remove('hidden');
-          this.loginPromptText.textContent = '需要配置';
-        }
-
-        this.button.title = '认证系统未配置，请先配置 Supabase';
-      }
-
       handleClick(event) {
         event.preventDefault();
-
-        // 检查认证系统是否可用
-        if (authManager && authManager.getAuthState) {
-          const authState = authManager.getAuthState();
-          if (authState.error && authState.error.includes('Supabase 未配置')) {
-            // 跳转到配置页面
-            window.location.href = '/auth/setup';
-            return;
-          }
-        }
-
-        const isLoggedIn = authManager ? authManager.isLoggedIn() : false;
-        const requireLogin = appConfig ? appConfig.auth.requireLoginForDownload : false;
-
-        if (requireLogin && !isLoggedIn) {
-          if (this.showLoginPrompt) {
-            this.startLoginFlow();
-          }
-          return;
-        }
-
         this.performDownload();
-      }
-
-      startLoginFlow() {
-        if (appConfig) {
-          const returnUrl = encodeURIComponent(window.location.href);
-          const loginUrl = `${appConfig.auth.loginUrl}?${appConfig.auth.returnUrlParam}=${returnUrl}`;
-          window.location.href = loginUrl;
-        }
       }
 
       performDownload() {

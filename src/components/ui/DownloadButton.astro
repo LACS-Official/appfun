@@ -1,58 +1,32 @@
 ---
-/**
- * 智能下载按钮组件
- * 根据用户登录状态动态显示下载按钮的可用性
- */
+// 导入组件所需的样式和依赖
+import { cn } from '../../lib/utils';
 
-export interface Props {
-  downloadUrl: string;
+// 组件属性定义
+interface DownloadButtonProps {
   text?: string;
+  downloadUrl: string;
   className?: string;
-  size?: 'sm' | 'md' | 'lg';
-  variant?: 'primary' | 'secondary' | 'outline';
-  disabled?: boolean;
-  showLoginPrompt?: boolean;
 }
 
+// 默认值设置
 const {
-  downloadUrl,
   text = '下载',
+  downloadUrl,
   className = '',
-  size = 'md',
-  variant = 'primary',
-  disabled = false,
-  showLoginPrompt = true,
 } = Astro.props;
 
-// 生成唯一ID
-const buttonId = `download-btn-${Math.random().toString(36).substr(2, 9)}`;
-
-// 构建CSS类名
-const sizeClasses = {
-  sm: 'px-3 py-1 text-sm',
-  md: 'px-4 py-2 text-base',
-  lg: 'px-6 py-3 text-lg',
-};
-
-const variantClasses = {
-  primary: 'bg-blue-600 hover:bg-blue-700 text-white',
-  secondary: 'bg-gray-600 hover:bg-gray-700 text-white',
-  outline: 'border border-blue-600 text-blue-600 hover:bg-blue-50',
-};
-
-const disabledClasses = 'opacity-50 cursor-not-allowed bg-gray-400 text-gray-600';
-const baseClasses = 'inline-flex items-center justify-center font-medium rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500';
-
-const buttonClasses = `${baseClasses} ${sizeClasses[size]} ${disabled ? disabledClasses : variantClasses[variant]} ${className}`;
+// 组合类名
+const buttonClassName = cn(
+  'inline-flex items-center justify-center px-4 py-2 rounded-md font-medium text-white bg-blue-600 hover:bg-blue-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50',
+  className
+);
 ---
 
-<button
-  id={buttonId}
-  class={buttonClasses}
+<button 
+  class={buttonClassName} 
   data-download-url={downloadUrl}
-  data-show-login-prompt={showLoginPrompt}
-  disabled={disabled}
-  type="button"
+  aria-label="下载软件"
 >
   <!-- 下载图标 -->
   <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -61,163 +35,60 @@ const buttonClasses = `${baseClasses} ${sizeClasses[size]} ${disabled ? disabled
   
   <!-- 按钮文本 -->
   <span class="download-text">{text}</span>
-  
-  <!-- 登录提示文本（隐藏状态） -->
-  <span class="login-prompt-text hidden">需要登录</span>
 </button>
 
 <script>
-  import { authManager } from '../../lib/auth';
   import { appConfig } from '../../lib/config';
-  import { crossDomainAuthManager } from '../../lib/cross-domain-auth';
 
   class DownloadButtonManager {
     private button: HTMLButtonElement;
     private downloadUrl: string;
-    private showLoginPrompt: boolean;
     private originalText: string;
     private downloadText: HTMLElement;
-    private loginPromptText: HTMLElement;
 
     constructor(button: HTMLButtonElement) {
       this.button = button;
       this.downloadUrl = button.dataset.downloadUrl || '';
-      this.showLoginPrompt = button.dataset.showLoginPrompt === 'true';
       this.downloadText = button.querySelector('.download-text') as HTMLElement;
-      this.loginPromptText = button.querySelector('.login-prompt-text') as HTMLElement;
       this.originalText = this.downloadText.textContent || '下载';
 
       this.init();
     }
 
     private init(): void {
-      // 初始化按钮状态
-      this.updateButtonState();
-
       // 绑定点击事件
       this.button.addEventListener('click', (e) => this.handleClick(e));
-
-      // 监听认证状态变化
-      this.setupAuthStateListener();
-
-      // 监听跨域登录事件
-      this.setupCrossDomainLoginListener();
-    }
-
-    private updateButtonState(): void {
-      const isLoggedIn = authManager.isLoggedIn();
-      const requireLogin = appConfig.auth.requireLoginForDownload;
-
-      if (requireLogin && !isLoggedIn) {
-        // 需要登录但未登录：禁用按钮
-        this.setDisabledState();
-      } else {
-        // 不需要登录或已登录：启用按钮
-        this.setEnabledState();
-      }
-    }
-
-    private setDisabledState(): void {
-      this.button.disabled = true;
-      this.button.classList.add('opacity-50', 'cursor-not-allowed', 'bg-gray-400', 'text-gray-600');
-      this.button.classList.remove('bg-blue-600', 'hover:bg-blue-700', 'text-white');
       
-      // 显示登录提示文本
-      if (this.downloadText && this.loginPromptText) {
-        this.downloadText.classList.add('hidden');
-        this.loginPromptText.classList.remove('hidden');
-      }
-
-      // 添加提示属性
-      this.button.title = '需要登录才能下载';
+      // 初始化按钮状态（默认启用）
+      this.setEnabledState();
     }
 
     private setEnabledState(): void {
       this.button.disabled = false;
       this.button.classList.remove('opacity-50', 'cursor-not-allowed', 'bg-gray-400', 'text-gray-600');
-      this.button.classList.add('bg-blue-600', 'hover:bg-blue-700', 'text-white');
-      
-      // 显示下载文本
-      if (this.downloadText && this.loginPromptText) {
-        this.downloadText.classList.remove('hidden');
-        this.loginPromptText.classList.add('hidden');
-      }
-
-      // 移除提示属性
-      this.button.removeAttribute('title');
     }
 
     private handleClick(event: Event): void {
       event.preventDefault();
-
-      const isLoggedIn = authManager.isLoggedIn();
-      const requireLogin = appConfig.auth.requireLoginForDownload;
-
-      if (requireLogin && !isLoggedIn) {
-        // 需要登录但未登录：显示登录提示或启动登录流程
-        if (this.showLoginPrompt) {
-          this.startLoginFlow();
-        }
-        return;
-      }
-
-      // 允许下载
       this.performDownload();
-    }
-
-    private startLoginFlow(): void {
-      if (appConfig.auth.crossDomain.enabled) {
-        // 使用跨域认证
-        crossDomainAuthManager.startLogin(window.location.href);
-      } else if (window.showLoginPrompt) {
-        // 使用登录提示模态框
-        window.showLoginPrompt('需要登录才能下载', true);
-      } else {
-        // 直接跳转到登录页面
-        const returnUrl = encodeURIComponent(window.location.href);
-        const loginUrl = `${appConfig.auth.loginUrl}?${appConfig.auth.returnUrlParam}=${returnUrl}`;
-        window.location.href = loginUrl;
-      }
     }
 
     private performDownload(): void {
       if (this.downloadUrl) {
-        // 在新标签页中打开下载链接
         window.open(this.downloadUrl, '_blank', 'noopener,noreferrer');
-        
-        // 触发下载事件
+
         window.dispatchEvent(new CustomEvent('downloadStarted', {
           detail: { url: this.downloadUrl }
         }));
       }
     }
-
-    private setupAuthStateListener(): void {
-      // 监听认证状态变化
-      authManager.addListener((state) => {
-        this.updateButtonState();
-      });
-    }
-
-    private setupCrossDomainLoginListener(): void {
-      // 监听跨域登录成功事件
-      window.addEventListener('crossDomainLoginSuccess', () => {
-        this.updateButtonState();
-      });
-
-      // 监听跨域登出事件
-      window.addEventListener('crossDomainLogout', () => {
-        this.updateButtonState();
-      });
-    }
   }
 
   // 初始化所有下载按钮
   document.addEventListener('DOMContentLoaded', () => {
-    const downloadButtons = document.querySelectorAll('[data-download-url]') as NodeListOf<HTMLButtonElement>;
-    
+    const downloadButtons = document.querySelectorAll('[data-download-url]');
     downloadButtons.forEach(button => {
-      new DownloadButtonManager(button);
+      new DownloadButtonManager(button as HTMLButtonElement);
     });
   });
 
@@ -228,19 +99,7 @@ const buttonClasses = `${baseClasses} ${sizeClasses[size]} ${disabled ? disabled
 </script>
 
 <style>
-  /* 确保按钮在不同状态下的过渡效果 */
-  button[data-download-url] {
-    transition: all 0.2s ease-in-out;
-  }
-
-  /* 禁用状态的特殊样式 */
-  button[data-download-url]:disabled {
-    transform: none !important;
-  }
-
-  /* 悬停效果 */
-  button[data-download-url]:not(:disabled):hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  .download-text {
+    display: inline;
   }
 </style>

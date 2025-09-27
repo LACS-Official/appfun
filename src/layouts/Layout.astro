@@ -1,9 +1,6 @@
 ---
 import Header from '../components/layout/Header.astro';
 import Footer from '../components/layout/Footer.astro';
-import LoginPrompt from '../components/auth/LoginPrompt.astro';
-import AuthStatusIndicator from '../components/auth/AuthStatusIndicator.astro';
-import AuthStateManager from '../components/AuthStateManager.astro';
 import { appConfig } from '../lib/config';
 import '../styles/global.css';
 
@@ -76,12 +73,6 @@ const fullTitle = title === appConfig.title ? title : `${title} - ${appConfig.ti
   </head>
   
   <body class="min-h-screen bg-gray-50 text-gray-900">
-    <!-- 认证状态管理器 -->
-    <AuthStateManager />
-
-    <!-- 认证状态指示器 -->
-    <AuthStatusIndicator />
-
     <!-- Skip to main content link for accessibility -->
     <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-primary-600 text-white px-4 py-2 rounded-md z-50">
       跳转到主要内容
@@ -98,9 +89,6 @@ const fullTitle = title === appConfig.title ? title : `${title} - ${appConfig.ti
     <!-- Footer -->
     <Footer />
 
-    <!-- Login Prompt Component -->
-    <LoginPrompt />
-
     <!-- Loading indicator -->
     <div id="loading-indicator" class="fixed top-0 left-0 w-full h-1 bg-primary-600 transform scale-x-0 transition-transform duration-300 z-50"></div>
 
@@ -110,12 +98,10 @@ const fullTitle = title === appConfig.title ? title : `${title} - ${appConfig.ti
     <!-- Global Scripts -->
     <script>
       // 导入认证模块
-      import { supabaseAuthManager as authManager } from '../lib/supabase-auth';
       import { appConfig } from '../lib/config';
 
       // 扩展Window接口
       interface Window {
-        authManager: typeof authManager;
         appConfig: typeof appConfig;
         showLoading: () => void;
         hideLoading: () => void;
@@ -128,7 +114,6 @@ const fullTitle = title === appConfig.title ? title : `${title} - ${appConfig.ti
         document.documentElement.style.opacity = '1';
 
         // 设置全局变量
-        window.authManager = authManager;
         window.appConfig = appConfig;
       });
       
