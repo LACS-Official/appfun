@@ -2,11 +2,7 @@
 import Layout from '../layouts/Layout.astro';
 import DynamicCarousel from '../components/ui/DynamicCarousel.astro';
 import PopularSoftware from '../components/software/PopularSoftware.astro';
-import LatestSoftware from '../components/software/LatestSoftware.astro';
-import OriginalApps from '../components/software/OriginalApps.astro';
-import StudentApps from '../components/software/StudentApps.astro';
 import AllSoftwareGrid from '../components/software/AllSoftwareGrid.astro';
-import { appConfig } from '../lib/config';
 ---
 
 <Layout title="首页" description="发现和下载最新的软件工具">
@@ -151,7 +147,9 @@ import { appConfig } from '../lib/config';
   initializeApiClient(apiConfig);
 
   // 立即设置全局API客户端，确保在DOMContentLoaded之前就可用
-  window.apiClient = getApiClient();
+  if (window) {
+    window.apiClient = getApiClient();
+  }
 
   // 页面加载完成后设置功能
   document.addEventListener('DOMContentLoaded', () => {
@@ -231,8 +229,8 @@ import { appConfig } from '../lib/config';
           if (mobileContainer) mobileContainer.innerHTML = emptyContent;
         }
       }
-    } catch (error) {
-      console.error('加载热门软件失败:', error);
+    } catch (error: any) {
+      console.error('加载热门软件失败:', error?.message);
       const errorContent = '<p class="text-sm text-red-500">加载失败</p>';
       if (container) container.innerHTML = errorContent;
       if (mobileContainer) mobileContainer.innerHTML = errorContent;
@@ -290,8 +288,8 @@ import { appConfig } from '../lib/config';
           if (mobileContainer) mobileContainer.innerHTML = emptyContent;
         }
       }
-    } catch (error) {
-      console.error('加载最新软件失败:', error);
+    } catch (error: any) {
+      console.error('加载最新软件失败:', error?.message);
       const errorContent = '<p class="text-sm text-red-500">加载失败</p>';
       if (container) container.innerHTML = errorContent;
       if (mobileContainer) mobileContainer.innerHTML = errorContent;
@@ -299,7 +297,7 @@ import { appConfig } from '../lib/config';
   }
 
   // 格式化时间
-  function formatTimeAgo(dateString) {
+  function formatTimeAgo(dateString: string): string {
     try {
       const date = new Date(dateString);
       const now = new Date();

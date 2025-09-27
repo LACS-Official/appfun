@@ -2,7 +2,6 @@
 import SoftwareCard from './SoftwareCard.astro';
 import LoadingSpinner from '../ui/LoadingSpinner.astro';
 import ErrorMessage from '../ui/ErrorMessage.astro';
-import type { Software } from '../../types/api';
 
 interface Props {
   title?: string;
@@ -71,33 +70,24 @@ const {
   </div>
 </section>
 
-<script>
+<script is:inline>
   import { getApiClient } from '../../lib/api';
 
-  // 扩展Window接口
-  interface Window {
-    initializeDownloadButton?: (button: HTMLElement) => void;
-  }
-
-  // 类型断言
-  declare const window: Window & typeof globalThis;
-
+  // 移除TypeScript interface声明
+  // 使用普通JavaScript类和属性
+  
   class LatestSoftwareComponent {
-    private container: HTMLElement | null = null;
-    private loadingElement: HTMLElement | null = null;
-    private errorElement: HTMLElement | null = null;
-    private emptyElement: HTMLElement | null = null;
-    private retryButton: HTMLElement | null = null;
-    private limit: number;
-    private sortBy: string;
+    container = null;
+    loadingElement = null;
+    errorElement = null;
+    emptyElement = null;
+    retryButton = null;
 
-    constructor(limit: number = 6, sortBy: string = 'updatedAt') {
-      this.limit = limit;
-      this.sortBy = sortBy;
+    constructor() {
       this.init();
     }
 
-    private init() {
+    init() {
       this.container = document.getElementById('latest-software-container');
       this.loadingElement = document.getElementById('latest-software-loading');
       this.errorElement = document.getElementById('latest-software-error');
@@ -111,42 +101,42 @@ const {
       this.loadLatestSoftware();
     }
 
-    private showLoading() {
+    showLoading() {
       this.hideAll();
       this.loadingElement?.classList.remove('hidden');
     }
 
-    private showError() {
+    showError() {
       this.hideAll();
       this.errorElement?.classList.remove('hidden');
     }
 
-    private showEmpty() {
+    showEmpty() {
       this.hideAll();
       this.emptyElement?.classList.remove('hidden');
     }
 
-    private showContent() {
+    showContent() {
       this.hideAll();
       this.container?.classList.remove('hidden');
     }
 
-    private hideAll() {
+    hideAll() {
       this.loadingElement?.classList.add('hidden');
       this.errorElement?.classList.add('hidden');
       this.emptyElement?.classList.add('hidden');
       this.container?.classList.add('hidden');
     }
 
-    private async loadLatestSoftware() {
+    async loadLatestSoftware() {
       this.showLoading();
 
       try {
         const api = getApiClient();
         const response = await api.getSoftwareList({
           page: 1,
-          limit: this.limit,
-          sortBy: this.sortBy,
+          limit: 6,
+          sortBy: 'updatedAt',
           sortOrder: 'desc'
         });
 
@@ -164,12 +154,12 @@ const {
           throw new Error(response.message || '获取最新软件失败');
         }
       } catch (error) {
-        console.error('加载最新软件失败:', error);
+        console.error('加载最新软件失败:', error?.message);
         this.showError();
       }
     }
 
-    private renderSoftwareList(softwareList: any[]) {
+    renderSoftwareList(softwareList) {
       if (!this.container) return;
 
       this.container.innerHTML = `
@@ -256,7 +246,7 @@ const {
       this.initializeDownloadButtons();
     }
 
-    private initializeDownloadButtons(): void {
+    initializeDownloadButtons() {
       // 等待全局下载按钮初始化函数可用
       setTimeout(() => {
         const initFn = window.initializeDownloadButton;
@@ -271,7 +261,7 @@ const {
       }, 100);
     }
 
-    private getTimeAgo(dateString: string): string {
+    getTimeAgo(dateString) {
       try {
         const date = new Date(dateString);
         const now = new Date();
@@ -295,7 +285,7 @@ const {
 
   // 初始化组件
   document.addEventListener('DOMContentLoaded', () => {
-    new LatestSoftwareComponent(6, 'updatedAt');
+    new LatestSoftwareComponent();
   });
 </script>
 

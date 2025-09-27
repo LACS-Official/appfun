@@ -49,66 +49,85 @@ import Layout from '../layouts/Layout.astro';
     window.apiClient = getApiClient();
 
     // 测试软件列表
-    document.getElementById('test-software-list').addEventListener('click', async () => {
-      const resultDiv = document.getElementById('software-list-result');
-      resultDiv.innerHTML = '正在加载...';
+    const testSoftwareListBtn = document.getElementById('test-software-list');
+    const softwareListResultDiv = document.getElementById('software-list-result');
+    if (testSoftwareListBtn && softwareListResultDiv) {
+      testSoftwareListBtn.addEventListener('click', async () => {
+        softwareListResultDiv.innerHTML = '正在加载...';
 
-      try {
-        const api = window.apiClient;
-        console.log('API Client:', api);
-        
-        const response = await api.getSoftwareList({
-          page: 1,
-          limit: 5
-        });
-        
-        console.log('Software List Response:', response);
-        resultDiv.innerHTML = `<pre>${JSON.stringify(response, null, 2)}</pre>`;
-      } catch (error) {
-        console.error('Error:', error);
-        resultDiv.innerHTML = `<div class="text-red-600">错误: ${error.message}</div>`;
-      }
-    });
+        try {
+          const api = window.apiClient;
+          console.log('API Client:', api);
+          
+          if (!api) {
+            throw new Error('API客户端未初始化');
+          }
+          
+          const response = await api.getSoftwareList({
+            page: 1,
+            limit: 5
+          });
+          
+          console.log('Software List Response:', response);
+          softwareListResultDiv.innerHTML = `<pre>${JSON.stringify(response, null, 2)}</pre>`;
+        } catch (error: any) {
+          console.error('Error:', error);
+          softwareListResultDiv.innerHTML = `<div class="text-red-600">错误: ${error?.message || '未知错误'}</div>`;
+        }
+      });
+    }
 
     // 测试排行榜
-    document.getElementById('test-ranking').addEventListener('click', async () => {
-      const resultDiv = document.getElementById('ranking-result');
-      resultDiv.innerHTML = '正在加载...';
+    const testRankingBtn = document.getElementById('test-ranking');
+    const rankingResultDiv = document.getElementById('ranking-result');
+    if (testRankingBtn && rankingResultDiv) {
+      testRankingBtn.addEventListener('click', async () => {
+        rankingResultDiv.innerHTML = '正在加载...';
 
-      try {
-        const api = window.apiClient;
-        const response = await api.getSoftwareRanking({
-          page: 1,
-          limit: 5
-        });
-        
-        console.log('Ranking Response:', response);
-        resultDiv.innerHTML = `<pre>${JSON.stringify(response, null, 2)}</pre>`;
-      } catch (error) {
-        console.error('Error:', error);
-        resultDiv.innerHTML = `<div class="text-red-600">错误: ${error.message}</div>`;
-      }
-    });
+        try {
+          const api = window.apiClient;
+          if (!api) {
+            throw new Error('API客户端未初始化');
+          }
+          const response = await api.getSoftwareRanking({
+            page: 1,
+            limit: 5
+          });
+          
+          console.log('Ranking Response:', response);
+          rankingResultDiv.innerHTML = `<pre>${JSON.stringify(response, null, 2)}</pre>`;
+        } catch (error: any) {
+          console.error('Error:', error);
+          rankingResultDiv.innerHTML = `<div class="text-red-600">错误: ${error?.message || '未知错误'}</div>`;
+        }
+      });
+    }
 
     // 测试轮播图
-    document.getElementById('test-banners').addEventListener('click', async () => {
-      const resultDiv = document.getElementById('banners-result');
-      resultDiv.innerHTML = '正在加载...';
+    const testBannersBtn = document.getElementById('test-banners');
+    const bannersResultDiv = document.getElementById('banners-result');
+    if (testBannersBtn && bannersResultDiv) {
+      testBannersBtn.addEventListener('click', async () => {
+        bannersResultDiv.innerHTML = '正在加载...';
 
-      try {
-        const api = window.apiClient;
-        const response = await api.getBanners(1, {
-          limit: 10,
-          isActive: true
-        });
+        try {
+          const api = window.apiClient;
+          if (!api) {
+            throw new Error('API客户端未初始化');
+          }
+          const response = await api.getBanners(1, {
+            limit: 10,
+            isActive: true
+          });
 
-        console.log('Banners Response:', response);
-        resultDiv.innerHTML = `<pre>${JSON.stringify(response, null, 2)}</pre>`;
-      } catch (error) {
-        console.error('Error:', error);
-        resultDiv.innerHTML = `<div class="text-red-600">错误: ${error.message}</div>`;
-      }
-    });
+          console.log('Banners Response:', response);
+          bannersResultDiv.innerHTML = `<pre>${JSON.stringify(response, null, 2)}</pre>`;
+        } catch (error: any) {
+          console.error('Error:', error);
+          bannersResultDiv.innerHTML = `<div class="text-red-600">错误: ${error?.message || '未知错误'}</div>`;
+        }
+      });
+    }
   });
 </script>
 

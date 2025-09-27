@@ -3,6 +3,11 @@ import Layout from '../../layouts/Layout.astro';
 import Card from '../../components/ui/Card.astro';
 import Badge from '../../components/ui/Badge.astro';
 import { softwareCategories } from '../../lib/config';
+import { initializeApiClient, getApiClient } from '../../lib/api';
+import { apiConfig } from '../../lib/config';
+
+// 初始化 API 客户端
+initializeApiClient(apiConfig);
 ---
 
 <Layout title="软件分类" description="按分类浏览软件">
@@ -31,7 +36,7 @@ import { softwareCategories } from '../../lib/config';
               
               <!-- 软件数量 -->
               <div class="flex items-center justify-center space-x-2 mb-4">
-                <Badge variant="secondary" size="sm" id={`count-${category.id}`}>
+                <Badge variant="secondary" size="sm" data-category-id={category.id}>
                   加载中...
                 </Badge>
               </div>
@@ -68,13 +73,8 @@ import { softwareCategories } from '../../lib/config';
   </div>
 </Layout>
 
-<script>
-  import { initializeApiClient, getApiClient } from '../../lib/api';
-  import { apiConfig, softwareCategories } from '../../lib/config';
-
-  // 初始化 API 客户端
-  initializeApiClient(apiConfig);
-
+<script is:inline>
+  // 使用全局apiClient
   document.addEventListener('DOMContentLoaded', async () => {
     await loadCategoryCounts();
     await loadRecentUpdates();
@@ -84,7 +84,8 @@ import { softwareCategories } from '../../lib/config';
   // 加载各分类的软件数量
   async function loadCategoryCounts() {
     try {
-      const api = getApiClient();
+      const api = window.apiClient;
+      if (!api) throw new Error('API客户端未初始化');
       
       // 为每个分类获取软件数量
       for (const category of softwareCategories) {
@@ -95,20 +96,29 @@ import { softwareCategories } from '../../lib/config';
             limit: 1
           });
           
-          const countElement = document.getElementById(`count-${category.id}`);
-          if (countElement && response.success && response.pagination) {
-            countElement.textContent = `${response.pagination.total} 个软件`;
+          // 使用data-category-id选择器而不是id
+          const countElements = document.querySelectorAll(`[data-category-id="${category.id}"]`);
+          if (countElements.length > 0 && response.success) {
+            // 检查response的结构并正确访问总数
+            let totalCount = 0;
+            if (response.pagination && typeof response.pagination.total === 'number') {
+              totalCount = response.pagination.total;
+            } else if (response.data && Array.isArray(response.data)) {
+              totalCount = response.data.length;
+            }
+            
+            countElements[0].textContent = `${totalCount} 个软件`;
           }
         } catch (error) {
-          console.error(`加载分类 ${category.id} 数量失败:`, error);
-          const countElement = document.getElementById(`count-${category.id}`);
-          if (countElement) {
-            countElement.textContent = '- 个软件';
+          console.error(`加载分类 ${category.id} 数量失败:`, error?.message);
+          const countElements = document.querySelectorAll(`[data-category-id="${category.id}"]`);
+          if (countElements.length > 0) {
+            countElements[0].textContent = '- 个软件';
           }
         }
       }
     } catch (error) {
-      console.error('加载分类数量失败:', error);
+      console.error('加载分类数量失败:', error?.message);
     }
   }
 
@@ -118,7 +128,9 @@ import { softwareCategories } from '../../lib/config';
     if (!container) return;
 
     try {
-      const api = getApiClient();
+      const api = window.apiClient;
+      if (!api) throw new Error('API客户端未初始化');
+      
       const response = await api.getSoftwareList({
         page: 1,
         limit: 4,
@@ -127,7 +139,9 @@ import { softwareCategories } from '../../lib/config';
       });
 
       if (response.success && response.data) {
-        const softwareList = response.data;
+        // 确保softwareList是数组
+        const softwareList = Array.isArray(response.data) ? response.data : 
+                           (response.data.software ? response.data.software : []);
         
         if (softwareList.length === 0) {
           container.innerHTML = `
@@ -166,7 +180,7 @@ import { softwareCategories } from '../../lib/config';
         `;
       }
     } catch (error) {
-      console.error('加载最近更新失败:', error);
+      console.error('加载最近更新失败:', error?.message);
       container.innerHTML = `
         <div class="text-center py-8">
           <p class="text-red-600">加载失败，请稍后重试</p>
@@ -181,7 +195,9 @@ import { softwareCategories } from '../../lib/config';
     if (!container) return;
 
     try {
-      const api = getApiClient();
+      const api = window.apiClient;
+      if (!api) throw new Error('API客户端未初始化');
+      
       const response = await api.getSoftwareTags({
         includeCount: true,
         sortBy: 'count',
@@ -189,9 +205,15 @@ import { softwareCategories } from '../../lib/config';
       });
 
       if (response.success && response.data) {
-        const tags = response.data.tags;
+        // 确保tags是数组
+        let tags = [];
+        if (Array.isArray(response.data)) {
+          tags = response.data;
+        } else if (response.data.tags && Array.isArray(response.data.tags)) {
+          tags = response.data.tags;
+        }
         
-        if (!Array.isArray(tags) || tags.length === 0) {
+        if (tags.length === 0) {
           container.innerHTML = `
             <div class="text-center py-8">
               <p class="text-gray-500">暂无标签数据</p>
@@ -206,7 +228,7 @@ import { softwareCategories } from '../../lib/config';
         container.innerHTML = `
           <div class="flex flex-wrap gap-3">
             ${popularTags.map(tag => {
-              const tagName = typeof tag === 'string' ? tag : tag.name;
+              const tagName = typeof tag === 'string' ? tag : (tag.name || '');
               const tagCount = typeof tag === 'object' && tag.count ? tag.count : '';
               
               return `
@@ -221,7 +243,7 @@ import { softwareCategories } from '../../lib/config';
         `;
       }
     } catch (error) {
-      console.error('加载热门标签失败:', error);
+      console.error('加载热门标签失败:', error?.message);
       container.innerHTML = `
         <div class="text-center py-8">
           <p class="text-red-600">加载失败，请稍后重试</p>

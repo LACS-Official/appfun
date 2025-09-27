@@ -92,13 +92,20 @@ import LoadingSpinner from '../../components/ui/LoadingSpinner.astro';
   import { initializeApiClient, getApiClient } from '../../lib/api';
   import { apiConfig } from '../../lib/config';
 
+  // 定义标签类型
+  interface TagItem {
+    name: string;
+    count?: number;
+  }
+
   // 初始化 API 客户端
   initializeApiClient(apiConfig);
 
-  let allTags = [];
-  let filteredTags = [];
-  let currentSort = 'count-desc';
-  let currentSearch = '';
+  let allTags: (TagItem | string)[] = [];
+  let filteredTags: (TagItem | string)[] = [];
+  let currentSort: string = 'count-desc';
+  let currentSearch: string = '';
+  let searchTimeout: number | null = null;
 
   document.addEventListener('DOMContentLoaded', () => {
     loadTags();
@@ -111,11 +118,16 @@ import LoadingSpinner from '../../components/ui/LoadingSpinner.astro';
     // 搜索框
     const searchInput = document.getElementById('tag-search');
     if (searchInput) {
-      let searchTimeout;
       searchInput.addEventListener('input', (e) => {
-        clearTimeout(searchTimeout);
-        searchTimeout = setTimeout(() => {
-          currentSearch = e.target.value.trim().toLowerCase();
+        // 清除之前的定时器
+        if (searchTimeout) {
+          clearTimeout(searchTimeout);
+        }
+        
+        // 类型断言
+        const target = e.target as HTMLInputElement;
+        searchTimeout = window.setTimeout(() => {
+          currentSearch = target.value.trim().toLowerCase();
           filterAndRenderTags();
         }, 300);
       });
@@ -125,7 +137,9 @@ import LoadingSpinner from '../../components/ui/LoadingSpinner.astro';
     const sortSelect = document.getElementById('sort-select');
     if (sortSelect) {
       sortSelect.addEventListener('change', (e) => {
-        currentSort = e.target.value;
+        // 类型断言
+        const target = e.target as HTMLSelectElement;
+        currentSort = target.value;
         filterAndRenderTags();
       });
     }
@@ -150,8 +164,8 @@ import LoadingSpinner from '../../components/ui/LoadingSpinner.astro';
         // 初始渲染
         filterAndRenderTags();
       }
-    } catch (error) {
-      console.error('加载标签失败:', error);
+    } catch (error: any) {
+      console.error('加载标签失败:', error?.message);
       const container = document.getElementById('tags-container');
       if (container) {
         container.innerHTML = `
@@ -164,22 +178,37 @@ import LoadingSpinner from '../../components/ui/LoadingSpinner.astro';
   }
 
   // 更新统计信息
-  function updateStatistics(data) {
-    const totalTags = data.total || 0;
-    const totalSoftware = data.totalSoftware || 0;
+  function updateStatistics(data: any) {
+    const totalTagsElement = document.getElementById('total-tags');
+    const totalSoftwareElement = document.getElementById('total-software-with-tags');
+    const avgTagsElement = document.getElementById('avg-tags-per-software');
+    const mostUsedTagElement = document.getElementById('most-used-tag');
     
-    document.getElementById('total-tags').textContent = totalTags.toString();
-    document.getElementById('total-software-with-tags').textContent = totalSoftware.toString();
+    if (totalTagsElement) {
+      totalTagsElement.textContent = (data.total || 0).toString();
+    }
+    
+    if (totalSoftwareElement) {
+      totalSoftwareElement.textContent = (data.totalSoftware || 0).toString();
+    }
     
     // 计算平均标签数
+    const totalTags = data.total || 0;
+    const totalSoftware = data.totalSoftware || 0;
     const avgTags = totalSoftware > 0 ? (totalTags / totalSoftware).toFixed(1) : '0';
-    document.getElementById('avg-tags-per-software').textContent = avgTags;
+    
+    if (avgTagsElement) {
+      avgTagsElement.textContent = avgTags;
+    }
     
     // 最热门标签
     const mostUsedTag = Array.isArray(data.tags) && data.tags.length > 0 
       ? (typeof data.tags[0] === 'string' ? data.tags[0] : data.tags[0].name)
       : '-';
-    document.getElementById('most-used-tag').textContent = mostUsedTag;
+    
+    if (mostUsedTagElement) {
+      mostUsedTagElement.textContent = mostUsedTag;
+    }
   }
 
   // 筛选和渲染标签
@@ -196,8 +225,8 @@ import LoadingSpinner from '../../components/ui/LoadingSpinner.astro';
     filteredTags.sort((a, b) => {
       const aName = typeof a === 'string' ? a : a.name;
       const bName = typeof b === 'string' ? b : b.name;
-      const aCount = typeof a === 'object' && a.count ? a.count : 0;
-      const bCount = typeof b === 'object' && b.count ? b.count : 0;
+      const aCount = typeof a === 'object' && 'count' in a && typeof a.count === 'number' ? a.count : 0;
+      const bCount = typeof b === 'object' && 'count' in b && typeof b.count === 'number' ? b.count : 0;
 
       if (sortBy === 'name') {
         const result = aName.localeCompare(bName);
@@ -242,10 +271,12 @@ import LoadingSpinner from '../../components/ui/LoadingSpinner.astro';
     // 生成标签云
     const tagElements = filteredTags.map(tag => {
       const tagName = typeof tag === 'string' ? tag : tag.name;
-      const tagCount = typeof tag === 'object' && tag.count ? tag.count : 0;
+      const tagCount = typeof tag === 'object' && 'count' in tag && typeof tag.count === 'number' ? tag.count : 0;
       
       // 根据使用次数计算标签大小
-      const maxCount = Math.max(...filteredTags.map(t => typeof t === 'object' && t.count ? t.count : 0));
+      const maxCount = Math.max(...filteredTags.map(t => 
+        typeof t === 'object' && 'count' in t && typeof (t as TagItem).count === 'number' ? (t as TagItem).count! : 0
+      ));
       const minSize = 0.8;
       const maxSize = 2;
       const size = tagCount > 0 ? minSize + (tagCount / maxCount) * (maxSize - minSize) : minSize;
@@ -283,14 +314,18 @@ import LoadingSpinner from '../../components/ui/LoadingSpinner.astro';
         sortOrder: 'desc'
       });
 
-      if (response.success && response.data) {
+      if (response.success && response.data && Array.isArray(response.data)) {
         const recentSoftware = response.data;
-        const recentTagsSet = new Set();
+        const recentTagsSet = new Set<string>();
         
         // 收集最近软件的标签
         recentSoftware.forEach(software => {
           if (software.tags && Array.isArray(software.tags)) {
-            software.tags.forEach(tag => recentTagsSet.add(tag));
+            software.tags.forEach((tag: string) => {
+              if (typeof tag === 'string') {
+                recentTagsSet.add(tag);
+              }
+            });
           }
         });
 
@@ -316,8 +351,8 @@ import LoadingSpinner from '../../components/ui/LoadingSpinner.astro';
           </div>
         `;
       }
-    } catch (error) {
-      console.error('加载最近标签失败:', error);
+    } catch (error: any) {
+      console.error('加载最近标签失败:', error?.message);
       container.innerHTML = `
         <div class="text-center py-8">
           <p class="text-red-600">加载失败，请稍后重试</p>

@@ -1,7 +1,6 @@
 ---
 import LoadingSpinner from '../ui/LoadingSpinner.astro';
 import ErrorMessage from '../ui/ErrorMessage.astro';
-import type { Software } from '../../types/api';
 
 interface Props {
   title?: string;
@@ -56,7 +55,7 @@ const {
   </div>
 
   <!-- 软件网格 -->
-  <div id="all-software-container" class="hidden">
+  <div id="all-software-container" class="hidden" data-limit="${limit}">
     <!-- 软件卡片将在这里动态加载 -->
   </div>
 
@@ -69,28 +68,6 @@ const {
 </section>
 
 <script>
-  // 扩展Window接口
-  interface Window {
-    apiClient?: {
-      getSoftwareList: (params: { page: number; limit: number }) => Promise<{
-        success: boolean;
-        data?: { software: Array<{
-          id: string;
-          name: string;
-          nameEn?: string;
-          currentVersion: string;
-          category?: string;
-          description?: string;
-          tags?: string[];
-          viewCount?: number;
-          updatedAt?: string;
-          latestDownloadUrl?: string;
-        }>};
-        message?: string;
-      }>;
-    };
-  }
-
   // 定义Software类型别名
   type Software = {
     id: string;
@@ -168,8 +145,8 @@ const {
       this.showLoading();
 
       try {
-        // 获取全局API客户端（使用类型断言）
-        const api = (window as any).apiClient;
+        // 获取全局API客户端
+        const api = window.apiClient;
         if (!api) {
           throw new Error('API客户端未初始化');
         }
@@ -196,8 +173,8 @@ const {
           console.error('API Response Error:', response); // 调试日志
           throw new Error(response.message || '获取软件列表失败');
         }
-      } catch (error) {
-        console.error('加载软件列表失败:', error);
+      } catch (error: any) {
+        console.error('加载软件列表失败:', error?.message);
         this.showError();
       }
     }
@@ -300,7 +277,7 @@ const {
       `;
     }
 
-    formatTimeAgo(dateString: string) {
+    formatTimeAgo(dateString: string): string {
       try {
         const date = new Date(dateString);
         const now = new Date();
@@ -323,7 +300,9 @@ const {
 
   // 初始化组件
   document.addEventListener('DOMContentLoaded', () => {
-    new AllSoftwareGridComponent(12);
+    const container = document.getElementById('all-software-container');
+    const limit = container ? parseInt(container.getAttribute('data-limit') || '12', 10) : 12;
+    new AllSoftwareGridComponent(limit);
   });
 </script>
 
