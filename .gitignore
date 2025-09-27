@@ -3,3 +3,5 @@ node_modules
 .augment
 docs
 .env
+backups/
+dist/

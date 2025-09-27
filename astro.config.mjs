@@ -1,7 +1,9 @@
 import { defineConfig } from 'astro/config';
 import tailwind from '@astrojs/tailwind';
 import react from '@astrojs/react';
-import node from '@astrojs/node';
+
+// 检查环境是否为Vercel
+const isVercel = process.env.VERCEL === '1';
 
 // https://astro.build/config
 export default defineConfig({
@@ -11,8 +13,8 @@ export default defineConfig({
     }),
     react(),
   ],
-  output: 'server',
-  adapter: node({
+  output: isVercel ? 'hybrid' : 'server',
+  adapter: isVercel ? undefined : (await import('@astrojs/node')).default({
     mode: 'standalone'
   }),
   server: {
