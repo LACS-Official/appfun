@@ -224,7 +224,7 @@ const {
       this.hideModal();
 
       // 使用跨域认证管理器启动登录流程
-      if (appConfig.auth.crossDomain.enabled && window.crossDomainAuthManager) {
+      if (typeof window !== 'undefined' && appConfig.auth.crossDomain && appConfig.auth.crossDomain.enabled && window.crossDomainAuthManager) {
         window.crossDomainAuthManager.startLogin(window.location.href);
       } else {
         // 降级处理：直接跳转到登录页面
@@ -240,21 +240,23 @@ const {
   const loginPromptManager = new LoginPromptManager();
 
   // 导出到全局
-  window.loginPromptManager = loginPromptManager;
+  if (typeof window !== 'undefined') {
+    window.loginPromptManager = loginPromptManager;
 
-  // 全局函数
-  window.showLoginPrompt = (message?: string, useModal = true) => {
-    if (useModal) {
-      loginPromptManager.showModal(message);
-    } else {
-      loginPromptManager.showInlinePrompt(message);
-    }
-  };
+    // 全局函数
+    window.showLoginPrompt = (message?: string, useModal = true) => {
+      if (useModal) {
+        loginPromptManager.showModal(message);
+      } else {
+        loginPromptManager.showInlinePrompt(message);
+      }
+    };
 
-  window.hideLoginPrompt = () => {
-    loginPromptManager.hideModal();
-    loginPromptManager.hideInlinePrompt();
-  };
+    window.hideLoginPrompt = () => {
+      loginPromptManager.hideModal();
+      loginPromptManager.hideInlinePrompt();
+    };
+  }
 </script>
 
 <style>

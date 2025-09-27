@@ -28,10 +28,12 @@
   // 使用纯 JavaScript 创建登录表单
   document.addEventListener('DOMContentLoaded', () => {
     // 检查用户是否已登录，如果已登录则直接跳转到主页
-    if (window.authUtils && window.authUtils.isLoggedIn()) {
-      console.log('用户已登录，重定向到主页');
-      window.location.href = '/';
-      return;
+    if (typeof window !== 'undefined' && window.authUtils && typeof window.authUtils.isLoggedIn === 'function') {
+      if (window.authUtils.isLoggedIn()) {
+        console.log('用户已登录，重定向到主页');
+        window.location.href = '/';
+        return;
+      }
     }
 
     // 检查认证系统是否可用
@@ -40,19 +42,21 @@
       const warning = document.getElementById('config-warning');
 
       // 再次检查登录状态（防止状态恢复延迟）
-      if (window.authUtils && window.authUtils.isLoggedIn()) {
-        console.log('用户已登录（延迟检查），重定向到主页');
-        window.location.href = '/';
-        return;
+      if (typeof window !== 'undefined' && window.authUtils && typeof window.authUtils.isLoggedIn === 'function') {
+        if (window.authUtils.isLoggedIn()) {
+          console.log('用户已登录（延迟检查），重定向到主页');
+          window.location.href = '/';
+          return;
+        }
       }
 
-      if (window.authManager) {
+      if (typeof window !== 'undefined' && window.authManager) {
         const authState = window.authManager.getAuthState();
 
         if (authState.error && authState.error.includes('Supabase 未配置')) {
           // 显示配置警告
-          container.style.display = 'none';
-          warning.classList.remove('hidden');
+          if (container) container.style.display = 'none';
+          if (warning) warning.classList.remove('hidden');
           return;
         }
       }
@@ -115,73 +119,80 @@
         `;
         
         // 绑定表单提交事件
-        const form = document.getElementById('login-form');
-        const emailInput = document.getElementById('email');
-        const passwordInput = document.getElementById('password');
+        const form = document.getElementById('login-form') as HTMLFormElement | null;
+        const emailInput = document.getElementById('email') as HTMLInputElement | null;
+        const passwordInput = document.getElementById('password') as HTMLInputElement | null;
         const errorMessage = document.getElementById('error-message');
-        const loginButton = document.getElementById('login-button');
+        const loginButton = document.getElementById('login-button') as HTMLButtonElement | null;
         
-        form.addEventListener('submit', async (e) => {
-          e.preventDefault();
-          
-          const email = emailInput.value;
-          const password = passwordInput.value;
-          
-          if (!email || !password) {
-            showError('请填写所有字段');
-            return;
-          }
-          
-          // 显示加载状态
-          loginButton.disabled = true;
-          loginButton.textContent = '登录中...';
-          hideError();
-          
-          try {
-            if (window.authManager && window.authManager.signIn) {
-              const result = await window.authManager.signIn(email, password);
-              
-              if (result.success) {
-                // 登录成功
-                console.log('登录成功');
-                
-                // 触发全局认证状态更新事件
-                window.dispatchEvent(new CustomEvent('authStateChanged', {
-                  detail: { isLoggedIn: true }
-                }));
-                
-                // 显示成功消息
-                if (window.authStatusIndicator) {
-                  window.authStatusIndicator.showCustomMessage('登录成功！正在跳转...', 'success');
-                }
-                
-                // 延迟跳转到主页，让用户看到成功提示
-                setTimeout(() => {
-                  window.location.href = '/';
-                }, 1000);
-              } else {
-                showError(result.error || '登录失败，请重试');
-              }
-            } else {
-              showError('认证系统不可用，请刷新页面重试');
+        if (form && emailInput && passwordInput && errorMessage && loginButton) {
+          form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const email = emailInput.value;
+            const password = passwordInput.value;
+            
+            if (!email || !password) {
+              showError(errorMessage, '请填写所有字段');
+              return;
             }
-          } catch (error) {
-            console.error('登录错误:', error);
-            showError('登录失败，请重试');
-          } finally {
-            // 恢复按钮状态
-            loginButton.disabled = false;
-            loginButton.textContent = '登录';
-          }
-        });
-        
-        function showError(message) {
-          errorMessage.textContent = message;
-          errorMessage.classList.remove('hidden');
+            
+            // 显示加载状态
+            loginButton.disabled = true;
+            loginButton.textContent = '登录中...';
+            hideError(errorMessage);
+            
+            try {
+              // 检查 authManager 是否存在 signIn 方法
+              if (typeof window !== 'undefined' && window.authManager && typeof window.authManager.signIn === 'function') {
+                const result = await window.authManager.signIn(email, password);
+                
+                if (result.success) {
+                  // 登录成功
+                  console.log('登录成功');
+                  
+                  // 触发全局认证状态更新事件
+                  window.dispatchEvent(new CustomEvent('authStateChanged', {
+                    detail: { isLoggedIn: true }
+                  }));
+                  
+                  // 显示成功消息
+                  if (window.authStatusIndicator) {
+                    window.authStatusIndicator.showCustomMessage('登录成功！正在跳转...', 'success');
+                  }
+                  
+                  // 延迟跳转到主页，让用户看到成功提示
+                  setTimeout(() => {
+                    window.location.href = '/';
+                  }, 1000);
+                } else {
+                  showError(errorMessage, result.error || '登录失败，请重试');
+                }
+              } else {
+                showError(errorMessage, '认证系统不可用，请刷新页面重试');
+              }
+            } catch (error) {
+              console.error('登录错误:', error);
+              showError(errorMessage, '登录失败，请重试');
+            } finally {
+              // 恢复按钮状态
+              loginButton.disabled = false;
+              loginButton.textContent = '登录';
+            }
+          });
         }
         
-        function hideError() {
-          errorMessage.classList.add('hidden');
+        function showError(element: HTMLElement | null, message: string) {
+          if (element) {
+            element.textContent = message;
+            element.classList.remove('hidden');
+          }
+        }
+        
+        function hideError(element: HTMLElement | null) {
+          if (element) {
+            element.classList.add('hidden');
+          }
         }
       }
     }, 500); // 等待认证管理器加载

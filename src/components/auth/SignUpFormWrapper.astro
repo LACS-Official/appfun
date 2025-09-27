@@ -28,10 +28,12 @@
   // 使用纯 JavaScript 创建注册表单
   document.addEventListener('DOMContentLoaded', () => {
     // 检查用户是否已登录，如果已登录则直接跳转到主页
-    if (window.authUtils && window.authUtils.isLoggedIn()) {
-      console.log('用户已登录，重定向到主页');
-      window.location.href = '/';
-      return;
+    if (typeof window !== 'undefined' && window.authUtils && typeof window.authUtils.isLoggedIn === 'function') {
+      if (window.authUtils.isLoggedIn()) {
+        console.log('用户已登录，重定向到主页');
+        window.location.href = '/';
+        return;
+      }
     }
 
     // 检查认证系统是否可用
@@ -40,19 +42,21 @@
       const warning = document.getElementById('config-warning');
 
       // 再次检查登录状态（防止状态恢复延迟）
-      if (window.authUtils && window.authUtils.isLoggedIn()) {
-        console.log('用户已登录（延迟检查），重定向到主页');
-        window.location.href = '/';
-        return;
+      if (typeof window !== 'undefined' && window.authUtils && typeof window.authUtils.isLoggedIn === 'function') {
+        if (window.authUtils.isLoggedIn()) {
+          console.log('用户已登录（延迟检查），重定向到主页');
+          window.location.href = '/';
+          return;
+        }
       }
 
-      if (window.authManager) {
+      if (typeof window !== 'undefined' && window.authManager) {
         const authState = window.authManager.getAuthState();
 
         if (authState.error && authState.error.includes('Supabase 未配置')) {
           // 显示配置警告
-          container.style.display = 'none';
-          warning.classList.remove('hidden');
+          if (container) container.style.display = 'none';
+          if (warning) warning.classList.remove('hidden');
           return;
         }
       }
@@ -156,175 +160,184 @@
         `;
         
         // 绑定表单提交事件
-        const form = document.getElementById('signup-form');
-        const emailInput = document.getElementById('email');
-        const passwordInput = document.getElementById('password');
-        const repeatPasswordInput = document.getElementById('repeat-password');
-        const inviteCodeInput = document.getElementById('invite-code');
+        const form = document.getElementById('signup-form') as HTMLFormElement | null;
+        const emailInput = document.getElementById('email') as HTMLInputElement | null;
+        const passwordInput = document.getElementById('password') as HTMLInputElement | null;
+        const repeatPasswordInput = document.getElementById('repeat-password') as HTMLInputElement | null;
+        const inviteCodeInput = document.getElementById('invite-code') as HTMLInputElement | null;
         const errorMessage = document.getElementById('error-message');
-        const signupButton = document.getElementById('signup-button');
+        const signupButton = document.getElementById('signup-button') as HTMLButtonElement | null;
         
-        form.addEventListener('submit', async (e) => {
-          e.preventDefault();
-          
-          const email = emailInput.value;
-          const password = passwordInput.value;
-          const repeatPassword = repeatPasswordInput.value;
-          const inviteCode = inviteCodeInput.value.trim().toUpperCase();
+        if (form && emailInput && passwordInput && repeatPasswordInput && inviteCodeInput && errorMessage && signupButton) {
+          form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const email = emailInput.value;
+            const password = passwordInput.value;
+            const repeatPassword = repeatPasswordInput.value;
+            const inviteCode = inviteCodeInput.value.trim().toUpperCase();
 
-          if (!email || !password || !repeatPassword || !inviteCode) {
-            showError('请填写所有字段');
-            return;
-          }
-
-          if (password !== repeatPassword) {
-            showError('两次输入的密码不一致');
-            return;
-          }
-
-          if (password.length < 6) {
-            showError('密码长度至少为6位');
-            return;
-          }
-
-          if (inviteCode.length !== 8) {
-            showError('邀请码必须为8位');
-            return;
-          }
-          
-          // 显示加载状态
-          signupButton.disabled = true;
-          signupButton.textContent = '注册中...';
-          hideError();
-          
-          try {
-            // 首先验证邀请码
-            const inviteValidationResponse = await fetch('/api/auth/validate-invitation', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({ code: inviteCode }),
-            });
-
-            if (!inviteValidationResponse.ok) {
-              showError('验证邀请码时发生错误，请重试');
+            if (!email || !password || !repeatPassword || !inviteCode) {
+              showError(errorMessage, '请填写所有字段');
               return;
             }
 
-            const inviteValidationData = await inviteValidationResponse.json();
-
-            if (!inviteValidationData.valid) {
-              showError(inviteValidationData.error || '邀请码无效或已过期');
+            if (password !== repeatPassword) {
+              showError(errorMessage, '两次输入的密码不一致');
               return;
             }
 
-            // 邀请码验证通过，开始注册
-            if (window.authManager && window.authManager.signUp) {
-              const result = await window.authManager.signUp(email, password);
+            if (password.length < 6) {
+              showError(errorMessage, '密码长度至少为6位');
+              return;
+            }
 
-              if (result.success && result.user) {
-                // 注册成功，标记邀请码为已使用
+            if (inviteCode.length !== 8) {
+              showError(errorMessage, '邀请码必须为8位');
+              return;
+            }
+            
+            // 显示加载状态
+            signupButton.disabled = true;
+            signupButton.textContent = '注册中...';
+            hideError(errorMessage);
+            
+            try {
+              // 首先验证邀请码
+              const inviteValidationResponse = await fetch('/api/auth/validate-invitation', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ code: inviteCode }),
+              });
+
+              if (!inviteValidationResponse.ok) {
+                showError(errorMessage, '验证邀请码时发生错误，请重试');
+                return;
+              }
+
+              const inviteValidationData = await inviteValidationResponse.json();
+
+              if (!inviteValidationData.valid) {
+                showError(errorMessage, inviteValidationData.error || '邀请码无效或已过期');
+                return;
+              }
+
+              // 邀请码验证通过，开始注册
+              // 检查 authManager 是否存在 signUp 方法
+              if (typeof window !== 'undefined' && window.authManager && typeof window.authManager.signUp === 'function') {
+                const result = await window.authManager.signUp(email, password);
+
+                if (result.success && result.user) {
+                  // 注册成功，标记邀请码为已使用
+                  try {
+                    await fetch('/api/auth/use-invitation', {
+                      method: 'POST',
+                      headers: {
+                        'Content-Type': 'application/json',
+                      },
+                      body: JSON.stringify({
+                        code: inviteCode,
+                        userId: result.user.id
+                      }),
+                    });
+                  } catch (useError) {
+                    console.warn('标记邀请码使用状态失败:', useError);
+                    // 不阻止注册流程，只记录警告
+                  }
+
+                  // 显示成功消息
+                  if (window.authStatusIndicator) {
+                    window.authStatusIndicator.showCustomMessage('注册成功！请检查邮箱确认', 'success');
+                  }
+
+                  // 跳转到成功页面
+                  setTimeout(() => {
+                    window.location.href = '/auth/sign-up-success';
+                  }, 1000);
+                } else {
+                  showError(errorMessage, result.error || '注册失败，请重试');
+                }
+              } else {
+                showError(errorMessage, '认证系统不可用，请刷新页面重试');
+              }
+            } catch (error) {
+              console.error('注册错误:', error);
+              showError(errorMessage, '注册失败，请重试');
+            } finally {
+              // 恢复按钮状态
+              signupButton.disabled = false;
+              signupButton.textContent = '注册';
+            }
+          });
+
+          // 邀请码输入框格式化
+          inviteCodeInput.addEventListener('input', (e: Event) => {
+            const target = e.target as HTMLInputElement;
+            let value = target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+            if (value.length > 8) {
+              value = value.substring(0, 8);
+            }
+            target.value = value;
+          });
+
+          // 邀请码实时验证
+          let validateTimeout: number | null = null;
+          inviteCodeInput.addEventListener('input', (e: Event) => {
+            const target = e.target as HTMLInputElement;
+            const code = target.value.trim();
+
+            // 清除之前的验证定时器
+            if (validateTimeout) {
+              clearTimeout(validateTimeout);
+            }
+
+            // 如果邀请码长度为8位，延迟验证
+            if (code.length === 8) {
+              validateTimeout = window.setTimeout(async () => {
                 try {
-                  await fetch('/api/auth/use-invitation', {
+                  const response = await fetch('/api/auth/validate-invitation', {
                     method: 'POST',
                     headers: {
                       'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({
-                      code: inviteCode,
-                      userId: result.user.id
-                    }),
+                    body: JSON.stringify({ code: code }),
                   });
-                } catch (useError) {
-                  console.warn('标记邀请码使用状态失败:', useError);
-                  // 不阻止注册流程，只记录警告
-                }
 
-                // 显示成功消息
-                if (window.authStatusIndicator) {
-                  window.authStatusIndicator.showCustomMessage('注册成功！请检查邮箱确认', 'success');
-                }
-
-                // 跳转到成功页面
-                setTimeout(() => {
-                  window.location.href = '/auth/sign-up-success';
-                }, 1000);
-              } else {
-                showError(result.error || '注册失败，请重试');
-              }
-            } else {
-              showError('认证系统不可用，请刷新页面重试');
-            }
-          } catch (error) {
-            console.error('注册错误:', error);
-            showError('注册失败，请重试');
-          } finally {
-            // 恢复按钮状态
-            signupButton.disabled = false;
-            signupButton.textContent = '注册';
-          }
-        });
-
-        // 邀请码输入框格式化
-        inviteCodeInput.addEventListener('input', (e) => {
-          let value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
-          if (value.length > 8) {
-            value = value.substring(0, 8);
-          }
-          e.target.value = value;
-        });
-
-        // 邀请码实时验证
-        let validateTimeout;
-        inviteCodeInput.addEventListener('input', (e) => {
-          const code = e.target.value.trim();
-
-          // 清除之前的验证定时器
-          if (validateTimeout) {
-            clearTimeout(validateTimeout);
-          }
-
-          // 如果邀请码长度为8位，延迟验证
-          if (code.length === 8) {
-            validateTimeout = setTimeout(async () => {
-              try {
-                const response = await fetch('/api/auth/validate-invitation', {
-                  method: 'POST',
-                  headers: {
-                    'Content-Type': 'application/json',
-                  },
-                  body: JSON.stringify({ code: code }),
-                });
-
-                if (response.ok) {
-                  const data = await response.json();
-                  if (data.valid) {
-                    inviteCodeInput.style.borderColor = '#10b981';
-                    inviteCodeInput.style.backgroundColor = '#f0fdf4';
-                  } else {
-                    inviteCodeInput.style.borderColor = '#ef4444';
-                    inviteCodeInput.style.backgroundColor = '#fef2f2';
+                  if (response.ok) {
+                    const data = await response.json();
+                    if (data.valid) {
+                      target.style.borderColor = '#10b981';
+                      target.style.backgroundColor = '#f0fdf4';
+                    } else {
+                      target.style.borderColor = '#ef4444';
+                      target.style.backgroundColor = '#fef2f2';
+                    }
                   }
+                } catch (error) {
+                  console.warn('邀请码验证失败:', error);
                 }
-              } catch (error) {
-                console.warn('邀请码验证失败:', error);
-              }
-            }, 500);
-          } else {
-            // 重置样式
-            inviteCodeInput.style.borderColor = '';
-            inviteCodeInput.style.backgroundColor = '';
-          }
-        });
-
-        function showError(message) {
-          errorMessage.textContent = message;
-          errorMessage.classList.remove('hidden');
+              }, 500);
+            } else {
+              // 重置样式
+              target.style.borderColor = '';
+              target.style.backgroundColor = '';
+            }
+          });
         }
 
-        function hideError() {
-          errorMessage.classList.add('hidden');
+        function showError(element: HTMLElement | null, message: string) {
+          if (element) {
+            element.textContent = message;
+            element.classList.remove('hidden');
+          }
+        }
+
+        function hideError(element: HTMLElement | null) {
+          if (element) {
+            element.classList.add('hidden');
+          }
         }
       }
     }, 500); // 等待认证管理器加载
