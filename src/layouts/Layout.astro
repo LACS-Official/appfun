@@ -61,7 +61,7 @@ const fullTitle = title === appConfig.title ? title : `${title} - ${appConfig.ti
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 
     <!-- Umami Analytics -->
-    <script defer src="https://umami.lacs.cc/script.js" data-website-id="99e40abd-3eaa-47a1-a6b4-84fc6831aa4e"></script>
+    <script defer src="https://umami.lacs.cc/script.js" data-website-id={import.meta.env.PUBLIC_UMAMI_WEBSITE_ID || '99e40abd-3eaa-47a1-a6b4-84fc6831aa4e'}></script>
     
     <!-- Prevent FOUC (Flash of Unstyled Content) -->
     <style>

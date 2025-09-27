@@ -138,7 +138,7 @@ import Badge from '../components/ui/Badge.astro';
     private currentPage = 1;
     private pageSize = 20;
     private totalPages = 1;
-    private currentFilters = {
+    private currentFilters: { category: string; timeRange: 'all' | 'today' | 'week' | 'month' | 'year'; minViewCount?: number } = {
       category: '',
       timeRange: 'all',
       minViewCount: undefined
@@ -178,7 +178,7 @@ import Badge from '../components/ui/Badge.astro';
 
       this.currentFilters = {
         category: categorySelect?.value || '',
-        timeRange: timeRangeSelect?.value || 'all',
+        timeRange: (['all', 'today', 'week', 'month', 'year'].includes(timeRangeSelect?.value || '') ? timeRangeSelect?.value || 'all' : 'all') as 'all' | 'today' | 'week' | 'month' | 'year',
         minViewCount: minViewsInput?.value ? parseInt(minViewsInput.value) : undefined
       };
 
@@ -230,8 +230,9 @@ import Badge from '../components/ui/Badge.astro';
 
         // 移除空值
         Object.keys(params).forEach(key => {
-          if (params[key] === '' || params[key] === undefined) {
-            delete params[key];
+          const paramKey = key as keyof typeof params;
+          if (params[paramKey] === '' || params[paramKey] === undefined) {
+            delete (params as Record<string, any>)[paramKey];
           }
         });
 
