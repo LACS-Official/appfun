@@ -13,10 +13,13 @@ export default defineConfig({
     }),
     react(),
   ],
-  output: isVercel ? 'hybrid' : 'server',
-  adapter: isVercel ? undefined : (await import('@astrojs/node')).default({
-    mode: 'standalone'
-  }),
+  // 使用 Vercel 适配器在 Vercel 环境运行，其他环境使用 Node 适配器
+  output: 'hybrid',
+  adapter: isVercel
+    ? (await import('@astrojs/vercel/serverless')).default()
+    : (await import('@astrojs/node')).default({
+        mode: 'standalone',
+      }),
   server: {
     port: 3000,
     host: true
