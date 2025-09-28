@@ -6,6 +6,17 @@ import LoadingSpinner from '../../components/ui/LoadingSpinner.astro';
 import ErrorMessage from '../../components/ui/ErrorMessage.astro';
 import DownloadButton from '../../components/ui/DownloadButton.astro';
 
+// 为静态生成提供路径
+export async function getStaticPaths() {
+  // 在实际项目中，这里应该从API获取真实的软件ID列表
+  // 为了演示，我们使用一些示例ID
+  return [
+    { params: { id: '1' } },
+    { params: { id: '2' } },
+    { params: { id: '3' } }
+  ];
+}
+
 const { id } = Astro.params;
 
 if (!id || isNaN(Number(id))) {

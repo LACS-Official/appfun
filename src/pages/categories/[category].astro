@@ -6,19 +6,18 @@ import ErrorMessage from '../../components/ui/ErrorMessage.astro';
 import Badge from '../../components/ui/Badge.astro';
 import { softwareCategories } from '../../lib/config';
 
-// 由于使用服务器端渲染，不需要 getStaticPaths
-// export async function getStaticPaths() {
-//   return softwareCategories.map(category => ({
-//     params: { category: category.id },
-//     props: { categoryInfo: category }
-//   }));
-// }
+// 为静态生成提供路径
+export async function getStaticPaths() {
+  return softwareCategories.map(category => ({
+    params: { category: category.id },
+    props: { categoryInfo: category }
+  }));
+}
 
 const { category } = Astro.params;
+const { categoryInfo } = Astro.props;
 
-// 查找分类信息
-const categoryInfo = softwareCategories.find(cat => cat.id === category);
-
+// 如果没有找到分类信息，则重定向到分类页面
 if (!categoryInfo) {
   return Astro.redirect('/categories');
 }
