@@ -1,6 +1,6 @@
 {
     "buildCommand": "npm run build",
-    "outputDirectory": "dist",
+    "outputDirectory": ".vercel/output",
     "devCommand": "npm run dev",
     "installCommand": "npm install",
     "framework": "astro",
@@ -42,5 +42,13 @@
         "destination": "/",
         "permanent": true
       }
-    ]
+    ],
+    "functions": {
+      "src/pages/api/**/*.ts": {
+        "runtime": "nodejs20.x"
+      },
+      "**/*.astro": {
+        "runtime": "nodejs20.x"
+      }
+    }
   }
