@@ -16,7 +16,10 @@ export default defineConfig({
   // 使用 Vercel 适配器在 Vercel 环境运行，其他环境使用 Node 适配器
   output: 'hybrid',
   adapter: isVercel
-    ? (await import('@astrojs/vercel/serverless')).default()
+    ? (await import('@astrojs/vercel/serverless')).default({
+        // 明确指定 Vercel Serverless Functions 运行时，修复 nodejs18.x 无效的问题
+        runtime: 'nodejs20.x',
+      })
     : (await import('@astrojs/node')).default({
         mode: 'standalone',
       }),
