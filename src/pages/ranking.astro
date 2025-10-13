@@ -3,9 +3,34 @@ import Layout from '../layouts/Layout.astro';
 import LoadingSpinner from '../components/ui/LoadingSpinner.astro';
 import ErrorMessage from '../components/ui/ErrorMessage.astro';
 import Badge from '../components/ui/Badge.astro';
+
+// SEO 元数据
+const title = '软件排行榜';
+const description = '查看APPFUN上最受欢迎的软件排行榜。发现下载量最高、评分最好的热门软件，快速找到优质工具';
+const keywords = '软件排行榜,热门软件,软件排名,最受欢迎软件,软件下载排行,APPFUN';
+const canonical = 'https://appfun.fun/ranking';
+const structuredData = {
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "name": title,
+  "description": description,
+  "url": canonical,
+  "mainEntity": {
+    "@type": "ItemList",
+    "numberOfItems": 0,
+    "itemListElement": []
+  }
+};
 ---
 
-<Layout title="软件排行榜" description="查看最受欢迎的软件排行榜">
+<Layout 
+  title={title} 
+  description={description} 
+  keywords={keywords}
+  canonical={canonical}
+  structuredDataType="website"
+  structuredData={structuredData}
+>
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
     <!-- 页面标题 -->
     <div class="mb-8">

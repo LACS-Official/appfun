@@ -3,9 +3,34 @@ import Layout from '../layouts/Layout.astro';
 import Card from '../components/ui/Card.astro';
 import Badge from '../components/ui/Badge.astro';
 import { appConfig } from '../lib/config';
+
+const title = '关于我们';
+const description = '了解APPFUN的使命、愿景和团队。APPFUN是一个致力于为用户提供优质软件管理和分发服务的平台，让软件发现和使用变得简单高效';
+const keywords = '关于APPFUN,APPFUN介绍,软件平台,领创工作室,软件管理,软件分发';
+const canonical = 'https://appfun.fun/about';
+const structuredData = {
+  "@context": "https://schema.org",
+  "@type": "AboutPage",
+  "name": title,
+  "description": description,
+  "url": canonical,
+  "mainEntity": {
+    "@type": "Organization",
+    "name": "领创工作室",
+    "url": "https://appfun.fun",
+    "description": "致力于为用户提供优质的软件管理和分发服务"
+  }
+};
 ---
 
-<Layout title="关于我们" description="了解APPFUN的使命、愿景和团队">
+<Layout 
+  title={title} 
+  description={description} 
+  keywords={keywords}
+  canonical={canonical}
+  structuredDataType="website"
+  structuredData={structuredData}
+>
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
     <!-- 页面标题 -->
     <div class="text-center mb-16">
@@ -286,7 +311,7 @@ import { appConfig } from '../lib/config';
           </div>
           <div>
             <div class="font-medium text-gray-900">开发团队</div>
-            <div class="text-gray-600">{appConfig.author}</div>
+            <div class="text-gray-600">领创工作室</div>
           </div>
         </div>
       </div>

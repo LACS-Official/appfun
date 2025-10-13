@@ -1,0 +1,65 @@
+---
+interface Props {
+  type?: 'website' | 'software' | 'article' | 'breadcrumb';
+  data?: Record<string, any>;
+}
+
+const { type = 'website', data = {} } = Astro.props;
+
+// 根据类型生成不同的结构化数据
+let structuredData = {};
+
+if (type === 'website') {
+  structuredData = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "APPFUN",
+    "alternateName": "APPFUN.FUN",
+    "url": "https://appfun.fun",
+    "description": "APPFUN.FUN,APP TOO FUN,有趣软件",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "https://appfun.fun/search?q={search_term_string}",
+      "query-input": "required name=search_term_string"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "领创工作室",
+      "url": "https://appfun.fun"
+    }
+  };
+} else if (type === 'software' && data.name) {
+  structuredData = {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": data.name,
+    "description": data.description,
+    "url": data.url,
+    "applicationCategory": data.category,
+    "operatingSystem": data.operatingSystem || "Windows",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "CNY"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "领创工作室",
+      "url": "https://appfun.fun"
+    }
+  };
+} else if (type === 'breadcrumb' && data.items) {
+  structuredData = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": data.items.map((item: any, index: number) => ({
+      "@type": "ListItem",
+      "position": index + 1,
+      "name": item.name,
+      "item": item.url
+    }))
+  };
+}
+---
+
+<script type="application/ld+json" set:html={JSON.stringify(structuredData)}></script>

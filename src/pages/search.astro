@@ -7,9 +7,34 @@ import Badge from '../components/ui/Badge.astro';
 // 从 URL 参数获取搜索查询
 const url = new URL(Astro.request.url);
 const query = url.searchParams.get('q') || '';
+
+// SEO 元数据
+const title = query ? `搜索: ${query}` : '搜索软件';
+const description = query ? `搜索${query}相关的软件工具 - 在APPFUN上发现和下载您需要的软件` : '在APPFUN上搜索和发现您需要的软件工具。支持按名称、分类、标签等多种方式搜索，快速找到适合的软件';
+const keywords = '软件搜索,软件查找,搜索工具,APPFUN搜索,软件查询';
+const canonical = 'https://appfun.fun/search';
+const structuredData = {
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "name": title,
+  "description": description,
+  "url": canonical,
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": "https://appfun.fun/search?q={search_term_string}",
+    "query-input": "required name=search_term_string"
+  }
+};
 ---
 
-<Layout title={query ? `搜索: ${query}` : '搜索软件'} description="搜索和发现软件">
+<Layout 
+  title={title} 
+  description={description} 
+  keywords={keywords}
+  canonical={canonical}
+  structuredDataType="website"
+  structuredData={structuredData}
+>
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
     <!-- 搜索标题 -->
     <div class="mb-8">
@@ -281,14 +306,12 @@ const query = url.searchParams.get('q') || '';
         container.innerHTML = `
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             ${softwareList.map(software => `
-              <div class="bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow duration-200">
+              <div class="bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow duration-200 cursor-pointer" onclick="window.location.href='/software/${software.id}'">
                 <div class="p-6">
                   <div class="flex items-start justify-between mb-3">
                     <div class="flex-1 min-w-0">
-                      <h3 class="text-lg font-semibold text-gray-900 truncate">
-                        <a href="/software/${software.id}" class="hover:text-primary-600 transition-colors">
-                          ${highlightSearchTerm(software.name, currentQuery)}
-                        </a>
+                      <h3 class="text-lg font-semibold text-gray-900 truncate hover:text-primary-600 transition-colors">
+                        ${highlightSearchTerm(software.name, currentQuery)}
                       </h3>
                       ${software.nameEn ? `<p class="text-sm text-gray-500 truncate mt-1">${highlightSearchTerm(software.nameEn, currentQuery)}</p>` : ''}
                     </div>
@@ -323,11 +346,24 @@ const query = url.searchParams.get('q') || '';
                     </div>
                   ` : ''}
                   <div class="flex items-center justify-between">
-                    <a href="/software/${software.id}" class="btn btn-outline btn-sm">
-                      查看详情
-                    </a>
+                    <div class="flex items-center space-x-2">
+                      ${software.officialWebsite ? `
+                        <a 
+                          href="${software.officialWebsite}"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          class="text-gray-400 hover:text-gray-600 transition-colors"
+                          title="官方网站"
+                          onclick="event.stopPropagation()"
+                        >
+                          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                          </svg>
+                        </a>
+                      ` : ''}
+                    </div>
                     ${software.latestDownloadUrl ? `
-                      <a href="${software.latestDownloadUrl}" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm" data-protected-download="true">
+                      <a href="${software.latestDownloadUrl}" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm" data-protected-download="true" onclick="event.stopPropagation()">
                         下载
                       </a>
                     ` : ''}

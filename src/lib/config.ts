@@ -36,7 +36,7 @@ export const appConfig = {
   title: import.meta.env.VITE_APP_TITLE || 'APPFUN',
   description: import.meta.env.VITE_APP_DESCRIPTION || 'APPFUN.FUN,APP TOO FUN,有趣软件',
   version: '1.0.0',
-  author: 'LACS Team',
+  author: '领创工作室',
   
   // 分页配置
   pagination: {
@@ -158,16 +158,18 @@ export const successMessages = {
  * 软件分类配置
  */
 export const softwareCategories = [
-  { id: 'tools', name: '工具软件', icon: '🔧' },
-  { id: 'development', name: '开发工具', icon: '💻' },
-  { id: 'design', name: '设计软件', icon: '🎨' },
-  { id: 'multimedia', name: '多媒体', icon: '🎬' },
-  { id: 'productivity', name: '办公软件', icon: '📊' },
-  { id: 'games', name: '游戏娱乐', icon: '🎮' },
-  { id: 'security', name: '安全软件', icon: '🔒' },
-  { id: 'system', name: '系统工具', icon: '⚙️' },
-  { id: 'education', name: '教育学习', icon: '📚' },
-  { id: 'communication', name: '通讯社交', icon: '💬' },
+  { id: 'tools', name: '工具软件', icon: '🔧', description: '实用的系统工具和辅助软件' },
+  { id: 'development', name: '开发工具', icon: '💻', description: '编程开发工具和IDE' },
+  { id: 'design', name: '设计软件', icon: '🎨', description: '图形设计和多媒体处理软件' },
+  { id: 'multimedia', name: '多媒体', icon: '🎬', description: '音视频播放和编辑软件' },
+  { id: 'productivity', name: '办公软件', icon: '📊', description: '办公和生产力工具' },
+  { id: 'games', name: '游戏娱乐', icon: '🎮', description: '休闲游戏和娱乐软件' },
+  { id: 'security', name: '安全软件', icon: '🔒', description: '网络安全和防护软件' },
+  { id: 'system', name: '系统工具', icon: '⚙️', description: '系统管理和优化工具' },
+  { id: 'education', name: '教育学习', icon: '📚', description: '学习和教育相关软件' },
+  { id: 'communication', name: '通讯社交', icon: '💬', description: '通讯和社交软件' },
+  { id: 'network', name: '网络工具', icon: '🌐', description: '网络工具和浏览器' },
+  { id: 'other', name: '其他', icon: '📦', description: '其他各类软件' },
 ] as const;
 
 /**

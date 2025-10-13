@@ -8,22 +8,74 @@ import { softwareCategories } from '../../lib/config';
 
 // 为静态生成提供路径
 export async function getStaticPaths() {
-  return softwareCategories.map(category => ({
+  const categories = softwareCategories.map(category => ({
     params: { category: category.id },
     props: { categoryInfo: category }
   }));
+  
+  return categories;
 }
 
-const { category } = Astro.params;
-const { categoryInfo } = Astro.props;
+const { category } = Astro.params as { category: string };
+const { categoryInfo } = Astro.props as { categoryInfo?: { id: string; name: string; icon: string; description: string; } | undefined };
+
+// 确保categoryInfo有默认值
+const categoryData = categoryInfo || {
+  id: category,
+  name: category.charAt(0).toUpperCase() + category.slice(1),
+  icon: '📦',
+  description: `${category}相关软件`
+} as {
+  id: string;
+  name: string;
+  icon: string;
+  description: string;
+};
 
 // 如果没有找到分类信息，则重定向到分类页面
 if (!categoryInfo) {
   return Astro.redirect('/categories');
 }
+
+// SEO元数据
+const title = `${categoryData.name} - APPFUN`;
+const description = `在APPFUN上发现和下载${categoryData.name}，${categoryData.description || `浏览最受欢迎的${categoryData.name}，找到最适合您需求的工具`}`;
+const keywords = [
+  categoryData.name,
+  `${categoryData.name}下载`,
+  `${categoryData.name}软件`,
+  `${categoryData.name}免费`,
+  `${categoryData.name}工具`,
+  'APPFUN',
+  '软件下载',
+  '免费软件'
+].join(','); // 将数组转换为逗号分隔的字符串
+const canonical = `https://appweb.lacs.cc/categories/${categoryData.id}`;
+
+// 结构化数据
+const structuredData = {
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "name": title,
+  "description": description,
+  "url": canonical,
+  "mainEntity": {
+    "@type": "ItemList",
+    "name": `${categoryData.name}软件列表`,
+    "description": description,
+    "numberOfItems": 12
+  }
+};
 ---
 
-<Layout title={`${categoryInfo.name} - 软件分类`} description={`浏览 ${categoryInfo.name} 分类下的所有软件`}>
+<Layout 
+  title={title} 
+  description={description} 
+  keywords={keywords}
+  canonical={canonical}
+  structuredDataType="website"
+  structuredData={structuredData}
+>
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
     <!-- 分类标题 -->
     <div class="mb-8">
@@ -36,14 +88,14 @@ if (!categoryInfo) {
         <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
           <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
         </svg>
-        <span class="text-gray-900">{categoryInfo.name}</span>
+        <span class="text-gray-900">{categoryData.name}</span>
       </nav>
       
       <div class="flex items-center space-x-4">
-        <div class="text-4xl">{categoryInfo.icon}</div>
+        <div class="text-4xl">{categoryData.icon}</div>
         <div>
-          <h1 class="text-3xl font-bold text-gray-900">{categoryInfo.name}</h1>
-          <p class="text-gray-600 mt-1">发现优质的{categoryInfo.name}</p>
+          <h1 class="text-3xl font-bold text-gray-900">{categoryData.name}</h1>
+          <p class="text-gray-600 mt-1">发现优质的{categoryData.name}</p>
         </div>
       </div>
     </div>
@@ -61,7 +113,7 @@ if (!categoryInfo) {
             </div>
             <input
               type="text"
-              placeholder={`搜索${categoryInfo.name}...`}
+              placeholder={`搜索${categoryData.name}...`}
               class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
               id="category-search"
             />
@@ -86,14 +138,14 @@ if (!categoryInfo) {
       <div class="flex items-center space-x-4 text-sm text-gray-600">
         <span id="software-count">正在加载...</span>
         <span>•</span>
-        <span>分类: {categoryInfo.name}</span>
+        <span>分类: {categoryData.name}</span>
       </div>
     </div>
 
     <!-- 软件列表 -->
     <div id="software-container">
       <div class="flex justify-center py-12">
-        <LoadingSpinner size="lg" text={`正在加载${categoryInfo.name}...`} />
+        <LoadingSpinner size="lg" text={`正在加载${categoryData.name}...`} />
       </div>
     </div>
 
@@ -102,7 +154,7 @@ if (!categoryInfo) {
   </div>
 </Layout>
 
-<script define:vars={{ category, categoryInfo }}>
+<script define:vars={{ category, categoryData }}>
   import { initializeApiClient, getApiClient } from '../../lib/api';
   import { apiConfig } from '../../lib/config';
 
@@ -157,7 +209,7 @@ if (!categoryInfo) {
       <div class="flex justify-center py-12">
         <div class="flex items-center space-x-2">
           <div class="animate-spin w-6 h-6 border-2 border-primary-600 border-t-transparent rounded-full"></div>
-          <span class="text-gray-600">正在加载${categoryInfo.name}...</span>
+          <span class="text-gray-600">正在加载${categoryData.name}...</span>
         </div>
       </div>
     `;
@@ -192,7 +244,7 @@ if (!categoryInfo) {
               <div class="text-6xl mb-4">📦</div>
               <h3 class="text-lg font-medium text-gray-900 mb-2">暂无软件</h3>
               <p class="text-gray-500">
-                ${currentSearch ? `没有找到包含 "${currentSearch}" 的软件` : `${categoryInfo.name} 分类下暂无软件`}
+                ${currentSearch ? `没有找到包含 "${currentSearch}" 的软件` : `${categoryData.name} 分类下暂无软件`}
               </p>
             </div>
           `;
@@ -204,14 +256,12 @@ if (!categoryInfo) {
         container.innerHTML = `
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             ${softwareList.map(software => `
-              <div class="bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow duration-200">
+              <div class="bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow duration-200 cursor-pointer" onclick="window.location.href='/software/${software.id}'">
                 <div class="p-6">
                   <div class="flex items-start justify-between mb-3">
                     <div class="flex-1 min-w-0">
-                      <h3 class="text-lg font-semibold text-gray-900 truncate">
-                        <a href="/software/${software.id}" class="hover:text-primary-600 transition-colors">
-                          ${software.name}
-                        </a>
+                      <h3 class="text-lg font-semibold text-gray-900 truncate hover:text-primary-600 transition-colors">
+                        ${software.name}
                       </h3>
                       ${software.nameEn ? `<p class="text-sm text-gray-500 truncate mt-1">${software.nameEn}</p>` : ''}
                     </div>
@@ -241,11 +291,24 @@ if (!categoryInfo) {
                     </div>
                   ` : ''}
                   <div class="flex items-center justify-between">
-                    <a href="/software/${software.id}" class="btn btn-outline btn-sm">
-                      查看详情
-                    </a>
+                    <div class="flex items-center space-x-2">
+                      ${software.officialWebsite ? `
+                        <a 
+                          href="${software.officialWebsite}"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          class="text-gray-400 hover:text-gray-600 transition-colors"
+                          title="官方网站"
+                          onclick="event.stopPropagation()"
+                        >
+                          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                          </svg>
+                        </a>
+                      ` : ''}
+                    </div>
                     ${software.latestDownloadUrl ? `
-                      <a href="${software.latestDownloadUrl}" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm">
+                      <a href="${software.latestDownloadUrl}" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm" onclick="event.stopPropagation()">
                         下载
                       </a>
                     ` : ''}

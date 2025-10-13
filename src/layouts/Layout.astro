@@ -1,6 +1,7 @@
 ---
 import Header from '../components/layout/Header.astro';
 import Footer from '../components/layout/Footer.astro';
+import StructuredData from '../components/seo/StructuredData.astro';
 import { appConfig } from '../lib/config';
 import '../styles/global.css';
 
@@ -9,16 +10,27 @@ export interface Props {
   description?: string;
   showSearch?: boolean;
   class?: string;
+  keywords?: string;
+  canonical?: string;
+  ogImage?: string;
+  structuredDataType?: 'website' | 'software' | 'article' | 'breadcrumb';
+  structuredData?: Record<string, any>;
 }
 
 const { 
   title = appConfig.title, 
   description = appConfig.description,
   showSearch = true,
-  class: className = ''
+  class: className = '',
+  keywords = '软件管理,软件下载,激活码,LACS,APPFUN,有趣软件',
+  canonical,
+  ogImage = '/img/APPFUN.webp',
+  structuredDataType = 'website',
+  structuredData: structuredDataProps = {}
 } = Astro.props;
 
 const fullTitle = title === appConfig.title ? title : `${title} - ${appConfig.title}`;
+const canonicalUrl = canonical || new URL(Astro.url.pathname, Astro.site).href;
 ---
 
 <!DOCTYPE html>
@@ -32,19 +44,35 @@ const fullTitle = title === appConfig.title ? title : `${title} - ${appConfig.ti
     <!-- SEO Meta Tags -->
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
-    <meta name="keywords" content="软件管理,软件下载,激活码,LACS" />
+    <meta name="keywords" content={keywords} />
     <meta name="author" content={appConfig.author} />
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href={canonicalUrl} />
     
     <!-- Open Graph Meta Tags -->
     <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content={appConfig.title} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:image" content={new URL(ogImage, Astro.site).href} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content="zh_CN" />
     
     <!-- Twitter Card Meta Tags -->
-    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={fullTitle} />
     <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={new URL(ogImage, Astro.site).href} />
+    
+    <!-- Additional SEO Meta Tags -->
+    <meta name="robots" content="index, follow" />
+    <meta name="googlebot" content="index, follow" />
+    <meta name="language" content="zh-CN" />
+    <meta name="revisit-after" content="7 days" />
+    <meta name="distribution" content="global" />
     
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -62,6 +90,9 @@ const fullTitle = title === appConfig.title ? title : `${title} - ${appConfig.ti
 
     <!-- Umami Analytics -->
     <script defer src="https://umami.lacs.cc/script.js" data-website-id={import.meta.env.PUBLIC_UMAMI_WEBSITE_ID || '99e40abd-3eaa-47a1-a6b4-84fc6831aa4e'}></script>
+    
+    <!-- Structured Data -->
+    <StructuredData type={structuredDataType} data={structuredDataProps} />
     
     <!-- Prevent FOUC (Flash of Unstyled Content) -->
     <style>

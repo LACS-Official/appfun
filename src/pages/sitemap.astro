@@ -1,0 +1,140 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+// SEO 元数据
+const title = '网站地图';
+const description = 'APPFUN网站地图 - 浏览网站所有页面和分类，快速找到您需要的软件和内容';
+const keywords = '网站地图,APPFUN,软件目录,页面导航';
+const canonical = 'https://appfun.fun/sitemap';
+const structuredData = {
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "name": title,
+  "description": description,
+  "url": canonical
+};
+---
+
+<Layout 
+  title={title} 
+  description={description} 
+  keywords={keywords}
+  canonical={canonical}
+  structuredDataType="website"
+  structuredData={structuredData}
+>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- 页面标题 -->
+    <section class="mb-8">
+      <h1 class="text-3xl font-bold text-gray-900 mb-4">网站地图</h1>
+      <p class="text-lg text-gray-600">浏览APPFUN网站的所有页面和分类，快速找到您需要的内容</p>
+    </section>
+
+    <!-- 主要页面 -->
+    <section class="mb-8">
+      <h2 class="text-2xl font-semibold text-gray-800 mb-4">主要页面</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <a href="/" class="block p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow">
+          <h3 class="text-lg font-medium text-blue-600">首页</h3>
+          <p class="text-gray-600 text-sm mt-1">发现和下载最新的软件工具</p>
+        </a>
+        <a href="/software" class="block p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow">
+          <h3 class="text-lg font-medium text-blue-600">全部软件</h3>
+          <p class="text-gray-600 text-sm mt-1">浏览所有可用的软件工具</p>
+        </a>
+        <a href="/ranking" class="block p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow">
+          <h3 class="text-lg font-medium text-blue-600">软件排行榜</h3>
+          <p class="text-gray-600 text-sm mt-1">查看最受欢迎的软件</p>
+        </a>
+        <a href="/search" class="block p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow">
+          <h3 class="text-lg font-medium text-blue-600">搜索软件</h3>
+          <p class="text-gray-600 text-sm mt-1">搜索和发现您需要的软件</p>
+        </a>
+        <a href="/about" class="block p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow">
+          <h3 class="text-lg font-medium text-blue-600">关于我们</h3>
+          <p class="text-gray-600 text-sm mt-1">了解APPFUN的使命和团队</p>
+        </a>
+      </div>
+    </section>
+
+    <!-- 软件分类 -->
+    <section class="mb-8">
+      <h2 class="text-2xl font-semibold text-gray-800 mb-4">软件分类</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <a href="/categories/tools" class="block p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow">
+          <h3 class="text-lg font-medium text-blue-600">工具软件</h3>
+          <p class="text-gray-600 text-sm mt-1">实用的系统工具和辅助软件</p>
+        </a>
+        <a href="/categories/development" class="block p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow">
+          <h3 class="text-lg font-medium text-blue-600">开发工具</h3>
+          <p class="text-gray-600 text-sm mt-1">编程开发工具和IDE</p>
+        </a>
+        <a href="/categories/design" class="block p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow">
+          <h3 class="text-lg font-medium text-blue-600">设计软件</h3>
+          <p class="text-gray-600 text-sm mt-1">图形设计和多媒体处理软件</p>
+        </a>
+        <a href="/categories/multimedia" class="block p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow">
+          <h3 class="text-lg font-medium text-blue-600">多媒体</h3>
+          <p class="text-gray-600 text-sm mt-1">音视频播放和编辑软件</p>
+        </a>
+        <a href="/categories/education" class="block p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow">
+          <h3 class="text-lg font-medium text-blue-600">教育学习</h3>
+          <p class="text-gray-600 text-sm mt-1">学习和教育相关软件</p>
+        </a>
+        <a href="/categories/games" class="block p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow">
+          <h3 class="text-lg font-medium text-blue-600">游戏娱乐</h3>
+          <p class="text-gray-600 text-sm mt-1">休闲游戏和娱乐软件</p>
+        </a>
+        <a href="/categories/security" class="block p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow">
+          <h3 class="text-lg font-medium text-blue-600">安全软件</h3>
+          <p class="text-gray-600 text-sm mt-1">网络安全和防护软件</p>
+        </a>
+        <a href="/categories/productivity" class="block p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow">
+          <h3 class="text-lg font-medium text-blue-600">办公软件</h3>
+          <p class="text-gray-600 text-sm mt-1">办公和生产力工具</p>
+        </a>
+        <a href="/categories/network" class="block p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow">
+          <h3 class="text-lg font-medium text-blue-600">网络工具</h3>
+          <p class="text-gray-600 text-sm mt-1">网络工具和浏览器</p>
+        </a>
+        <a href="/categories/system" class="block p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow">
+          <h3 class="text-lg font-medium text-blue-600">系统工具</h3>
+          <p class="text-gray-600 text-sm mt-1">系统管理和优化工具</p>
+        </a>
+        <a href="/categories/other" class="block p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow">
+          <h3 class="text-lg font-medium text-blue-600">其他</h3>
+          <p class="text-gray-600 text-sm mt-1">其他各类软件</p>
+        </a>
+      </div>
+    </section>
+
+    <!-- 其他资源 -->
+    <section class="mb-8">
+      <h2 class="text-2xl font-semibold text-gray-800 mb-4">其他资源</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <a href="/sitemap.xml" class="block p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow">
+          <h3 class="text-lg font-medium text-blue-600">XML 站点地图</h3>
+          <p class="text-gray-600 text-sm mt-1">供搜索引擎使用的XML格式站点地图</p>
+        </a>
+        <a href="/robots.txt" class="block p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow">
+          <h3 class="text-lg font-medium text-blue-600">Robots.txt</h3>
+          <p class="text-gray-600 text-sm mt-1">搜索引擎爬虫规则</p>
+        </a>
+      </div>
+    </section>
+
+    <!-- 联系信息 -->
+    <section class="bg-gray-50 rounded-lg p-6">
+      <h2 class="text-2xl font-semibold text-gray-800 mb-4">需要帮助？</h2>
+      <p class="text-gray-600 mb-4">如果您在使用APPFUN时遇到任何问题，或者有任何建议，请随时联系我们。</p>
+      <div class="flex flex-col sm:flex-row gap-4">
+        <a href="/about" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
+          了解更多
+        </a>
+        <a href="/search" class="inline-flex items-center justify-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+          搜索软件
+        </a>
+      </div>
+    </section>
+  </div>
+</Layout>

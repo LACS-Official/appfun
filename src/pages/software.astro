@@ -8,10 +8,31 @@ import { apiConfig } from '../lib/config';
 initializeApiClient(apiConfig);
 
 const title = '全部软件';
-const description = '浏览所有可用的软件工具，按时间倒序排列，发现最新最热门的软件';
+const description = '浏览APPFUN上的所有可用软件工具，按时间倒序排列，发现最新最热门的软件。包括工具软件、开发工具、设计软件、多媒体软件等多种分类';
+const keywords = '软件大全,软件列表,最新软件,热门软件,免费软件,软件下载,APPFUN';
+const canonical = 'https://appfun.fun/software';
+const structuredData = {
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "name": title,
+  "description": description,
+  "url": canonical,
+  "mainEntity": {
+    "@type": "ItemList",
+    "numberOfItems": 0,
+    "itemListElement": []
+  }
+};
 ---
 
-<Layout title={title} description={description}>
+<Layout 
+  title={title} 
+  description={description} 
+  keywords={keywords}
+  canonical={canonical}
+  structuredDataType="website"
+  structuredData={structuredData}
+>
   <!-- 页面头部 -->
   <section class="bg-gradient-to-r from-gray-600 to-gray-800 text-white py-12">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

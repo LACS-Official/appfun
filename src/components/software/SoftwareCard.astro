@@ -48,15 +48,13 @@ const formatSoftwareFileSize = (version: any) => {
 const fileSize = formatSoftwareFileSize(software.versions?.[0]);
 ---
 
-<div class={`bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow duration-200 ${className}`}>
+<div class={`bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow duration-200 cursor-pointer ${className}`} onclick="window.location.href='/software/${software.id}'">
   <div class="p-6">
     <!-- 软件标题和版本 -->
     <div class="flex items-start justify-between mb-3">
       <div class="flex-1 min-w-0">
-        <h3 class="text-lg font-semibold text-gray-900 truncate">
-          <a href={`/software/${software.id}`} class="hover:text-primary-600 transition-colors">
-            {software.name}
-          </a>
+        <h3 class="text-lg font-semibold text-gray-900 truncate hover:text-primary-600 transition-colors">
+          {software.name}
         </h3>
         {software.nameEn && (
           <p class="text-sm text-gray-500 truncate mt-1">
@@ -149,13 +147,6 @@ const fileSize = formatSoftwareFileSize(software.versions?.[0]);
     <!-- 操作按钮 -->
     <div class="flex items-center justify-between">
       <div class="flex items-center space-x-2">
-        <a 
-          href={`/software/${software.id}`}
-          class="btn btn-outline btn-sm"
-        >
-          查看详情
-        </a>
-        
         {software.officialWebsite && (
           <a 
             href={software.officialWebsite}
@@ -163,6 +154,7 @@ const fileSize = formatSoftwareFileSize(software.versions?.[0]);
             rel="noopener noreferrer"
             class="text-gray-400 hover:text-gray-600 transition-colors"
             title="官方网站"
+            onclick="event.stopPropagation()"
           >
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
@@ -177,6 +169,7 @@ const fileSize = formatSoftwareFileSize(software.versions?.[0]);
           data-download-url={downloadUrl}
           data-show-login-prompt="true"
           type="button"
+          onclick="event.stopPropagation()"
         >
           <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>

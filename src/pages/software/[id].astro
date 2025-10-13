@@ -22,9 +22,36 @@ const { id } = Astro.params;
 if (!id || isNaN(Number(id))) {
   return Astro.redirect('/');
 }
+
+// SEO 元数据
+const title = '软件详情';
+const description = '查看软件的详细信息、版本历史和下载链接。在APPFUN上获取最新版本的软件，了解软件功能、大小、更新时间等详细信息';
+const keywords = '软件详情,软件下载,软件版本,软件信息,APPFUN';
+const canonical = `https://appfun.fun/software/${id}`;
+const structuredData = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "",
+  "description": "",
+  "url": canonical,
+  "applicationCategory": "",
+  "operatingSystem": "",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "CNY"
+  }
+};
 ---
 
-<Layout title="软件详情" description="查看软件的详细信息、版本历史和下载链接">
+<Layout 
+  title={title} 
+  description={description} 
+  keywords={keywords}
+  canonical={canonical}
+  structuredDataType="software"
+  structuredData={structuredData}
+>
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
     <!-- 软件信息容器 -->
     <div id="software-container">

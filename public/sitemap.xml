@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <!-- 首页 -->
+  <url>
+    <loc>https://appfun.fun/</loc>
+    <lastmod>2025-10-13</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://appfun.fun/" />
+  </url>
+  
+  <!-- 主要页面 -->
+  <url>
+    <loc>https://appfun.fun/software</loc>
+    <lastmod>2025-10-13</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://appfun.fun/software" />
+  </url>
+  
+  <url>
+    <loc>https://appfun.fun/ranking</loc>
+    <lastmod>2025-10-13</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://appfun.fun/ranking" />
+  </url>
+  
+  <url>
+    <loc>https://appfun.fun/search</loc>
+    <lastmod>2025-10-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://appfun.fun/search" />
+  </url>
+  
+  <url>
+    <loc>https://appfun.fun/about</loc>
+    <lastmod>2025-10-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://appfun.fun/about" />
+  </url>
+  
+  <url>
+    <loc>https://appfun.fun/sitemap</loc>
+    <lastmod>2025-10-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://appfun.fun/sitemap" />
+  </url>
+  
+  <!-- 分类页面 -->
+  <url>
+    <loc>https://appfun.fun/categories/tools</loc>
+    <lastmod>2025-10-13</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://appfun.fun/categories/tools" />
+  </url>
+  
+  <url>
+    <loc>https://appfun.fun/categories/development</loc>
+    <lastmod>2025-10-13</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://appfun.fun/categories/development" />
+  </url>
+  
+  <url>
+    <loc>https://appfun.fun/categories/design</loc>
+    <lastmod>2025-10-13</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://appfun.fun/categories/design" />
+  </url>
+  
+  <url>
+    <loc>https://appfun.fun/categories/multimedia</loc>
+    <lastmod>2025-10-13</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://appfun.fun/categories/multimedia" />
+  </url>
+  
+  <url>
+    <loc>https://appfun.fun/categories/education</loc>
+    <lastmod>2025-10-13</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://appfun.fun/categories/education" />
+  </url>
+  
+  <url>
+    <loc>https://appfun.fun/categories/games</loc>
+    <lastmod>2025-10-13</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://appfun.fun/categories/games" />
+  </url>
+  
+  <url>
+    <loc>https://appfun.fun/categories/security</loc>
+    <lastmod>2025-10-13</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://appfun.fun/categories/security" />
+  </url>
+  
+  <url>
+    <loc>https://appfun.fun/categories/productivity</loc>
+    <lastmod>2025-10-13</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://appfun.fun/categories/productivity" />
+  </url>
+  
+  <url>
+    <loc>https://appfun.fun/categories/network</loc>
+    <lastmod>2025-10-13</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://appfun.fun/categories/network" />
+  </url>
+  
+  <url>
+    <loc>https://appfun.fun/categories/system</loc>
+    <lastmod>2025-10-13</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://appfun.fun/categories/system" />
+  </url>
+  
+  <url>
+    <loc>https://appfun.fun/categories/other</loc>
+    <lastmod>2025-10-13</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://appfun.fun/categories/other" />
+  </url>
+
+  <url>
+    <loc>https://appfun.fun/software/15</loc>
+    <lastmod>2025-10-13</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://appfun.fun/software/15" />
+  </url>
+  <url>
+    <loc>https://appfun.fun/software/5</loc>
+    <lastmod>2025-10-13</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://appfun.fun/software/5" />
+  </url>
+  <url>
+    <loc>https://appfun.fun/software/4</loc>
+    <lastmod>2025-10-13</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://appfun.fun/software/4" />
+  </url>
+  <url>
+    <loc>https://appfun.fun/software/6</loc>
+    <lastmod>2025-10-13</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://appfun.fun/software/6" />
+  </url>
+  <url>
+    <loc>https://appfun.fun/software/7</loc>
+    <lastmod>2025-10-13</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://appfun.fun/software/7" />
+  </url>
+  <url>
+    <loc>https://appfun.fun/software/3</loc>
+    <lastmod>2025-10-13</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://appfun.fun/software/3" />
+  </url>
+  <url>
+    <loc>https://appfun.fun/software/2</loc>
+    <lastmod>2025-10-13</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://appfun.fun/software/2" />
+  </url>
+  <url>
+    <loc>https://appfun.fun/software/12</loc>
+    <lastmod>2025-10-13</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://appfun.fun/software/12" />
+  </url>
+  <url>
+    <loc>https://appfun.fun/software/1</loc>
+    <lastmod>2025-10-13</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://appfun.fun/software/1" />
+  </url>
+  <url>
+    <loc>https://appfun.fun/software/14</loc>
+    <lastmod>2025-10-13</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://appfun.fun/software/14" />
+  </url>
+  <url>
+    <loc>https://appfun.fun/software/13</loc>
+    <lastmod>2025-10-13</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://appfun.fun/software/13" />
+  </url>
+</urlset>

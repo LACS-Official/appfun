@@ -1,0 +1,13 @@
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://appfun.fun/api/sitemap
+
+# Disallow specific paths if needed
+# Disallow: /api/
+# Disallow: /admin/
+# Disallow: /private/
+
+# Crawl-delay for specific bots (if needed)
+# Crawl-delay: 1

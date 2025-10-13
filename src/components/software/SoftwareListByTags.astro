@@ -224,15 +224,13 @@ const tagsArray = Array.isArray(tags) ? tags : (tags ? tags.split(',').map(t => 
       this.container.innerHTML = `
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           ${softwareList.map((software) => `
-            <div class="bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow duration-200">
+            <div class="bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow duration-200 cursor-pointer" onclick="window.location.href='/software/${software.id}'">
               <div class="p-6">
                 <!-- 软件标题和版本 -->
                 <div class="flex items-start justify-between mb-4">
                   <div class="flex-1 min-w-0">
-                    <h3 class="text-xl font-semibold text-gray-900 truncate">
-                      <a href="/software/${software.id}" class="hover:text-primary-600 transition-colors">
-                        ${software.name}
-                      </a>
+                    <h3 class="text-xl font-semibold text-gray-900 truncate hover:text-primary-600 transition-colors">
+                      ${software.name}
                     </h3>
                     ${software.nameEn ? `<p class="text-sm text-gray-500 truncate mt-1">${software.nameEn}</p>` : ''}
                   </div>
@@ -296,11 +294,24 @@ const tagsArray = Array.isArray(tags) ? tags : (tags ? tags.split(',').map(t => 
 
                 <!-- 操作按钮 -->
                 <div class="flex items-center justify-between pt-2 border-t border-gray-100">
-                  <a href="/software/${software.id}" class="btn btn-outline">
-                    查看详情
-                  </a>
+                  <div class="flex items-center space-x-2">
+                    ${software.officialWebsite ? `
+                      <a 
+                        href="${software.officialWebsite}"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="text-gray-400 hover:text-gray-600 transition-colors"
+                        title="官方网站"
+                        onclick="event.stopPropagation()"
+                      >
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                        </svg>
+                      </a>
+                    ` : ''}
+                  </div>
                   ${software.latestDownloadUrl ? `
-                    <a href="${software.latestDownloadUrl}" target="_blank" rel="noopener noreferrer" class="btn btn-primary" data-protected-download="true">
+                    <a href="${software.latestDownloadUrl}" target="_blank" rel="noopener noreferrer" class="btn btn-primary" data-protected-download="true" onclick="event.stopPropagation()">
                       立即下载
                     </a>
                   ` : ''}
