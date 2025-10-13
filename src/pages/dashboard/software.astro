@@ -1,0 +1,43 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { createClient } from '@supabase/supabase-js';
+import { appConfig } from '../../lib/config';
+
+// 创建 Supabase 客户端
+const supabase = createClient(
+  import.meta.env.PUBLIC_SUPABASE_URL,
+  import.meta.env.PUBLIC_SUPABASE_ANON_KEY
+);
+
+// 检查用户是否已登录
+const { data: { user }, error } = await supabase.auth.getUser();
+
+// 如果用户未登录，重定向到登录页面
+if (!user || error) {
+  return Astro.redirect('/auth/sign-in');
+}
+---
+
+<Layout title="我的软件 - 需要登录">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div class="mb-8">
+      <h1 class="text-3xl font-bold text-gray-900">我的软件</h1>
+      <p class="mt-2 text-gray-600">管理您已购买或激活的软件</p>
+    </div>
+
+    <div class="bg-white shadow rounded-lg p-6">
+      <div class="text-center py-12">
+        <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path>
+        </svg>
+        <h3 class="mt-2 text-sm font-medium text-gray-900">暂无软件</h3>
+        <p class="mt-1 text-sm text-gray-500">您还没有购买或激活任何软件</p>
+        <div class="mt-6">
+          <a href="/" class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
+            浏览软件
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>

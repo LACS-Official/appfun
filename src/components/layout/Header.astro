@@ -1,5 +1,6 @@
 ---
 import { appConfig } from '../../lib/config';
+import AuthButton from '../auth/AuthButton.jsx';
 
 interface Props {
   title?: string;
@@ -58,7 +59,13 @@ const { title = appConfig.title, showSearch = true } = Astro.props;
           <a href="/about" class="text-gray-700 hover:text-primary-600 px-3 py-2 text-sm font-medium transition-colors">
             关于
           </a>
+          <a href="/dashboard/software" class="text-gray-700 hover:text-primary-600 px-3 py-2 text-sm font-medium transition-colors">
+            我的软件
+          </a>
         </nav>
+        
+        <!-- 认证按钮 -->
+        <AuthButton client:load />
       </div>
 
       <!-- 移动端菜单按钮 -->
@@ -93,6 +100,12 @@ const { title = appConfig.title, showSearch = true } = Astro.props;
       <a href="/about" class="text-gray-700 hover:text-primary-600 block px-3 py-2 text-base font-medium">
         关于
       </a>
+      <a href="/dashboard/software" class="text-gray-700 hover:text-primary-600 block px-3 py-2 text-base font-medium">
+        我的软件
+      </a>
+      <div class="pt-2 pb-1 border-t border-gray-200">
+        <AuthButton client:load />
+      </div>
     </div>
   </div>
 </header>
