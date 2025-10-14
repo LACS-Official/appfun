@@ -1,0 +1,43 @@
+name: Check Build on Changes
+
+on:
+  # 在推送到任何分支时触发
+  push:
+    branches: [ '*' ]
+  # 在所有拉取请求时触发
+  pull_request:
+    branches: [ '*' ]
+  # 允许手动触发工作流
+  workflow_dispatch:
+
+jobs:
+  check-build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 检出代码
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 设置Node.js环境
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      # 安装依赖
+      - name: Install dependencies
+        run: npm ci
+
+      # 运行类型检查
+      - name: Type check
+        run: npm run check
+
+      # 运行代码检查
+      - name: Lint
+        run: npm run lint
+
+      # 构建项目
+      - name: Build
+        run: npm run build

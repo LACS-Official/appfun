@@ -16,10 +16,10 @@ export default function createSitemap(): AstroIntegration {
           // 获取软件列表
           let softwareList: any[] = [];
           try {
-            const response = await fetch(`${API_BASE_URL}/app/software/list?limit=1000`);
+            const response = await fetch(`${API_BASE_URL}/app/software?limit=1000`);
             if (response.ok) {
               const data = await response.json();
-              softwareList = data.data || [];
+              softwareList = data.data?.software || [];
             }
           } catch (error) {
             console.error('获取软件列表失败:', error);
