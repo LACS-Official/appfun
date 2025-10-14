@@ -13,14 +13,14 @@ import Label from '../ui/Label.jsx';
 import { useState } from 'react';
 import { ArrowLeft } from 'lucide-react';
 
-export default function ForgotPasswordForm({ className = "", ...props }) {
-  const [email, setEmail] = useState("");
+export default function ForgotPasswordForm({ className = '', ...props }) {
+  const [email, setEmail] = useState('');
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleBack = () => {
-    window.location.href = "/auth/login";
+    window.location.href = '/auth/login';
   };
 
   const handleForgotPassword = async (e) => {
@@ -37,14 +37,14 @@ export default function ForgotPasswordForm({ className = "", ...props }) {
       if (error) throw error;
       setSuccess(true);
     } catch (error) {
-      setError(error.message || "发生了错误");
+      setError(error.message || '发生了错误');
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <div className={cn("flex flex-col gap-6", className)} {...props}>
+    <div className={cn('flex flex-col gap-6', className)} {...props}>
       {success ? (
         <Card>
           <CardHeader>
@@ -90,7 +90,7 @@ export default function ForgotPasswordForm({ className = "", ...props }) {
                 {error && <p className="text-sm text-red-500">{error}</p>}
                 <div className="flex space-x-2">
                   <Button type="submit" className="flex-1" disabled={isLoading}>
-                    {isLoading ? "发送中..." : "发送重置邮件"}
+                    {isLoading ? '发送中...' : '发送重置邮件'}
                   </Button>
                   <Button
                     type="button"
@@ -104,7 +104,7 @@ export default function ForgotPasswordForm({ className = "", ...props }) {
                 </div>
               </div>
               <div className="mt-4 text-center text-sm">
-                已有账户？{" "}
+                已有账户？{' '}
                 <a href="/auth/login" className="underline underline-offset-4">
                   立即登录
                 </a>

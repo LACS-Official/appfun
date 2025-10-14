@@ -1,8 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import { createClient } from '@supabase/supabase-js';
-import { appConfig } from '../../lib/config';
-
 // 创建 Supabase 客户端
 const supabase = createClient(
   import.meta.env.PUBLIC_SUPABASE_URL,

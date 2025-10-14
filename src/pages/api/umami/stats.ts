@@ -1,6 +1,6 @@
 import type { APIRoute } from 'astro';
 
-export const GET: APIRoute = async ({ request }) => {
+export const GET: APIRoute = async () => {
   try {
     // Umami API 配置
     const UMAMI_URL = process.env.UMAMI_URL || 'https://umami.lacs.cc';

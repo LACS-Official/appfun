@@ -12,8 +12,8 @@ import Input from '../ui/Input.jsx';
 import Label from '../ui/Label.jsx';
 import { useState } from 'react';
 
-export default function UpdatePasswordForm({ className = "", ...props }) {
-  const [password, setPassword] = useState("");
+export default function UpdatePasswordForm({ className = '', ...props }) {
+  const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -27,16 +27,16 @@ export default function UpdatePasswordForm({ className = "", ...props }) {
       const { error } = await supabase.auth.updateUser({ password });
       if (error) throw error;
       // 密码更新成功后重定向到主页
-      window.location.href = "/";
+      window.location.href = '/';
     } catch (error) {
-      setError(error.message || "发生了错误");
+      setError(error.message || '发生了错误');
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <div className={cn("flex flex-col gap-6", className)} {...props}>
+    <div className={cn('flex flex-col gap-6', className)} {...props}>
       <Card>
         <CardHeader>
           <CardTitle className="text-2xl">重置您的密码</CardTitle>
@@ -60,7 +60,7 @@ export default function UpdatePasswordForm({ className = "", ...props }) {
               </div>
               {error && <p className="text-sm text-red-500">{error}</p>}
               <Button type="submit" className="w-full" disabled={isLoading}>
-                {isLoading ? "保存中..." : "保存新密码"}
+                {isLoading ? '保存中...' : '保存新密码'}
               </Button>
             </div>
           </form>

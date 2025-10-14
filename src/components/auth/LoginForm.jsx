@@ -12,9 +12,9 @@ import Input from '../ui/Input.jsx';
 import Label from '../ui/Label.jsx';
 import { useState } from 'react';
 
-export default function LoginForm({ className = "", ...props }) {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+export default function LoginForm({ className = '', ...props }) {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(true); // 默认勾选记住登录状态
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -37,16 +37,16 @@ export default function LoginForm({ className = "", ...props }) {
       });
       if (error) throw error;
       // 登录成功后重定向到主页
-      window.location.href = "/";
+      window.location.href = '/';
     } catch (error) {
-      setError(error.message || "发生了错误");
+      setError(error.message || '发生了错误');
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <div className={cn("flex flex-col gap-6", className)} {...props}>
+    <div className={cn('flex flex-col gap-6', className)} {...props}>
       <Card>
         <CardHeader>
           <CardTitle className="text-2xl">登录</CardTitle>
@@ -100,11 +100,11 @@ export default function LoginForm({ className = "", ...props }) {
               </div>
               {error && <p className="text-sm text-red-500">{error}</p>}
               <Button type="submit" className="w-full" disabled={isLoading}>
-                {isLoading ? "登录中..." : "登录"}
+                {isLoading ? '登录中...' : '登录'}
               </Button>
             </div>
             <div className="mt-4 text-center text-sm">
-              还没有账户？{" "}
+              还没有账户？{' '}
               <a
                 href="/auth/sign-up"
                 className="underline underline-offset-4"

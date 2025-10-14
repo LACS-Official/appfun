@@ -151,7 +151,7 @@ const structuredData = {
   </div>
 </Layout>
 
-<script define:vars={{ query }}>
+<script define:vars={{ query }} is:inline>
   import { initializeApiClient, getApiClient } from '../lib/api';
   import { apiConfig } from '../lib/config';
   import { throttle } from '../lib/utils';
@@ -486,10 +486,10 @@ const structuredData = {
         <button 
           onclick="changePage(${i})" 
           class="relative inline-flex items-center px-4 py-2 text-sm font-medium rounded-md border ${
-            isActive 
-              ? 'z-10 bg-primary-50 border-primary-500 text-primary-600' 
-              : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50'
-          }"
+    isActive 
+      ? 'z-10 bg-primary-50 border-primary-500 text-primary-600' 
+      : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50'
+  }"
         >
           ${i}
         </button>
@@ -634,16 +634,16 @@ const structuredData = {
         container.innerHTML = `
           <div class="flex flex-wrap gap-3">
             ${popularTags.map(tag => {
-              const tagName = typeof tag === 'string' ? tag : tag.name;
-              const tagCount = typeof tag === 'object' && tag.count ? tag.count : '';
+      const tagName = typeof tag === 'string' ? tag : tag.name;
+      const tagCount = typeof tag === 'object' && tag.count ? tag.count : '';
               
-              return `
+      return `
                 <button onclick="searchByTag('${tagName}')" class="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium bg-primary-50 text-primary-700 hover:bg-primary-100 transition-colors">
                   ${tagName}
                   ${tagCount ? `<span class="ml-2 text-xs bg-primary-200 text-primary-800 px-2 py-0.5 rounded-full">${tagCount}</span>` : ''}
                 </button>
               `;
-            }).join('')}
+    }).join('')}
           </div>
         `;
       }

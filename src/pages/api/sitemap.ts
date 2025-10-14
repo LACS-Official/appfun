@@ -1,6 +1,6 @@
 import type { APIRoute } from 'astro';
 
-export const GET: APIRoute = async ({ request }) => {
+export const GET: APIRoute = async () => {
   try {
     const API_BASE_URL = 'https://api-g.lacs.cc';
     const SITE_URL = 'https://appfun.fun';

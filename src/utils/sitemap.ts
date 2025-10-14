@@ -6,7 +6,7 @@ export default function createSitemap(): AstroIntegration {
   return {
     name: 'create-sitemap',
     hooks: {
-      'astro:build:done': async ({ dir, routes }) => {
+      'astro:build:done': async () => {
         console.log('Creating sitemap...');
         
         try {

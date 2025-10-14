@@ -1,279 +1,87 @@
 ---
-// 确保页面使用动态渲染，不进行预渲染
-export const prerender = false;
-
-import { createClient } from '../../lib/supabase/server';
 import Layout from '../../layouts/Layout.astro';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../../components/ui/Card.jsx';
-import Button from '../../components/ui/Button.jsx';
-import Input from '../../components/ui/Input.jsx';
-import Label from '../../components/ui/Label.jsx';
-import Avatar from '../../components/ui/Avatar.jsx';
-import { Separator } from '../../components/ui/Separator.jsx';
-
-// 创建Supabase客户端
-const supabase = createClient(Astro.cookies);
-
-// 获取当前用户信息
-let user = null;
-try {
-  const { data } = await supabase.auth.getUser();
-  user = data.user;
-} catch (error) {
-  console.error('获取用户信息失败:', error);
-}
-
-// 如果未登录，重定向到登录页面
-if (!user) {
-  return Astro.redirect('/auth/login');
-}
-
-// 检查是否已启用两步验证（这里只是模拟，实际应该从用户配置中获取）
-const is2FAEnabled = false;
-
-// 获取最近的登录活动（模拟数据）
-const recentLogins = [
-  {
-    id: 1,
-    timestamp: new Date(Date.now() - 1000 * 60 * 30).toLocaleString(), // 30分钟前
-    ip: Astro.request.headers.get('x-forwarded-for') || '127.0.0.1',
-    device: 'Chrome / Windows',
-    location: '本地'
-  },
-  {
-    id: 2,
-    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24).toLocaleString(), // 24小时前
-    ip: '192.168.1.1',
-    device: 'Safari / iOS',
-    location: '未知'
-  }
-];
 ---
 
-<Layout title="安全设置 - 个人中心">
-  <div class="flex min-h-[calc(100vh-8rem)] flex-col py-8 md:py-12">
-    <div class="container max-w-5xl mx-auto px-4">
-      <header class="mb-8">
-        <div class="flex items-center space-x-4">
-          <a href="/account" class="text-gray-500 hover:text-gray-900">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-            </svg>
-          </a>
-          <h1 class="text-3xl font-bold text-gray-900">安全设置</h1>
-        </div>
-        <p class="text-gray-500 mt-2">管理您的账号安全选项</p>
-      </header>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* 侧边栏 */}
-        <aside className="lg:col-span-1">
-          <Card className="sticky top-8">
-            <CardContent className="p-6">
-              <div className="flex flex-col items-center">
-                <div className="relative mb-4">
-                  <Avatar className="h-24 w-24 rounded-full border-4 border-white shadow-md">
-                    <div className="flex h-full w-full items-center justify-center rounded-full bg-primary/10 text-primary">
-                      <span className="text-3xl font-bold">{user?.email?.split('@')[0]?.charAt(0)?.toUpperCase() || 'U'}</span>
-                    </div>
-                  </Avatar>
-                </div>
-                
-                <h2 className="text-xl font-semibold text-gray-900 mb-1">{user?.email?.split('@')[0] || '用户'}</h2>
-                <p className="text-gray-500 text-sm mb-4">{user?.email || '未知邮箱'}</p>
-                
-                <div className="w-full mt-4">
-                  <nav className="space-y-1">
-                    <a href="/account" className="flex items-center px-4 py-2 text-sm font-medium rounded-md text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-colors">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-3 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zm-4 7a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                      </svg>
-                      个人资料
-                    </a>
-                    <a href="/account/settings" className="flex items-center px-4 py-2 text-sm font-medium rounded-md text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-colors">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-3 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
-                      </svg>
-                      账号设置
-                    </a>
-                    <a href="/account/security" className="flex items-center px-4 py-2 text-sm font-medium rounded-md bg-primary/10 text-primary">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                      </svg>
-                      安全设置
-                    </a>
-                  </nav>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </aside>
-
-        {/* 主内容区域 */}
-        <main className="lg:col-span-2">
-          <Card className="mb-6">
-            <CardHeader>
-              <CardTitle>密码管理</CardTitle>
-              <CardDescription>定期更改您的密码以保持账户安全</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <form id="change-password-form" className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="current-password">当前密码</Label>
-                  <Input id="current-password" type="password" placeholder="请输入当前密码" />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="new-password">新密码</Label>
-                  <Input id="new-password" type="password" placeholder="请输入新密码" />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="confirm-password">确认新密码</Label>
-                  <Input id="confirm-password" type="password" placeholder="请再次输入新密码" />
-                </div>
-                <div className="pt-2">
-                  <Button type="submit">更改密码</Button>
-                </div>
-              </form>
-            </CardContent>
-          </Card>
-
-          <Card className="mb-6">
-            <CardHeader>
-              <CardTitle>两步验证</CardTitle>
-              <CardDescription>为您的账户添加额外的安全层</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-6">
-                {is2FAEnabled ? (
-                  <div className="space-y-4">
-                    <div className="flex items-start space-x-3">
-                      <div className="flex-shrink-0 pt-0.5">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                        </svg>
-                      </div>
-                      <div>
-                        <h3 className="font-medium text-gray-900">两步验证已启用</h3>
-                        <p className="text-sm text-gray-500 mt-1">使用验证器应用生成的验证码登录您的账户</p>
-                      </div>
-                    </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <Button type="button" variant="secondary" className="w-full">管理恢复码</Button>
-                      <Button type="button" variant="destructive" className="w-full">禁用两步验证</Button>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="space-y-4">
-                    <div className="flex items-start space-x-3">
-                      <div className="flex-shrink-0 pt-0.5">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                        </svg>
-                      </div>
-                      <div>
-                        <h3 className="font-medium text-gray-900">两步验证未启用</h3>
-                        <p className="text-sm text-gray-500 mt-1">启用两步验证可以显著提高您账户的安全性</p>
-                      </div>
-                    </div>
-                    <Button type="button" className="w-full md:w-auto">启用两步验证</Button>
-                  </div>
-                )}
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>登录活动</CardTitle>
-              <CardDescription>查看您的最近登录历史</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <p className="text-sm text-gray-500 mb-4">监控您账户的登录活动，确保只有您在使用您的账户</p>
-                
-                {recentLogins.map((login) => (
-                  <div key={login.id} className="rounded-lg bg-gray-50 p-4 border border-gray-100">
-                    <div className="flex items-center justify-between mb-2">
-                      <h4 className="font-medium text-gray-900">{login.timestamp}</h4>
-                      <span className={login.id === 1 ? "bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded" : "text-xs text-gray-500"}>
-                        {login.id === 1 ? '当前会话' : ''}
-                      </span>
-                    </div>
-                    <div className="space-y-1 text-sm">
-                      <p className="text-gray-600">IP地址: {login.ip}</p>
-                      <p className="text-gray-600">设备: {login.device}</p>
-                      <p className="text-gray-600">位置: {login.location}</p>
-                    </div>
-                    {login.id !== 1 && (
-                      <div className="mt-3">
-                        <Button type="button" variant="ghost" className="text-xs h-8">登出此会话</Button>
-                      </div>
-                    )}
-                  </div>
-                ))}
-                
-                <div className="pt-4">
-                  <Button type="button" variant="secondary" className="w-full md:w-auto">查看所有登录活动</Button>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </main>
+<Layout title="安全设置">
+  <div class="max-w-4xl mx-auto px-4 py-8">
+    <h1 class="text-3xl font-bold text-gray-900 mb-8">安全设置</h1>
+    
+    <div class="space-y-8">
+      <!-- 修改密码部分 -->
+      <div class="bg-white rounded-lg shadow-md p-6">
+        <h2 class="text-xl font-semibold text-gray-900 mb-4">修改密码</h2>
+        <form class="space-y-4">
+          <div>
+            <label for="currentPassword" class="block text-sm font-medium text-gray-700 mb-2">
+              当前密码
+            </label>
+            <input
+              type="password"
+              id="currentPassword"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+            />
+          </div>
+          
+          <div>
+            <label for="newPassword" class="block text-sm font-medium text-gray-700 mb-2">
+              新密码
+            </label>
+            <input
+              type="password"
+              id="newPassword"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+              minlength="8"
+            />
+          </div>
+          
+          <div>
+            <label for="confirmPassword" class="block text-sm font-medium text-gray-700 mb-2">
+              确认新密码
+            </label>
+            <input
+              type="password"
+              id="confirmPassword"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+            />
+          </div>
+          
+          <button
+            type="submit"
+            class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            修改密码
+          </button>
+        </form>
       </div>
+
+
     </div>
   </div>
 
   <script>
-    // 密码修改表单提交处理
-    document.getElementById('change-password-form')?.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      
-      const formData = new FormData(e.target);
-      const currentPassword = formData.get('current-password');
-      const newPassword = formData.get('new-password');
-      const confirmPassword = formData.get('confirm-password');
-      
-      // 表单验证
-      if (!currentPassword || !newPassword || !confirmPassword) {
-        alert('请填写所有必填字段');
-        return;
-      }
-      
-      if (newPassword !== confirmPassword) {
-        alert('两次输入的新密码不一致');
-        return;
-      }
-      
-      if (newPassword.length < 8 || !/[a-zA-Z]/.test(newPassword) || !/[0-9]/.test(newPassword)) {
-        alert('新密码必须至少8位，且包含字母和数字');
-        return;
-      }
-      
-      try {
-        // 在实际环境中，这里应该调用Supabase API更新密码
-        const supabase = window.supabase;
-        const { error } = await supabase.auth.updateUser({
-          password: newPassword,
-        });
+    // 双重认证切换功能
+    const toggleButton = document.getElementById('two-factor-toggle');
+    if (toggleButton) {
+      toggleButton.addEventListener('click', function() {
+        const toggle = this;
+        const span = toggle.querySelector('span');
         
-        if (error) {
-          throw error;
+        if (span) {
+          if (toggle.classList.contains('bg-gray-200')) {
+            toggle.classList.remove('bg-gray-200');
+            toggle.classList.add('bg-blue-600');
+            span.classList.remove('translate-x-1');
+            span.classList.add('translate-x-6');
+          } else {
+            toggle.classList.remove('bg-blue-600');
+            toggle.classList.add('bg-gray-200');
+            span.classList.remove('translate-x-6');
+            span.classList.add('translate-x-1');
+          }
         }
-        
-        // 显示成功消息
-        alert('密码修改成功！');
-        e.target.reset();
-      } catch (error) {
-        alert('密码修改失败: ' + (error.message || '请稍后重试'));
-        console.error('修改密码失败:', error);
-      }
-    });
-    
-    // 两步验证按钮事件处理
-    const twoFAButton = document.querySelector('button:contains("启用两步验证"), button:contains("禁用两步验证")');
-    if (twoFAButton) {
-      twoFAButton.addEventListener('click', () => {
-        alert('两步验证功能在演示版本中不可用');
       });
     }
   </script>

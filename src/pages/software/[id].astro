@@ -1,11 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import Badge from '../../components/ui/Badge.astro';
-import Card from '../../components/ui/Card.astro';
 import LoadingSpinner from '../../components/ui/LoadingSpinner.astro';
-import ErrorMessage from '../../components/ui/ErrorMessage.astro';
-import DownloadButton from '../../components/ui/DownloadButton.astro';
-
 // 为静态生成提供路径
 export async function getStaticPaths() {
   try {
@@ -117,7 +112,7 @@ const structuredData = {
   </div>
 </Layout>
 
-<script define:vars={{ id }}>
+<script define:vars={{ id }} is:inline>
   // 由于这是在浏览器中运行的脚本，我们需要直接定义这些函数而不是导入
   // API 配置
   const apiConfig = {
@@ -288,13 +283,13 @@ const structuredData = {
   }
 
   // 渲染软件详情
-    function renderSoftwareDetails(software) {
-      console.log('开始渲染软件详情:', software);
-      const container = document.getElementById('software-container');
-      if (!container) {
-        console.error('软件容器元素未找到');
-        return;
-      }
+  function renderSoftwareDetails(software) {
+    console.log('开始渲染软件详情:', software);
+    const container = document.getElementById('software-container');
+    if (!container) {
+      console.error('软件容器元素未找到');
+      return;
+    }
 
     const downloadUrl = software.latestDownloadUrl || getPriorityDownloadLink(software.versions?.[0]?.downloadLinks);
     const systemReqs = software.systemRequirements;
@@ -532,12 +527,12 @@ const structuredData = {
                   </div>
                   <div class="flex items-center space-x-2">
                     <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                      version.versionType === 'release' ? 'bg-green-100 text-green-800' :
-                      version.versionType === 'beta' ? 'bg-yellow-100 text-yellow-800' :
-                      'bg-red-100 text-red-800'
-                    }">
+    version.versionType === 'release' ? 'bg-green-100 text-green-800' :
+      version.versionType === 'beta' ? 'bg-yellow-100 text-yellow-800' :
+        'bg-red-100 text-red-800'
+  }">
                       ${version.versionType === 'release' ? '正式版' : 
-                        version.versionType === 'beta' ? '测试版' : '内测版'}
+      version.versionType === 'beta' ? '测试版' : '内测版'}
                     </span>
                     ${version.isStable ? `
                       <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium bg-blue-100 text-blue-800">
@@ -557,16 +552,16 @@ const structuredData = {
                 ${version.downloadLinks ? `
                   <div class="flex flex-wrap gap-2">
                     ${Object.entries(version.downloadLinks).map(([platform, url]) => {
-                      if (!url) return '';
-                      const platformNames = {
-                        official: '官方下载',
-                        github: 'GitHub',
-                        quark: '夸克网盘',
-                        baidu: '百度网盘',
-                        pan123: '123网盘',
-                        thunder: '迅雷网盘'
-                      };
-                      return `
+      if (!url) return '';
+      const platformNames = {
+        official: '官方下载',
+        github: 'GitHub',
+        quark: '夸克网盘',
+        baidu: '百度网盘',
+        pan123: '123网盘',
+        thunder: '迅雷网盘'
+      };
+      return `
                         <button
                           class="inline-flex items-center px-3 py-1 rounded-md text-xs font-medium bg-gray-100 text-gray-800 hover:bg-gray-200 transition-colors"
                           data-download-url="${url}"
@@ -576,7 +571,7 @@ const structuredData = {
                           <span class="login-prompt-text hidden">登录下载</span>
                         </button>
                       `;
-                    }).join('')}
+    }).join('')}
                   </div>
                 ` : ''}
               </div>
@@ -628,26 +623,26 @@ const structuredData = {
                   <h4 class="text-lg font-semibold text-gray-900">${announcement.title}</h4>
                   <div class="flex items-center space-x-2">
                     <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                      announcement.type === 'security' ? 'bg-red-100 text-red-800' :
-                      announcement.type === 'update' ? 'bg-green-100 text-green-800' :
-                      announcement.type === 'maintenance' ? 'bg-yellow-100 text-yellow-800' :
-                      'bg-blue-100 text-blue-800'
-                    }">
+    announcement.type === 'security' ? 'bg-red-100 text-red-800' :
+      announcement.type === 'update' ? 'bg-green-100 text-green-800' :
+        announcement.type === 'maintenance' ? 'bg-yellow-100 text-yellow-800' :
+          'bg-blue-100 text-blue-800'
+  }">
                       ${announcement.type === 'security' ? '安全公告' :
-                        announcement.type === 'update' ? '更新通知' :
-                        announcement.type === 'maintenance' ? '维护通知' :
-                        announcement.type === 'feature' ? '功能介绍' :
-                        announcement.type === 'bugfix' ? '修复通知' : '一般公告'}
+      announcement.type === 'update' ? '更新通知' :
+        announcement.type === 'maintenance' ? '维护通知' :
+          announcement.type === 'feature' ? '功能介绍' :
+            announcement.type === 'bugfix' ? '修复通知' : '一般公告'}
                     </span>
                     <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                      announcement.priority === 'urgent' ? 'bg-red-100 text-red-800' :
-                      announcement.priority === 'high' ? 'bg-orange-100 text-orange-800' :
-                      announcement.priority === 'normal' ? 'bg-blue-100 text-blue-800' :
-                      'bg-gray-100 text-gray-800'
-                    }">
+    announcement.priority === 'urgent' ? 'bg-red-100 text-red-800' :
+      announcement.priority === 'high' ? 'bg-orange-100 text-orange-800' :
+        announcement.priority === 'normal' ? 'bg-blue-100 text-blue-800' :
+          'bg-gray-100 text-gray-800'
+  }">
                       ${announcement.priority === 'urgent' ? '紧急' :
-                        announcement.priority === 'high' ? '高' :
-                        announcement.priority === 'normal' ? '普通' : '低'}
+      announcement.priority === 'high' ? '高' :
+        announcement.priority === 'normal' ? '普通' : '低'}
                     </span>
                   </div>
                 </div>

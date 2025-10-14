@@ -283,8 +283,8 @@ const {
       this.dotsContainer.innerHTML = this.banners.map((_, index) => `
         <button
           class="w-3 h-3 rounded-full transition-all duration-300 ${
-            index === 0 ? 'bg-white' : 'bg-white bg-opacity-50'
-          }"
+    index === 0 ? 'bg-white' : 'bg-white bg-opacity-50'
+  }"
           data-slide-to="${index}"
           aria-label="切换到第 ${index + 1} 张图片"
         ></button>

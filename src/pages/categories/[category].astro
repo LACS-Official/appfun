@@ -1,11 +1,7 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import SoftwareCard from '../../components/software/SoftwareCard.astro';
 import LoadingSpinner from '../../components/ui/LoadingSpinner.astro';
-import ErrorMessage from '../../components/ui/ErrorMessage.astro';
-import Badge from '../../components/ui/Badge.astro';
 import { softwareCategories } from '../../lib/config';
-
 // 为静态生成提供路径
 export async function getStaticPaths() {
   const categories = softwareCategories.map(category => ({
@@ -154,7 +150,7 @@ const structuredData = {
   </div>
 </Layout>
 
-<script define:vars={{ category, categoryData }}>
+<script define:vars={{ category, categoryData }} is:inline>
   import { initializeApiClient, getApiClient } from '../../lib/api';
   import { apiConfig } from '../../lib/config';
 
@@ -394,10 +390,10 @@ const structuredData = {
         <button 
           onclick="changePage(${i})" 
           class="relative inline-flex items-center px-4 py-2 text-sm font-medium rounded-md border ${
-            isActive 
-              ? 'z-10 bg-primary-50 border-primary-500 text-primary-600' 
-              : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50'
-          }"
+    isActive 
+      ? 'z-10 bg-primary-50 border-primary-500 text-primary-600' 
+      : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50'
+  }"
         >
           ${i}
         </button>

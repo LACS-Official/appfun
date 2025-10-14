@@ -1,5 +1,4 @@
 ---
-import SoftwareCard from './SoftwareCard.astro';
 import LoadingSpinner from '../ui/LoadingSpinner.astro';
 import ErrorMessage from '../ui/ErrorMessage.astro';
 
@@ -12,10 +11,10 @@ interface Props {
 }
 
 const {
-  title = '🆕 最新软件',
-  limit = 6,
+  title = '最新软件',
+  limit = 6, // 未使用但保留接口兼容性
   showViewAll = true,
-  sortBy = 'updatedAt',
+  sortBy = 'updatedAt', // 未使用但保留接口兼容性
   class: className = ''
 } = Astro.props;
 ---

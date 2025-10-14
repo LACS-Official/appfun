@@ -1,7 +1,6 @@
 ---
 import LoadingSpinner from '../ui/LoadingSpinner.astro';
 import ErrorMessage from '../ui/ErrorMessage.astro';
-import type { Software } from '../../types/api';
 
 interface Props {
   title?: string;
@@ -17,7 +16,7 @@ interface Props {
 const {
   title = '软件列表',
   tags = '',
-  limit = 12,
+  limit = 12, // 未使用但保留接口兼容性
   showViewAll = false,
   class: className = '',
   sortBy = 'updatedAt',

@@ -119,7 +119,7 @@ async function handleLogin(body: any, cookies: AstroCookies) {
 /**
  * 处理登出
  */
-async function handleLogout(body: any, cookies: AstroCookies) {
+async function handleLogout(_body: any, cookies: AstroCookies) {
   const supabase = createClient(cookies);
   
   try {
@@ -136,7 +136,7 @@ async function handleLogout(body: any, cookies: AstroCookies) {
 /**
  * 处理验证
  */
-async function handleVerify(body: any, cookies: AstroCookies) {
+async function handleVerify(body: any, _cookies: AstroCookies) {
   const { token } = body;
   
   if (!token) {
@@ -162,7 +162,7 @@ async function handleVerify(body: any, cookies: AstroCookies) {
 /**
  * 处理获取用户信息
  */
-async function handleGetUserInfo(body: any, cookies: AstroCookies) {
+async function handleGetUserInfo(_body: any, cookies: AstroCookies) {
   const supabase = createClient(cookies);
   
   try {
@@ -275,7 +275,7 @@ export const POST: APIRoute = async ({ request, cookies }) => {
 /**
  * 处理GET请求（状态检查）
  */
-export const GET: APIRoute = async ({ request, cookies }) => {
+export const GET: APIRoute = async ({ request }) => {
   const origin = request.headers.get('origin');
   
   if (!validateOrigin(origin)) {

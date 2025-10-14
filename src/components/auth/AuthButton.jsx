@@ -21,7 +21,7 @@ export default function AuthButton() {
 
     // 监听认证状态变化
     const { data: { subscription } } = createClient().auth.onAuthStateChange(
-      (event, session) => {
+      (_event, session) => {
         setUser(session?.user ?? null);
         setLoading(false);
         // 状态变化时关闭菜单
@@ -45,10 +45,10 @@ export default function AuthButton() {
   }, []);
 
   const handleLogout = async () => {
-    const supabase = createClient();
-    await supabase.auth.signOut();
-    window.location.href = '/';
-  };
+      const supabase = createClient();
+      await supabase.auth.signOut();
+      window.location.href = '/';
+    };
 
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);

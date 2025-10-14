@@ -5,12 +5,12 @@ const Separator = React.forwardRef(({ className, ...props }, ref) => (
   <div
     ref={ref}
     className={cn(
-      "my-6 border-t bg-border",
+      'my-6 border-t bg-border',
       className
     )}
     {...props}
   />
 ));
-Separator.displayName = "Separator";
+Separator.displayName = 'Separator';
 
 export { Separator };

@@ -1,8 +1,6 @@
 ---
-import SoftwareCard from './SoftwareCard.astro';
 import LoadingSpinner from '../ui/LoadingSpinner.astro';
 import ErrorMessage from '../ui/ErrorMessage.astro';
-import type { Software } from '../../types/api';
 
 interface Props {
   title?: string;
@@ -13,7 +11,7 @@ interface Props {
 
 const {
   title = '🎨 原创软件',
-  limit = 6,
+  limit = 6, // 未使用但保留接口兼容性
   showViewAll = true,
   class: className = ''
 } = Astro.props;
@@ -163,7 +161,7 @@ const {
 
       this.container.innerHTML = `
         <div class="space-y-4">
-          ${softwareList.map((software, index) => `
+          ${softwareList.map((software) => `
             <div class="bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow duration-200 relative">
               <div class="absolute -top-2 -right-2 z-10">
                 <div class="w-8 h-8 rounded-full bg-purple-500 flex items-center justify-center text-white text-xs font-bold">
@@ -212,19 +210,6 @@ const {
           `).join('')}
         </div>
       `;
-    }
-
-    private formatDate(dateString: string): string {
-      try {
-        const date = new Date(dateString);
-        return date.toLocaleDateString('zh-CN', {
-          year: 'numeric',
-          month: 'short',
-          day: 'numeric'
-        });
-      } catch {
-        return dateString;
-      }
     }
   }
 

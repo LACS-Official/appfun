@@ -1,5 +1,5 @@
-import { createServerClient } from "@supabase/ssr";
-import type { AstroCookies } from "astro";
+import { createServerClient } from '@supabase/ssr';
+import type { AstroCookies } from 'astro';
 
 export function createClient(cookies: AstroCookies) {
   // 检查环境变量是否存在
@@ -7,12 +7,12 @@ export function createClient(cookies: AstroCookies) {
   const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
   
   if (!supabaseUrl || !supabaseAnonKey) {
-    console.warn("Supabase 配置缺失。请在 .env 文件中设置 PUBLIC_SUPABASE_URL 和 PUBLIC_SUPABASE_ANON_KEY");
+    console.warn('Supabase 配置缺失。请在 .env 文件中设置 PUBLIC_SUPABASE_URL 和 PUBLIC_SUPABASE_ANON_KEY');
     // 返回一个模拟客户端，避免应用崩溃
     return {
       auth: {
-        signInWithPassword: () => Promise.resolve({ data: null, error: new Error("Supabase 未配置") }),
-        signUp: () => Promise.resolve({ data: null, error: new Error("Supabase 未配置") }),
+        signInWithPassword: () => Promise.resolve({ data: null, error: new Error('Supabase 未配置') }),
+        signUp: () => Promise.resolve({ data: null, error: new Error('Supabase 未配置') }),
         signOut: () => Promise.resolve({ error: null }),
         getUser: () => Promise.resolve({ data: { user: null }, error: null }),
         onAuthStateChange: () => ({ data: { subscription: { unsubscribe: () => {} } } }),
@@ -20,18 +20,18 @@ export function createClient(cookies: AstroCookies) {
       from: () => ({
         select: () => ({
           eq: () => ({
-            single: () => Promise.resolve({ data: null, error: new Error("Supabase 未配置") })
+            single: () => Promise.resolve({ data: null, error: new Error('Supabase 未配置') })
           })
         }),
         insert: () => ({
           select: () => ({
-            single: () => Promise.resolve({ data: null, error: new Error("Supabase 未配置") })
+            single: () => Promise.resolve({ data: null, error: new Error('Supabase 未配置') })
           })
         }),
         update: () => ({
           eq: () => ({
             select: () => ({
-              single: () => Promise.resolve({ data: null, error: new Error("Supabase 未配置") })
+              single: () => Promise.resolve({ data: null, error: new Error('Supabase 未配置') })
             })
           })
         })
@@ -41,12 +41,12 @@ export function createClient(cookies: AstroCookies) {
   
   // 检查 cookies 对象是否存在
   if (!cookies) {
-    console.error("Cookies 对象不存在");
+    console.error('Cookies 对象不存在');
     // 返回一个模拟客户端，避免应用崩溃
     return {
       auth: {
-        signInWithPassword: () => Promise.resolve({ data: null, error: new Error("Cookies 对象不存在") }),
-        signUp: () => Promise.resolve({ data: null, error: new Error("Cookies 对象不存在") }),
+        signInWithPassword: () => Promise.resolve({ data: null, error: new Error('Cookies 对象不存在') }),
+        signUp: () => Promise.resolve({ data: null, error: new Error('Cookies 对象不存在') }),
         signOut: () => Promise.resolve({ error: null }),
         getUser: () => Promise.resolve({ data: { user: null }, error: null }),
         onAuthStateChange: () => ({ data: { subscription: { unsubscribe: () => {} } } }),
@@ -54,18 +54,18 @@ export function createClient(cookies: AstroCookies) {
       from: () => ({
         select: () => ({
           eq: () => ({
-            single: () => Promise.resolve({ data: null, error: new Error("Cookies 对象不存在") })
+            single: () => Promise.resolve({ data: null, error: new Error('Cookies 对象不存在') })
           })
         }),
         insert: () => ({
           select: () => ({
-            single: () => Promise.resolve({ data: null, error: new Error("Cookies 对象不存在") })
+            single: () => Promise.resolve({ data: null, error: new Error('Cookies 对象不存在') })
           })
         }),
         update: () => ({
           eq: () => ({
             select: () => ({
-              single: () => Promise.resolve({ data: null, error: new Error("Cookies 对象不存在") })
+              single: () => Promise.resolve({ data: null, error: new Error('Cookies 对象不存在') })
             })
           })
         })

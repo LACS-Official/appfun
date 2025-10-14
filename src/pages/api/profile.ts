@@ -101,7 +101,7 @@ export const GET: APIRoute = async ({ cookies }) => {
     }
     
     // 获取用户资料
-    const { data, error } = await supabase
+    const { data } = await supabase
       .from('profiles')
       .select('*')
       .eq('id', user.id)
