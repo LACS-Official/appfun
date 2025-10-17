@@ -7,13 +7,15 @@ interface DownloadButtonProps {
   text?: string;
   downloadUrl: string;
   className?: string;
+  showLoginPrompt?: boolean;
 }
 
 // 默认值设置
 const {
-  text = '下载',
+  text = '立即下载',
   downloadUrl,
   className = '',
+  showLoginPrompt = true
 } = Astro.props;
 
 // 组合类名
@@ -26,6 +28,7 @@ const buttonClassName = cn(
 <button 
   class={buttonClassName} 
   data-download-url={downloadUrl}
+  data-show-login-prompt={showLoginPrompt}
   aria-label="下载软件"
 >
   <!-- 下载图标 -->
@@ -35,52 +38,181 @@ const buttonClassName = cn(
   
   <!-- 按钮文本 -->
   <span class="download-text">{text}</span>
+  {showLoginPrompt && <span class="login-prompt-text hidden">登录下载</span>}
 </button>
 
 <script>
-  import { appConfig } from '../../lib/config';
+  import { createClient } from '../../lib/supabase/client';
 
   class DownloadButtonManager {
     private button: HTMLButtonElement;
     private downloadUrl: string;
-    private originalText: string;
     private downloadText: HTMLElement;
+    private loginPromptText: HTMLElement | null;
+    private showLoginPrompt: boolean;
+    private isLoggedIn: boolean = false;
 
     constructor(button: HTMLButtonElement) {
       this.button = button;
       this.downloadUrl = button.dataset.downloadUrl || '';
+      this.showLoginPrompt = button.dataset.showLoginPrompt === 'true';
+      
       this.downloadText = button.querySelector('.download-text') as HTMLElement;
-      this.originalText = this.downloadText.textContent || '下载';
+      this.loginPromptText = button.querySelector('.login-prompt-text');
 
       this.init();
     }
 
-    private init(): void {
+    private async init(): Promise<void> {
       // 绑定点击事件
       this.button.addEventListener('click', (e) => this.handleClick(e));
       
-      // 初始化按钮状态（默认启用）
-      this.setEnabledState();
+      // 检查用户登录状态
+      await this.checkAuthStatus();
+      
+      // 监听认证状态变化
+      const { data: { subscription } } = createClient().auth.onAuthStateChange(
+        (_event, session) => {
+          this.isLoggedIn = !!session?.user;
+          this.updateButtonState();
+        }
+      );
     }
 
-    private setEnabledState(): void {
+    private async checkAuthStatus(): Promise<void> {
+      try {
+        const supabase = createClient();
+        const { data: { user } } = await supabase.auth.getUser();
+        this.isLoggedIn = !!user;
+        this.updateButtonState();
+      } catch (error) {
+        console.error('检查登录状态失败:', error);
+        this.isLoggedIn = false;
+        this.updateButtonState();
+      }
+    }
+
+    private updateButtonState(): void {
+      if (this.showLoginPrompt) {
+        // 根据登录状态更新按钮状态
+        if (this.isLoggedIn) {
+          // 已登录状态
+          this.button.classList.remove('bg-orange-500', 'hover:bg-orange-600');
+          this.button.classList.add('bg-blue-600', 'hover:bg-blue-700');
+          
+          if (this.downloadText && this.loginPromptText) {
+            this.downloadText.classList.remove('hidden');
+            this.loginPromptText.classList.add('hidden');
+          }
+        } else {
+          // 未登录状态
+          this.button.classList.remove('bg-blue-600', 'hover:bg-blue-700');
+          this.button.classList.add('bg-orange-500', 'hover:bg-orange-600');
+          
+          if (this.downloadText && this.loginPromptText) {
+            this.downloadText.classList.add('hidden');
+            this.loginPromptText.classList.remove('hidden');
+          }
+        }
+      } else {
+        // 如果不需要登录提示，保持默认状态
+        this.button.classList.add('bg-blue-600', 'hover:bg-blue-700');
+      }
+      
       this.button.disabled = false;
-      this.button.classList.remove('opacity-50', 'cursor-not-allowed', 'bg-gray-400', 'text-gray-600');
     }
 
     private handleClick(event: Event): void {
       event.preventDefault();
-      this.performDownload();
+      
+      if (this.showLoginPrompt && !this.isLoggedIn) {
+        // 未登录时跳转到登录页面
+        window.location.href = '/auth/login';
+      } else {
+        // 已登录时显示下载弹窗
+        this.showDownloadModal();
+      }
     }
 
-    private performDownload(): void {
-      if (this.downloadUrl) {
+    private showDownloadModal(): void {
+      // 创建弹窗
+      const modal = document.createElement('div');
+      modal.className = 'fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4';
+      modal.onclick = (e) => {
+        if (e.target === modal) {
+          modal.remove();
+        }
+      };
+      
+      // 弹窗内容
+      const modalContent = document.createElement('div');
+      modalContent.className = 'bg-white rounded-lg shadow-xl max-w-md w-full p-6';
+      
+      // 弹窗头部
+      const modalHeader = document.createElement('div');
+      modalHeader.className = 'flex justify-between items-center mb-4';
+      
+      const title = document.createElement('h3');
+      title.className = 'text-lg font-semibold text-gray-900';
+      title.textContent = '下载软件';
+      
+      const closeButton = document.createElement('button');
+      closeButton.className = 'text-gray-500 hover:text-gray-700';
+      closeButton.innerHTML = '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>';
+      closeButton.onclick = () => modal.remove();
+      
+      modalHeader.appendChild(title);
+      modalHeader.appendChild(closeButton);
+      
+      // 弹窗内容
+      const modalBody = document.createElement('div');
+      modalBody.className = 'mb-4';
+      
+      const versionInfo = document.createElement('p');
+      versionInfo.className = 'text-gray-600 mb-4';
+      versionInfo.textContent = '最新版本下载链接:';
+      
+      const urlDisplay = document.createElement('div');
+      urlDisplay.className = 'bg-gray-100 p-3 rounded-md mb-4 break-all';
+      urlDisplay.textContent = this.downloadUrl;
+      
+      modalBody.appendChild(versionInfo);
+      modalBody.appendChild(urlDisplay);
+      
+      // 弹窗底部按钮
+      const modalFooter = document.createElement('div');
+      modalFooter.className = 'flex justify-end gap-3';
+      
+      const cancelButton = document.createElement('button');
+      cancelButton.className = 'px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition-colors';
+      cancelButton.textContent = '取消';
+      cancelButton.onclick = () => modal.remove();
+      
+      const downloadButton = document.createElement('button');
+      downloadButton.className = 'px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors';
+      downloadButton.textContent = '确认下载';
+      downloadButton.onclick = () => {
         window.open(this.downloadUrl, '_blank', 'noopener,noreferrer');
-
+        
+        // 触发下载事件
         window.dispatchEvent(new CustomEvent('downloadStarted', {
           detail: { url: this.downloadUrl }
         }));
-      }
+        
+        modal.remove();
+      };
+      
+      modalFooter.appendChild(cancelButton);
+      modalFooter.appendChild(downloadButton);
+      
+      // 组装弹窗
+      modalContent.appendChild(modalHeader);
+      modalContent.appendChild(modalBody);
+      modalContent.appendChild(modalFooter);
+      modal.appendChild(modalContent);
+      
+      // 添加到文档
+      document.body.appendChild(modal);
     }
   }
 
@@ -100,6 +232,10 @@ const buttonClassName = cn(
 
 <style>
   .download-text {
+    display: inline;
+  }
+  
+  .login-prompt-text {
     display: inline;
   }
 </style>

@@ -9,6 +9,7 @@ export interface Props {
   title?: string;
   description?: string;
   showSearch?: boolean;
+  showFooter?: boolean;
   class?: string;
   keywords?: string;
   canonical?: string;
@@ -21,6 +22,7 @@ const {
   title = appConfig.title, 
   description = appConfig.description,
   showSearch = true,
+  showFooter = true,
   class: className = '',
   keywords = '软件管理,软件下载,激活码,LACS,APPFUN,有趣软件',
   canonical,
@@ -118,7 +120,7 @@ const canonicalUrl = canonical || new URL(Astro.url.pathname, Astro.site).href;
     </main>
     
     <!-- Footer -->
-    <Footer />
+    {showFooter && <Footer />}
 
     <!-- Loading indicator -->
     <div id="loading-indicator" class="fixed top-0 left-0 w-full h-1 bg-primary-600 transform scale-x-0 transition-transform duration-300 z-50"></div>

@@ -36,6 +36,10 @@ export default function LoginForm({ className = '', ...props }) {
         expiresIn: rememberMe ? '7d' : '1h'
       });
       if (error) throw error;
+      
+      // 设置localStorage登录状态
+      localStorage.setItem('isLoggedIn', 'true');
+      
       // 登录成功后重定向到主页
       window.location.href = '/';
     } catch (error) {
@@ -47,18 +51,16 @@ export default function LoginForm({ className = '', ...props }) {
 
   return (
     <div className={cn('flex flex-col gap-6', className)} {...props}>
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-2xl">登录</CardTitle>
-          <CardDescription>
-            请输入您的邮箱以登录您的账号
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
+      <div className="text-center mb-2">
+        <h2 className="text-2xl font-bold text-gray-800">欢迎回来</h2>
+        <p className="text-gray-600 mt-2">请输入您的账号信息以继续</p>
+      </div>
+      <Card className="border-0 shadow-none">
+        <CardContent className="p-0">
           <form onSubmit={handleLogin}>
             <div className="flex flex-col gap-6">
               <div className="grid gap-2">
-                <Label htmlFor="email">邮箱</Label>
+                <Label htmlFor="email" className="text-gray-700">邮箱</Label>
                 <Input
                   id="email"
                   type="email"
@@ -66,14 +68,15 @@ export default function LoginForm({ className = '', ...props }) {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
+                  className="h-12 rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500"
                 />
               </div>
               <div className="grid gap-2">
                 <div className="flex items-center">
-                  <Label htmlFor="password">密码</Label>
+                  <Label htmlFor="password" className="text-gray-700">密码</Label>
                   <a
                     href="/auth/forgot-password"
-                    className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
+                    className="ml-auto inline-block text-sm text-blue-600 hover:text-blue-800 hover:underline"
                   >
                     忘记密码？
                   </a>
@@ -84,6 +87,7 @@ export default function LoginForm({ className = '', ...props }) {
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                  className="h-12 rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500"
                 />
               </div>
               <div className="flex items-center gap-2">
@@ -92,22 +96,22 @@ export default function LoginForm({ className = '', ...props }) {
                   type="checkbox"
                   checked={rememberMe}
                   onChange={(e) => setRememberMe(e.target.checked)}
-                  className="rounded text-primary-600 focus:ring-primary-500"
+                  className="rounded text-blue-600 focus:ring-blue-500 h-4 w-4"
                 />
-                <Label htmlFor="remember-me" className="text-sm">
+                <Label htmlFor="remember-me" className="text-sm text-gray-700">
                   记住登录状态
                 </Label>
               </div>
-              {error && <p className="text-sm text-red-500">{error}</p>}
-              <Button type="submit" className="w-full" disabled={isLoading}>
+              {error && <p className="text-sm text-red-500 bg-red-50 p-3 rounded-lg">{error}</p>}
+              <Button type="submit" className="w-full h-12 rounded-lg bg-blue-600 hover:bg-blue-700" disabled={isLoading}>
                 {isLoading ? '登录中...' : '登录'}
               </Button>
             </div>
-            <div className="mt-4 text-center text-sm">
+            <div className="mt-6 text-center text-sm text-gray-600">
               还没有账户？{' '}
               <a
                 href="/auth/sign-up"
-                className="underline underline-offset-4"
+                className="text-blue-600 font-medium hover:text-blue-800 hover:underline"
               >
                 立即注册
               </a>

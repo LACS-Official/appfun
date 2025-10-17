@@ -1,6 +1,7 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import LoadingSpinner from '../../components/ui/LoadingSpinner.astro';
+import { createClient } from '../../lib/supabase/client';
 // 为静态生成提供路径
 export async function getStaticPaths() {
   try {
@@ -121,6 +122,9 @@ const structuredData = {
     timeout: 10000,
   };
 
+  // 全局变量，用于跟踪登录状态
+  let globalLoginState = false;
+
   // 工具函数
   function formatDate(date, options = {}) {
     const dateObj = typeof date === 'string' ? new Date(date) : date;
@@ -211,6 +215,82 @@ const structuredData = {
     }
   }
 
+  // 初始化全局登录状态检查
+  async function checkGlobalLoginStatus() {
+    try {
+      // 首先检查localStorage中是否有登录状态
+      const storedLoginState = localStorage.getItem('isLoggedIn');
+      if (storedLoginState !== null) {
+        globalLoginState = storedLoginState === 'true';
+        // 更新所有下载按钮的状态
+        updateAllDownloadButtons();
+        return globalLoginState;
+      }
+      
+      // 如果localStorage中没有，尝试从API获取
+      const response = await fetch('/api/auth/status', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'same-origin'
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        globalLoginState = !!data.user;
+        // 存储到localStorage
+        localStorage.setItem('isLoggedIn', globalLoginState.toString());
+        // 更新所有下载按钮的状态
+        updateAllDownloadButtons();
+      } else {
+        globalLoginState = false;
+        localStorage.setItem('isLoggedIn', 'false');
+        // 更新所有下载按钮的状态
+        updateAllDownloadButtons();
+      }
+    } catch (error) {
+      console.error('检查全局登录状态失败:', error);
+      globalLoginState = false;
+      localStorage.setItem('isLoggedIn', 'false');
+      // 更新所有下载按钮的状态
+      updateAllDownloadButtons();
+    }
+    return globalLoginState;
+  }
+
+  // 更新所有下载按钮的状态
+  function updateAllDownloadButtons() {
+    const downloadButtons = document.querySelectorAll('[data-download-url]');
+    downloadButtons.forEach(button => {
+      const downloadText = button.querySelector('.download-text');
+      const loginPromptText = button.querySelector('.login-prompt-text');
+      
+      if (globalLoginState) {
+        // 已登录状态 - 显示"立即下载"
+        button.classList.remove('bg-orange-500', 'hover:bg-orange-600');
+        button.classList.add('bg-blue-600', 'hover:bg-blue-700');
+        
+        if (downloadText && loginPromptText) {
+          downloadText.classList.remove('hidden');
+          loginPromptText.classList.add('hidden');
+        }
+      } else {
+        // 未登录状态 - 显示"请登录后下载"
+        button.classList.remove('bg-blue-600', 'hover:bg-blue-700');
+        button.classList.add('bg-orange-500', 'hover:bg-orange-600');
+        
+        if (downloadText && loginPromptText) {
+          downloadText.classList.add('hidden');
+          loginPromptText.classList.remove('hidden');
+        }
+      }
+    });
+  }
+
+  // 页面加载时检查登录状态
+  checkGlobalLoginStatus();
+
   // 初始化 API 客户端
   const apiClient = new ApiClient(apiConfig);
 
@@ -218,9 +298,11 @@ const structuredData = {
   let currentVersionFilter = 'all';
 
   document.addEventListener('DOMContentLoaded', () => {
+    // 再次检查登录状态
+    checkGlobalLoginStatus();
+    
     loadSoftwareDetails(id);
     setupEventListeners();
-    initializeDownloadButtons();
   });
 
   // 设置事件监听器
@@ -350,15 +432,16 @@ const structuredData = {
             <div class="flex items-center space-x-4">
               ${downloadUrl ? `
                 <button
-                  class="btn btn-primary btn-lg"
+                  id="main-download-button"
+                  class="btn btn-primary btn-lg bg-orange-500 hover:bg-orange-600"
                   data-download-url="${downloadUrl}"
                   data-show-login-prompt="true"
                   type="button">
                   <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                   </svg>
-                  <span class="download-text">立即下载</span>
-                  <span class="login-prompt-text hidden">登录下载</span>
+                  <span class="download-text hidden">立即下载</span>
+                  <span class="login-prompt-text">请登录后下载</span>
                 </button>
               ` : ''}
               
@@ -477,6 +560,9 @@ const structuredData = {
 
     // 更新页面标题
     document.title = `${software.name} - APPFUN`;
+    
+    // 初始化下载按钮
+    initializeDownloadButtons();
   }
 
   // 加载版本历史
@@ -672,6 +758,37 @@ const structuredData = {
   function initializeDownloadButtons() {
     // 直接初始化，不再依赖authManager
     initDownloadButtonsWithModules();
+    
+    // 确保主下载按钮正确初始化
+    const mainDownloadButton = document.getElementById('main-download-button');
+    if (mainDownloadButton) {
+      // 立即检查登录状态并更新按钮
+      checkGlobalLoginStatus().then(() => {
+        const isLoggedIn = globalLoginState;
+        const downloadText = mainDownloadButton.querySelector('.download-text');
+        const loginPromptText = mainDownloadButton.querySelector('.login-prompt-text');
+        
+        if (isLoggedIn) {
+          // 已登录状态 - 显示"立即下载"
+          mainDownloadButton.classList.remove('bg-orange-500', 'hover:bg-orange-600');
+          mainDownloadButton.classList.add('bg-blue-600', 'hover:bg-blue-700');
+          
+          if (downloadText && loginPromptText) {
+            downloadText.classList.remove('hidden');
+            loginPromptText.classList.add('hidden');
+          }
+        } else {
+          // 未登录状态 - 显示"请登录后下载"
+          mainDownloadButton.classList.remove('bg-blue-600', 'hover:bg-blue-700');
+          mainDownloadButton.classList.add('bg-orange-500', 'hover:bg-orange-600');
+          
+          if (downloadText && loginPromptText) {
+            downloadText.classList.add('hidden');
+            loginPromptText.classList.remove('hidden');
+          }
+        }
+      });
+    }
   }
 
   function initDownloadButtonsWithModules() {
@@ -682,46 +799,255 @@ const structuredData = {
         this.downloadUrl = button.dataset.downloadUrl || '';
         this.downloadText = button.querySelector('.download-text');
         this.loginPromptText = button.querySelector('.login-prompt-text');
+        this.showLoginPrompt = button.dataset.showLoginPrompt === 'true';
+        this.isLoggedIn = false;
+        this.softwareData = null; // 存储软件数据
 
         this.init();
       }
 
-      init() {
-        this.updateButtonState();
+      async init() {
+        // 绑定点击事件
         this.button.addEventListener('click', (e) => this.handleClick(e));
+        
+        // 获取软件数据
+        await this.fetchSoftwareData();
+        
+        // 检查用户登录状态
+        await this.checkAuthStatus();
+        
+        // 监听页面可见性变化，当用户从登录页面返回时更新状态
+        document.addEventListener('visibilitychange', () => {
+          if (!document.hidden) {
+            this.checkAuthStatus();
+          }
+        });
+        
+        // 定期检查登录状态（每30秒）
+        setInterval(() => {
+          this.checkAuthStatus();
+        }, 30000);
+      }
+
+      async fetchSoftwareData() {
+        try {
+          const apiClient = new ApiClient(apiConfig);
+          const response = await apiClient.getSoftwareById(parseInt(id));
+          
+          if (response.success && response.data) {
+            this.softwareData = response.data;
+            
+            // 获取最新版本的下载链接
+            if (this.softwareData.versions && this.softwareData.versions.length > 0) {
+              // 按发布日期排序，获取最新版本
+              const sortedVersions = [...this.softwareData.versions].sort((a, b) => 
+                new Date(b.releaseDate).getTime() - new Date(a.releaseDate).getTime()
+              );
+              const latestVersion = sortedVersions[0];
+              
+              if (latestVersion.downloadLinks) {
+                const priorityLink = getPriorityDownloadLink(latestVersion.downloadLinks);
+                if (priorityLink) {
+                  this.downloadUrl = priorityLink;
+                }
+              }
+            } else if (this.softwareData.latestDownloadUrl) {
+              // 如果没有版本列表但有最新下载链接，使用它
+              this.downloadUrl = this.softwareData.latestDownloadUrl;
+            }
+          }
+        } catch (error) {
+          console.error('获取软件数据失败:', error);
+        }
+      }
+
+      async checkAuthStatus() {
+        try {
+          // 使用全局登录状态检查函数
+          await checkGlobalLoginStatus();
+          this.isLoggedIn = globalLoginState;
+          this.updateButtonState();
+        } catch (error) {
+          console.error('检查登录状态失败:', error);
+          this.isLoggedIn = false;
+          this.updateButtonState();
+        }
+      }
+
+      async checkAuthStatusWithFetch() {
+        try {
+          const response = await fetch('/api/auth/status');
+          if (response.ok) {
+            const data = await response.json();
+            this.isLoggedIn = !!data.user;
+          } else {
+            this.isLoggedIn = false;
+          }
+        } catch (error) {
+          console.error('检查登录状态失败:', error);
+          this.isLoggedIn = false;
+        }
       }
 
       updateButtonState() {
-        this.setEnabledState();
-      }
-
-      setEnabledState() {
-        this.button.disabled = false;
-
-        this.button.classList.remove('bg-orange-500', 'hover:bg-orange-600', 'bg-gray-400', 'hover:bg-gray-500');
-        this.button.classList.add('bg-blue-600', 'hover:bg-blue-700', 'text-white');
-
-        if (this.downloadText && this.loginPromptText) {
-          this.downloadText.classList.remove('hidden');
-          this.loginPromptText.classList.add('hidden');
+        if (this.showLoginPrompt) {
+          // 根据登录状态更新按钮状态
+          if (this.isLoggedIn) {
+            // 已登录状态 - 显示"立即下载"
+            this.button.classList.remove('bg-orange-500', 'hover:bg-orange-600');
+            this.button.classList.add('bg-blue-600', 'hover:bg-blue-700');
+            
+            if (this.downloadText && this.loginPromptText) {
+              this.downloadText.classList.remove('hidden');
+              this.loginPromptText.classList.add('hidden');
+            }
+          } else {
+            // 未登录状态 - 显示"请登录后下载"
+            this.button.classList.remove('bg-blue-600', 'hover:bg-blue-700');
+            this.button.classList.add('bg-orange-500', 'hover:bg-orange-600');
+            
+            if (this.downloadText && this.loginPromptText) {
+              this.downloadText.classList.add('hidden');
+              this.loginPromptText.classList.remove('hidden');
+            }
+          }
+        } else {
+          // 如果不需要登录提示，保持默认状态
+          this.button.classList.add('bg-blue-600', 'hover:bg-blue-700');
+          
+          if (this.downloadText && this.loginPromptText) {
+            this.downloadText.classList.remove('hidden');
+            this.loginPromptText.classList.add('hidden');
+          }
         }
-
-        this.button.removeAttribute('title');
+        
+        this.button.disabled = false;
       }
 
       handleClick(event) {
         event.preventDefault();
-        this.performDownload();
+        
+        if (this.showLoginPrompt && !this.isLoggedIn) {
+          // 未登录时跳转到登录页面
+          window.location.href = '/auth/login';
+        } else {
+          // 已登录时显示下载弹窗
+          this.showDownloadModal();
+        }
       }
 
-      performDownload() {
-        if (this.downloadUrl) {
+      showDownloadModal() {
+        // 创建弹窗
+        const modal = document.createElement('div');
+        modal.className = 'fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4';
+        modal.onclick = (e) => {
+          if (e.target === modal) {
+            modal.remove();
+          }
+        };
+        
+        // 弹窗内容
+        const modalContent = document.createElement('div');
+        modalContent.className = 'bg-white rounded-lg shadow-xl max-w-md w-full p-6';
+        
+        // 弹窗头部
+        const modalHeader = document.createElement('div');
+        modalHeader.className = 'flex justify-between items-center mb-4';
+        
+        const title = document.createElement('h3');
+        title.className = 'text-lg font-semibold text-gray-900';
+        title.textContent = '下载软件';
+        
+        const closeButton = document.createElement('button');
+        closeButton.className = 'text-gray-500 hover:text-gray-700';
+        closeButton.innerHTML = '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>';
+        closeButton.onclick = () => modal.remove();
+        
+        modalHeader.appendChild(title);
+        modalHeader.appendChild(closeButton);
+        
+        // 弹窗内容
+        const modalBody = document.createElement('div');
+        modalBody.className = 'mb-4';
+        
+        // 软件信息
+        if (this.softwareData) {
+          const softwareName = document.createElement('h4');
+          softwareName.className = 'text-md font-medium text-gray-900 mb-2';
+          softwareName.textContent = this.softwareData.name || '软件';
+          modalBody.appendChild(softwareName);
+          
+          // 版本信息
+          const versionInfo = document.createElement('p');
+          versionInfo.className = 'text-sm text-gray-600 mb-3';
+          
+          // 获取最新版本信息
+          let latestVersion = this.softwareData.currentVersion;
+          if (this.softwareData.versions && this.softwareData.versions.length > 0) {
+            // 按发布日期排序，获取最新版本
+            const sortedVersions = [...this.softwareData.versions].sort((a, b) => 
+              new Date(b.releaseDate).getTime() - new Date(a.releaseDate).getTime()
+            );
+            latestVersion = sortedVersions[0].version;
+          }
+          
+          versionInfo.textContent = `最新版本: v${latestVersion || '未知'}`;
+          modalBody.appendChild(versionInfo);
+          
+          // 更新时间
+          if (this.softwareData.updatedAt) {
+            const releaseDate = document.createElement('p');
+            releaseDate.className = 'text-xs text-gray-500 mb-3';
+            releaseDate.textContent = `更新时间: ${formatDate(this.softwareData.updatedAt)}`;
+            modalBody.appendChild(releaseDate);
+          }
+        }
+        
+        const downloadLabel = document.createElement('p');
+        downloadLabel.className = 'text-gray-700 mb-2';
+        downloadLabel.textContent = '下载链接:';
+        
+        const urlDisplay = document.createElement('div');
+        urlDisplay.className = 'bg-gray-100 p-3 rounded-md mb-4 break-all text-sm';
+        urlDisplay.textContent = this.downloadUrl;
+        
+        modalBody.appendChild(downloadLabel);
+        modalBody.appendChild(urlDisplay);
+        
+        // 弹窗底部按钮
+        const modalFooter = document.createElement('div');
+        modalFooter.className = 'flex justify-end gap-3';
+        
+        const cancelButton = document.createElement('button');
+        cancelButton.className = 'px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition-colors';
+        cancelButton.textContent = '取消';
+        cancelButton.onclick = () => modal.remove();
+        
+        const downloadButton = document.createElement('button');
+        downloadButton.className = 'px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors';
+        downloadButton.textContent = '确认下载';
+        downloadButton.onclick = () => {
           window.open(this.downloadUrl, '_blank', 'noopener,noreferrer');
-
+          
+          // 触发下载事件
           window.dispatchEvent(new CustomEvent('downloadStarted', {
             detail: { url: this.downloadUrl }
           }));
-        }
+          
+          modal.remove();
+        };
+        
+        modalFooter.appendChild(cancelButton);
+        modalFooter.appendChild(downloadButton);
+        
+        // 组装弹窗
+        modalContent.appendChild(modalHeader);
+        modalContent.appendChild(modalBody);
+        modalContent.appendChild(modalFooter);
+        modal.appendChild(modalContent);
+        
+        // 添加到文档
+        document.body.appendChild(modal);
       }
     }
 

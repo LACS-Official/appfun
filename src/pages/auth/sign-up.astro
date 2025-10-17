@@ -3,10 +3,26 @@ import Layout from '../../layouts/Layout.astro';
 import SignUpForm from '../../components/auth/SignUpForm.jsx';
 ---
 
-<Layout title="注册">
-  <div class="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
-    <div class="w-full max-w-sm">
-      <SignUpForm client:load />
+<Layout title="注册" showFooter={false}>
+  <div class="min-h-svh flex flex-col md:flex-row bg-gradient-to-br from-blue-50 to-indigo-100">
+    <!-- 左侧图片区域 -->
+    <div class="hidden md:flex md:w-1/2 items-center justify-center p-8">
+      <div class="max-w-md text-center">
+        <img src="/img/APPFUN.webp" alt="APPFUN Logo" class="mx-auto mb-8 w-48 h-auto" />
+        <h1 class="text-3xl font-bold text-gray-800 mb-4">加入 APPFUN</h1>
+        <p class="text-gray-600">注册账号，获取更多有趣软件内容</p>
+      </div>
+    </div>
+    
+    <!-- 右侧表单区域 -->
+    <div class="flex-1 flex items-center justify-center p-6 md:p-10">
+      <div class="w-full max-w-md bg-white rounded-xl shadow-lg p-8">
+        <div class="md:hidden text-center mb-8">
+          <img src="/img/APPFUN.webp" alt="APPFUN Logo" class="mx-auto mb-4 w-24 h-auto" />
+          <h1 class="text-2xl font-bold text-gray-800">加入 APPFUN</h1>
+        </div>
+        <SignUpForm client:load />
+      </div>
     </div>
   </div>
 </Layout>

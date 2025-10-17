@@ -54,16 +54,16 @@ export default function SignUpForm({ className = '', ...props }) {
 
   return (
     <div className={cn('flex flex-col gap-6', className)} {...props}>
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-2xl">注册</CardTitle>
-          <CardDescription>创建新的领创账号</CardDescription>
-        </CardHeader>
-        <CardContent>
+      <div className="text-center mb-2">
+        <h2 className="text-2xl font-bold text-gray-800">创建账号</h2>
+        <p className="text-gray-600 mt-2">加入我们，获取更多有趣软件内容</p>
+      </div>
+      <Card className="border-0 shadow-none">
+        <CardContent className="p-0">
           <form onSubmit={handleSignUp}>
             <div className="flex flex-col gap-6">
               <div className="grid gap-2">
-                <Label htmlFor="email">邮箱</Label>
+                <Label htmlFor="email" className="text-gray-700">邮箱</Label>
                 <Input
                   id="email"
                   type="email"
@@ -71,42 +71,41 @@ export default function SignUpForm({ className = '', ...props }) {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
+                  className="h-12 rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500"
                 />
               </div>
               <div className="grid gap-2">
-                <div className="flex items-center">
-                  <Label htmlFor="password">密码</Label>
-                </div>
+                <Label htmlFor="password" className="text-gray-700">密码</Label>
                 <Input
                   id="password"
                   type="password"
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                  className="h-12 rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500"
                 />
               </div>
               <div className="grid gap-2">
-                <div className="flex items-center">
-                  <Label htmlFor="repeat-password">确认密码</Label>
-                </div>
+                <Label htmlFor="repeat-password" className="text-gray-700">确认密码</Label>
                 <Input
                   id="repeat-password"
                   type="password"
                   required
                   value={repeatPassword}
                   onChange={(e) => setRepeatPassword(e.target.value)}
+                  className="h-12 rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500"
                 />
               </div>
-              {error && <p className="text-sm text-red-500">{error}</p>}
-              <Button type="submit" className="w-full" disabled={isLoading}>
+              {error && <p className="text-sm text-red-500 bg-red-50 p-3 rounded-lg">{error}</p>}
+              <Button type="submit" className="w-full h-12 rounded-lg bg-blue-600 hover:bg-blue-700" disabled={isLoading}>
                 {isLoading ? '注册中...' : '注册'}
               </Button>
             </div>
-            <div className="mt-4 text-center text-sm">
+            <div className="mt-6 text-center text-sm text-gray-600">
               已有账户？{' '}
               <a
                 href="/auth/login"
-                className="underline underline-offset-4"
+                className="text-blue-600 font-medium hover:text-blue-800 hover:underline"
               >
                 立即登录
               </a>

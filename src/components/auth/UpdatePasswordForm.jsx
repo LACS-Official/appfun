@@ -37,18 +37,16 @@ export default function UpdatePasswordForm({ className = '', ...props }) {
 
   return (
     <div className={cn('flex flex-col gap-6', className)} {...props}>
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-2xl">重置您的密码</CardTitle>
-          <CardDescription>
-            请在下方输入您的新密码。
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
+      <div className="text-center mb-2">
+        <h2 className="text-2xl font-bold text-gray-800">设置新密码</h2>
+        <p className="text-gray-600 mt-2">请输入您的新密码以完成密码重置</p>
+      </div>
+      <Card className="border-0 shadow-none">
+        <CardContent className="p-0">
           <form onSubmit={handleUpdatePassword}>
             <div className="flex flex-col gap-6">
               <div className="grid gap-2">
-                <Label htmlFor="password">新密码</Label>
+                <Label htmlFor="password" className="text-gray-700">新密码</Label>
                 <Input
                   id="password"
                   type="password"
@@ -56,10 +54,11 @@ export default function UpdatePasswordForm({ className = '', ...props }) {
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                  className="h-12 rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500"
                 />
               </div>
-              {error && <p className="text-sm text-red-500">{error}</p>}
-              <Button type="submit" className="w-full" disabled={isLoading}>
+              {error && <p className="text-sm text-red-500 bg-red-50 p-3 rounded-lg">{error}</p>}
+              <Button type="submit" className="w-full h-12 rounded-lg bg-blue-600 hover:bg-blue-700" disabled={isLoading}>
                 {isLoading ? '保存中...' : '保存新密码'}
               </Button>
             </div>

@@ -47,6 +47,10 @@ export default function AuthButton() {
   const handleLogout = async () => {
       const supabase = createClient();
       await supabase.auth.signOut();
+      
+      // 清除localStorage登录状态
+      localStorage.setItem('isLoggedIn', 'false');
+      
       window.location.href = '/';
     };
 
