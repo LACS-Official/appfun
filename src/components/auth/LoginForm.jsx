@@ -43,7 +43,16 @@ export default function LoginForm({ className = '', ...props }) {
       // 登录成功后重定向到主页
       window.location.href = '/';
     } catch (error) {
-      setError(error.message || '发生了错误');
+      // 处理特定的错误消息
+      if (error.message.includes('Invalid login credentials')) {
+        setError('邮箱或密码错误，请检查后重试');
+      } else if (error.message.includes('Email not confirmed')) {
+        setError('您的邮箱尚未验证，请检查邮箱并点击验证链接');
+      } else if (error.message.includes('Too many requests')) {
+        setError('请求过于频繁，请稍后再试');
+      } else {
+        setError(error.message || '登录失败，请稍后重试');
+      }
     } finally {
       setIsLoading(false);
     }

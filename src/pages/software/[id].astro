@@ -635,31 +635,6 @@ const structuredData = {
                   </div>
                 ` : ''}
                 
-                ${version.downloadLinks ? `
-                  <div class="flex flex-wrap gap-2">
-                    ${Object.entries(version.downloadLinks).map(([platform, url]) => {
-      if (!url) return '';
-      const platformNames = {
-        official: '官方下载',
-        github: 'GitHub',
-        quark: '夸克网盘',
-        baidu: '百度网盘',
-        pan123: '123网盘',
-        thunder: '迅雷网盘'
-      };
-      return `
-                        <button
-                          class="inline-flex items-center px-3 py-1 rounded-md text-xs font-medium bg-gray-100 text-gray-800 hover:bg-gray-200 transition-colors"
-                          data-download-url="${url}"
-                          data-show-login-prompt="true"
-                          type="button">
-                          <span class="download-text">${platformNames[platform] || platform}</span>
-                          <span class="login-prompt-text hidden">登录下载</span>
-                        </button>
-                      `;
-    }).join('')}
-                  </div>
-                ` : ''}
               </div>
             `).join('')}
           </div>

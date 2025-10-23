@@ -25,8 +25,21 @@ export default function SignUpForm({ className = '', ...props }) {
     setIsLoading(true);
     setError(null);
 
+    // 验证密码长度
+    if (password.length < 8) {
+      setError('密码长度不能少于8位');
+      setIsLoading(false);
+      return;
+    }
+
+    if (password.length > 16) {
+      setError('密码长度不能超过16位');
+      setIsLoading(false);
+      return;
+    }
+
     if (password !== repeatPassword) {
-      setError('密码不匹配');
+      setError('两次输入的密码不匹配');
       setIsLoading(false);
       return;
     }
@@ -43,10 +56,17 @@ export default function SignUpForm({ className = '', ...props }) {
 
       if (error) throw error;
 
-      // 注册成功后重定向到登录页面
+      // 注册成功后重定向到成功页面
       window.location.href = '/auth/sign-up-success';
     } catch (error) {
-      setError(error.message || '发生了错误');
+      // 处理特定的错误消息
+      if (error.message.includes('User already registered')) {
+        setError('该邮箱已被注册，请直接登录或使用其他邮箱');
+      } else if (error.message.includes('Password should be at least')) {
+        setError('密码长度不符合要求，请设置至少8位密码');
+      } else {
+        setError(error.message || '注册失败，请稍后重试');
+      }
     } finally {
       setIsLoading(false);
     }
@@ -83,7 +103,10 @@ export default function SignUpForm({ className = '', ...props }) {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="h-12 rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+                  minLength={8}
+                  maxLength={16}
                 />
+                <p className="text-xs text-gray-500">密码长度需在8-50位之间</p>
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="repeat-password" className="text-gray-700">确认密码</Label>
@@ -94,6 +117,8 @@ export default function SignUpForm({ className = '', ...props }) {
                   value={repeatPassword}
                   onChange={(e) => setRepeatPassword(e.target.value)}
                   className="h-12 rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+                  minLength={8}
+                  maxLength={16}
                 />
               </div>
               {error && <p className="text-sm text-red-500 bg-red-50 p-3 rounded-lg">{error}</p>}

@@ -112,7 +112,16 @@ async function handleLogin(body: any, cookies: AstroCookies) {
       },
     };
   } catch (error: any) {
-    return { success: false, error: error.message || '登录失败' };
+    // 处理特定的错误消息
+    if (error.message.includes('Invalid login credentials')) {
+      return { success: false, error: '邮箱或密码错误，请检查后重试' };
+    } else if (error.message.includes('Email not confirmed')) {
+      return { success: false, error: '您的邮箱尚未验证，请检查邮箱并点击验证链接' };
+    } else if (error.message.includes('Too many requests')) {
+      return { success: false, error: '请求过于频繁，请稍后再试' };
+    } else {
+      return { success: false, error: error.message || '登录失败，请稍后重试' };
+    }
   }
 }
 
