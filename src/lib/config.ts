@@ -84,7 +84,7 @@ export const appConfig = {
   links: {
     documentation: 'https://docs.lacs.cc',
     support: 'https://support.lacs.cc',
-    github: 'https://github.com/lacs-team',
+    github: 'https://github.com/LACS-Official',
     website: 'https://lacs.cc',
   },
 
