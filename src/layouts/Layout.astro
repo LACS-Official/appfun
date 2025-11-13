@@ -39,7 +39,6 @@ const canonicalUrl = canonical || new URL(Astro.url.pathname, Astro.site).href;
 <html lang="zh-CN">
   <head>
     <meta charset="UTF-8" />
-    <meta name="description" content={description} />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="generator" content={Astro.generator} />
     
@@ -87,25 +86,16 @@ const canonicalUrl = canonical || new URL(Astro.url.pathname, Astro.site).href;
     <!-- Theme Color -->
     <meta name="theme-color" content={appConfig.theme.primaryColor} />
 
-    <!-- Viewport Meta for Mobile -->
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-
     <!-- Umami Analytics -->
     <script defer src="https://umami.lacs.cc/script.js" data-website-id={import.meta.env.PUBLIC_UMAMI_WEBSITE_ID || '99e40abd-3eaa-47a1-a6b4-84fc6831aa4e'}></script>
     
     <!-- Structured Data -->
     <StructuredData type={structuredDataType} data={structuredDataProps} />
     
-    <!-- Prevent FOUC (Flash of Unstyled Content) -->
-    <style>
-      html {
-        visibility: hidden;
-        opacity: 0;
-      }
-    </style>
+    <!-- Prevent FOUC: 使用关键样式与字体优化，避免隐藏 html -->
   </head>
   
-  <body class="min-h-screen bg-gray-50 text-gray-900">
+  <body class="min-h-screen">
     <!-- Skip to main content link for accessibility -->
     <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-primary-600 text-white px-4 py-2 rounded-md z-50">
       跳转到主要内容
@@ -115,7 +105,7 @@ const canonicalUrl = canonical || new URL(Astro.url.pathname, Astro.site).href;
     <Header title={appConfig.title} showSearch={showSearch} />
     
     <!-- Main Content -->
-    <main id="main-content" class={`flex-1 ${className}`}>
+    <main id="main-content" class={`flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 ${className}`}>
       <slot />
     </main>
     
@@ -143,9 +133,6 @@ const canonicalUrl = canonical || new URL(Astro.url.pathname, Astro.site).href;
 
       // Remove FOUC prevention
       document.addEventListener('DOMContentLoaded', () => {
-        document.documentElement.style.visibility = 'visible';
-        document.documentElement.style.opacity = '1';
-
         // 设置全局变量
         window.appConfig = appConfig;
       });

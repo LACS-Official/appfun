@@ -36,92 +36,40 @@ const structuredData = {
   structuredDataType="website"
   structuredData={structuredData}
 >
-  <!-- 上部分区域 (30%高度) - 三列水平排列 -->
-  <section class="h-[30vh] bg-gradient-to-br from-blue-50 to-indigo-100 overflow-hidden">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full">
-      <!-- 桌面端：三列布局 -->
-      <div class="hidden lg:flex lg:flex-row lg:gap-6 h-full">
-        <!-- 第一列：轮播图展示区域 -->
-        <div class="flex-1 flex items-center justify-center p-4">
-          <div class="w-full h-full max-w-md">
+  <section class="bg-gradient-to-br from-blue-50 to-indigo-100">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
+        <div class="flex items-center justify-center">
+          <div class="w-full max-w-full">
             <DynamicCarousel
               websiteId={1}
               autoPlay={true}
               interval={5000}
-              class="w-full h-full rounded-xl shadow-lg"
+              class="w-full aspect-video rounded-xl shadow-lg"
               limit={10}
             />
           </div>
         </div>
 
-        <!-- 第二列：最热门软件 -->
-        <div class="flex-1 bg-white/90 backdrop-blur-sm rounded-xl p-5 shadow-lg flex flex-col overflow-hidden">
-          <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center flex-shrink-0">
+        <div class="bg-white/90 backdrop-blur-sm rounded-xl p-5 shadow-lg flex flex-col">
+          <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
             🔥 最热门软件
             <a href="/ranking" class="ml-auto text-sm text-blue-600 hover:text-blue-700 transition-colors">
               更多 →
             </a>
           </h3>
-          <div id="top-popular-container" class="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-blue-300 scrollbar-track-transparent">
-            <!-- 热门软件列表将在这里加载 -->
+          <div id="top-popular-container" class="space-y-3">
           </div>
         </div>
 
-        <!-- 第三列：最新软件 -->
-        <div class="flex-1 bg-white/90 backdrop-blur-sm rounded-xl p-5 shadow-lg flex flex-col overflow-hidden">
-          <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center flex-shrink-0">
+        <div class="bg-white/90 backdrop-blur-sm rounded-xl p-5 shadow-lg flex flex-col">
+          <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
             🆕 最新软件
             <a href="/software?sortBy=updatedAt&sortOrder=desc" class="ml-auto text-sm text-blue-600 hover:text-blue-700 transition-colors">
               更多 →
             </a>
           </h3>
-          <div id="top-latest-container" class="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-blue-300 scrollbar-track-transparent">
-            <!-- 最新软件列表将在这里加载 -->
-          </div>
-        </div>
-      </div>
-
-      <!-- 移动端：垂直堆叠布局 -->
-      <div class="lg:hidden flex flex-col h-full space-y-4 p-4">
-        <!-- 轮播图 -->
-        <div class="flex-1 flex items-center justify-center">
-          <div class="w-full h-full max-w-sm">
-            <DynamicCarousel
-              websiteId={1}
-              autoPlay={true}
-              interval={5000}
-              class="w-full h-full rounded-xl shadow-lg"
-              limit={10}
-            />
-          </div>
-        </div>
-
-        <!-- 热门和最新软件 -->
-        <div class="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <!-- 最热门软件 -->
-          <div class="bg-white/90 backdrop-blur-sm rounded-xl p-4 shadow-lg">
-            <h3 class="text-base font-semibold text-gray-900 mb-3 flex items-center">
-              🔥 最热门
-              <a href="/ranking" class="ml-auto text-xs text-blue-600 hover:text-blue-700 transition-colors">
-                更多 →
-              </a>
-            </h3>
-            <div id="top-popular-container-mobile" class="space-y-2 h-32 overflow-y-auto scrollbar-thin scrollbar-thumb-blue-300 scrollbar-track-transparent">
-              <!-- 热门软件列表将在这里加载 -->
-            </div>
-          </div>
-
-          <!-- 最新软件 -->
-          <div class="bg-white/90 backdrop-blur-sm rounded-xl p-4 shadow-lg">
-            <h3 class="text-base font-semibold text-gray-900 mb-3 flex items-center">
-              🆕 最新
-              <a href="/software?sortBy=updatedAt&sortOrder=desc" class="ml-auto text-xs text-blue-600 hover:text-blue-700 transition-colors">
-                更多 →
-              </a>
-            </h3>
-            <div id="top-latest-container-mobile" class="space-y-2 h-32 overflow-y-auto scrollbar-thin scrollbar-thumb-blue-300 scrollbar-track-transparent">
-              <!-- 最新软件列表将在这里加载 -->
-            </div>
+          <div id="top-latest-container" class="space-y-3">
           </div>
         </div>
       </div>
@@ -131,7 +79,7 @@ const structuredData = {
 
 
   <!-- 下部区域 (50%高度) -->
-  <section class="min-h-[60vh] bg-gray-50 py-8">
+  <section class="bg-gray-50 py-8">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <AllSoftwareGrid limit={20} />
     </div>
