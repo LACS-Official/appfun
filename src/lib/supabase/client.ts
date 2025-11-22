@@ -14,6 +14,7 @@ export function createClient() {
         signUp: () => Promise.resolve({ data: null, error: new Error('Supabase 未配置') }),
         signOut: () => Promise.resolve({ error: null }),
         getUser: () => Promise.resolve({ data: { user: null }, error: null }),
+        updateUser: () => Promise.resolve({ data: null, error: new Error('Supabase 未配置') }),
         onAuthStateChange: () => ({ data: { subscription: { unsubscribe: () => {} } } }),
       },
       from: () => ({

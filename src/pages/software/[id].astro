@@ -836,6 +836,30 @@ const structuredData = {
         }
       }
 
+      // 获取软件版本详情API调用
+      async fetchSoftwareVersions() {
+        try {
+          const apiClient = new ApiClient(apiConfig);
+          const response = await apiClient.getSoftwareVersions(parseInt(id), {
+            page: 1,
+            limit: 10,
+            sortBy: 'releaseDate',
+            sortOrder: 'desc'
+          });
+          
+          if (response.success && response.data && response.data.length > 0) {
+            // 返回按发布日期排序的版本列表
+            return response.data.sort((a, b) => 
+              new Date(b.releaseDate).getTime() - new Date(a.releaseDate).getTime()
+            );
+          }
+          return [];
+        } catch (error) {
+          console.error('获取软件版本失败:', error);
+          return [];
+        }
+      }
+
       async checkAuthStatus() {
         try {
           // 使用全局登录状态检查函数
@@ -911,7 +935,7 @@ const structuredData = {
         }
       }
 
-      showDownloadModal() {
+      async showDownloadModal() {
         // 创建弹窗
         const modal = document.createElement('div');
         modal.className = 'fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4';
@@ -956,64 +980,278 @@ const structuredData = {
           const versionInfo = document.createElement('p');
           versionInfo.className = 'text-sm text-gray-600 mb-3';
           
-          // 获取最新版本信息
-          let latestVersion = this.softwareData.currentVersion;
+          // 先显示加载状态
+          versionInfo.textContent = '正在获取下载链接...';
+          modalBody.appendChild(versionInfo);
+          
+          // 下载链接选项容器
+          const linksContainer = document.createElement('div');
+          linksContainer.className = 'grid grid-cols-1 gap-2 mb-4 hidden';
+          modalBody.appendChild(linksContainer);
+          
+          // 当前选中的链接 - 移到try-catch外部，确保整个方法都能访问
+          let selectedLink = this.downloadUrl;
+          
+          try {
+            // 调用版本API获取完整的版本信息
+            const versions = await this.fetchSoftwareVersions();
+            let latestVersion = this.softwareData.currentVersion;
+            let downloadLinks = {};
+            
+            if (versions && versions.length > 0) {
+              // 使用API返回的最新版本信息
+              const latestVersionData = versions[0];
+              latestVersion = latestVersionData.version;
+              
+              // 获取API返回的完整下载链接
+              if (latestVersionData.downloadLinks) {
+                downloadLinks = latestVersionData.downloadLinks;
+              }
+            } else if (this.softwareData.versions && this.softwareData.versions.length > 0) {
+              // 降级使用软件详情中的版本信息
+              const sortedVersions = [...this.softwareData.versions].sort((a, b) => 
+                new Date(b.releaseDate).getTime() - new Date(a.releaseDate).getTime()
+              );
+              latestVersion = sortedVersions[0].version;
+              
+              if (sortedVersions[0].downloadLinks) {
+                downloadLinks = sortedVersions[0].downloadLinks;
+              }
+            }
+            
+            // 更新版本信息显示
+            versionInfo.textContent = `最新版本: v${latestVersion || '未知'}`;
+            
+            // 更新时间
+            if (this.softwareData.updatedAt) {
+              const releaseDate = document.createElement('p');
+              releaseDate.className = 'text-xs text-gray-500 mb-3';
+              releaseDate.textContent = `更新时间: ${formatDate(this.softwareData.updatedAt)}`;
+              modalBody.insertBefore(releaseDate, versionInfo.nextSibling);
+            }
+            
+            // 下载链接选择标签
+            const linksLabel = document.createElement('p');
+            linksLabel.className = 'text-gray-700 mb-2 font-medium';
+            linksLabel.textContent = '选择下载渠道:';
+            modalBody.insertBefore(linksLabel, linksContainer);
+            
+            // 下载渠道配置，使用更直观的图标和颜色标识，增加URL匹配规则和优先级
+            const linkTypes = {
+              official: { name: '官方下载', icon: '🏢', color: 'bg-blue-100 border-blue-200', priority: 1 },
+              baidu: { name: '百度网盘', icon: '📁', color: 'bg-blue-50 border-blue-100', regex: /pan\.baidu\.com/, priority: 2 },
+              quark: { name: '夸克网盘', icon: '⚡', color: 'bg-purple-50 border-purple-100', regex: /pan\.quark\.cn/, priority: 3 },
+              thunderPan: { name: '迅雷网盘', icon: '💨', color: 'bg-orange-50 border-orange-100', regex: /kuai\.xunlei\.com/, priority: 4 },
+              pan123: { name: '123网盘', icon: '🔗', color: 'bg-green-50 border-green-100', regex: /123pan\.com/, priority: 5 },
+              github: { name: 'GitHub', icon: '🐙', color: 'bg-gray-50 border-gray-200', regex: /github\.com/, priority: 6 },
+              thunder: { name: '迅雷', icon: '⚡', color: 'bg-red-50 border-red-100', regex: /thunder:|xunlei:/, priority: 7 }
+            };
+              
+              // 合并直接的downloadUrl到downloadLinks对象
+              if (this.downloadUrl && !Object.values(downloadLinks).some(link => link === this.downloadUrl || 
+                  (Array.isArray(link) && link.includes(this.downloadUrl)))) {
+                // 自动识别链接类型
+                let matchedType = 'official'; // 默认类型
+                let highestPriorityMatch = Infinity;
+                
+                Object.entries(linkTypes).forEach(([key, { regex, priority }]) => {
+                  if (regex && regex.test(this.downloadUrl) && priority < highestPriorityMatch) {
+                    matchedType = key;
+                    highestPriorityMatch = priority;
+                  }
+                });
+                
+                // 如果没有匹配到具体类型，使用官方下载
+                downloadLinks[matchedType] = this.downloadUrl;
+              }
+              
+              // 按优先级排序下载渠道
+              const sortedLinkTypes = Object.entries(linkTypes).sort((a, b) => a[1].priority - b[1].priority);
+              
+              // 创建链接选项 - 改为按钮形式
+              sortedLinkTypes.forEach(([key, { name, icon, color }]) => {
+                if (downloadLinks[key] && downloadLinks[key].trim()) {
+                  // 处理可能是数组的备份链接
+                  const links = Array.isArray(downloadLinks[key]) ? downloadLinks[key] : [downloadLinks[key]];
+                  
+                  links.forEach((link, index) => {
+                    if (link && link.trim()) {
+                      const linkButton = document.createElement('button');
+                      linkButton.className = `flex items-center p-3 border rounded-md cursor-pointer hover:bg-gray-50 transition-all duration-200 ${color} w-full justify-between text-left mb-2`;
+                      linkButton.title = `点击跳转到${name}`;
+                      
+                      // 添加悬停动画效果
+                      linkButton.style.transform = 'scale(1)';
+                      linkButton.style.transition = 'transform 0.2s ease, box-shadow 0.2s ease';
+                      linkButton.addEventListener('mouseenter', () => {
+                        linkButton.style.transform = 'scale(1.01)';
+                        linkButton.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.1)';
+                      });
+                      linkButton.addEventListener('mouseleave', () => {
+                        linkButton.style.transform = 'scale(1)';
+                        linkButton.style.boxShadow = 'none';
+                      });
+                      
+                      // 点击事件 - 直接在新标签页打开链接
+                      linkButton.onclick = () => {
+                        window.open(link, '_blank', 'noopener,noreferrer');
+                        
+                        // 触发下载事件
+                        window.dispatchEvent(new CustomEvent('downloadStarted', {
+                          detail: { url: link }
+                        }));
+                      };
+                      
+                      const linkName = document.createElement('div');
+                      linkName.className = 'flex items-center';
+                      linkName.innerHTML = `<span class="mr-2">${icon}</span>${name}${links.length > 1 ? ` <span class="text-xs bg-gray-200 text-gray-700 px-1.5 py-0.5 rounded-full">备用${index + 1}</span>` : ''}`;
+                      
+                      const openIcon = document.createElement('span');
+                      openIcon.className = 'ml-auto text-gray-400';
+                      openIcon.innerHTML = '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>';
+                      
+                      linkButton.appendChild(linkName);
+                      linkButton.appendChild(openIcon);
+                      
+                      linksContainer.appendChild(linkButton);
+                    }
+                  });
+                }
+              });
+          
+          // 显示链接容器
+          linksContainer.classList.remove('hidden');
+          
+          // 如果没有找到任何下载链接，显示默认链接
+          if (linksContainer.children.length === 0 && this.downloadUrl) {
+            const defaultLinkButton = document.createElement('button');
+            defaultLinkButton.className = 'flex items-center p-3 border rounded-md cursor-pointer hover:bg-gray-50 transition-colors bg-gray-50 w-full justify-between text-left mb-2';
+            defaultLinkButton.title = '点击跳转到默认下载链接';
+            
+            // 添加悬停动画效果
+            defaultLinkButton.style.transform = 'scale(1)';
+            defaultLinkButton.style.transition = 'transform 0.2s ease, box-shadow 0.2s ease';
+            defaultLinkButton.addEventListener('mouseenter', () => {
+              defaultLinkButton.style.transform = 'scale(1.01)';
+              defaultLinkButton.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.1)';
+            });
+            defaultLinkButton.addEventListener('mouseleave', () => {
+              defaultLinkButton.style.transform = 'scale(1)';
+              defaultLinkButton.style.boxShadow = 'none';
+            });
+            
+            // 点击事件 - 直接在新标签页打开链接
+            defaultLinkButton.onclick = () => {
+              window.open(this.downloadUrl, '_blank', 'noopener,noreferrer');
+              
+              // 触发下载事件
+              window.dispatchEvent(new CustomEvent('downloadStarted', {
+                detail: { url: this.downloadUrl }
+              }));
+            };
+            
+            const linkName = document.createElement('div');
+            linkName.className = 'flex items-center';
+            linkName.innerHTML = '<span class="mr-2">📥</span>默认下载';
+            
+            const openIcon = document.createElement('span');
+            openIcon.className = 'ml-auto text-gray-400';
+            openIcon.innerHTML = '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>';
+            
+            defaultLinkButton.appendChild(linkName);
+            defaultLinkButton.appendChild(openIcon);
+            
+            linksContainer.appendChild(defaultLinkButton);
+          }
+          
+          // 处理无链接情况
+          if (linksContainer.children.length === 0 && !this.downloadUrl) {
+            const noLinkMessage = document.createElement('p');
+            noLinkMessage.className = 'text-gray-500 text-center p-4 bg-gray-50 rounded-md';
+            noLinkMessage.textContent = '暂无可下载链接';
+            linksContainer.appendChild(noLinkMessage);
+          }
+        } catch (error) {
+          console.error('获取下载链接失败:', error);
+          // 显示错误信息
+          const errorMessage = document.createElement('p');
+          errorMessage.className = 'text-red-500 text-sm mt-2';
+          errorMessage.textContent = '获取下载链接失败，请稍后再试';
+          modalBody.appendChild(errorMessage);
+          
+          // 降级使用原有数据
           if (this.softwareData.versions && this.softwareData.versions.length > 0) {
             // 按发布日期排序，获取最新版本
             const sortedVersions = [...this.softwareData.versions].sort((a, b) => 
               new Date(b.releaseDate).getTime() - new Date(a.releaseDate).getTime()
             );
-            latestVersion = sortedVersions[0].version;
-          }
-          
-          versionInfo.textContent = `最新版本: v${latestVersion || '未知'}`;
-          modalBody.appendChild(versionInfo);
-          
-          // 更新时间
-          if (this.softwareData.updatedAt) {
-            const releaseDate = document.createElement('p');
-            releaseDate.className = 'text-xs text-gray-500 mb-3';
-            releaseDate.textContent = `更新时间: ${formatDate(this.softwareData.updatedAt)}`;
-            modalBody.appendChild(releaseDate);
+            const latestVersion = sortedVersions[0].version;
+            versionInfo.textContent = `最新版本: v${latestVersion || '未知'}`;
+            
+            // 显示下载链接选择区域
+            linksContainer.classList.remove('hidden');
+            
+            // 如果有降级可用的下载链接，显示它们
+                if (sortedVersions[0].downloadLinks) {
+                  const downloadLinks = sortedVersions[0].downloadLinks;
+                  // 这里可以复用之前的链接创建逻辑
+                  // 为简化，我们直接显示默认链接
+                  if (Object.values(downloadLinks).length > 0) {
+                    const defaultLinkKey = Object.keys(downloadLinks)[0];
+                    const defaultLink = downloadLinks[defaultLinkKey];
+                    const defaultLinkButton = document.createElement('button');
+                    defaultLinkButton.className = 'flex items-center p-3 border rounded-md cursor-pointer hover:bg-gray-50 transition-colors bg-gray-50 w-full justify-between text-left mb-2';
+                    defaultLinkButton.title = '点击跳转到下载链接';
+                    
+                    // 添加悬停动画效果
+                    defaultLinkButton.style.transform = 'scale(1)';
+                    defaultLinkButton.style.transition = 'transform 0.2s ease, box-shadow 0.2s ease';
+                    defaultLinkButton.addEventListener('mouseenter', () => {
+                      defaultLinkButton.style.transform = 'scale(1.01)';
+                      defaultLinkButton.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.1)';
+                    });
+                    defaultLinkButton.addEventListener('mouseleave', () => {
+                      defaultLinkButton.style.transform = 'scale(1)';
+                      defaultLinkButton.style.boxShadow = 'none';
+                    });
+                    
+                    // 点击事件 - 直接在新标签页打开链接
+                    defaultLinkButton.onclick = () => {
+                      window.open(defaultLink, '_blank', 'noopener,noreferrer');
+                      
+                      // 触发下载事件
+                      window.dispatchEvent(new CustomEvent('downloadStarted', {
+                        detail: { url: defaultLink }
+                      }));
+                    };
+                    
+                    const linkName = document.createElement('div');
+                    linkName.className = 'flex items-center';
+                    linkName.innerHTML = `<span class="mr-2">📥</span>${defaultLinkKey === 'official' ? '官方下载' : '下载链接'}`;
+                    
+                    const openIcon = document.createElement('span');
+                    openIcon.className = 'ml-auto text-gray-400';
+                    openIcon.innerHTML = '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>';
+                    
+                    defaultLinkButton.appendChild(linkName);
+                    defaultLinkButton.appendChild(openIcon);
+                    
+                    linksContainer.appendChild(defaultLinkButton);
+                  }
+                }
           }
         }
         
-        const downloadLabel = document.createElement('p');
-        downloadLabel.className = 'text-gray-700 mb-2';
-        downloadLabel.textContent = '下载链接:';
-        
-        const urlDisplay = document.createElement('div');
-        urlDisplay.className = 'bg-gray-100 p-3 rounded-md mb-4 break-all text-sm';
-        urlDisplay.textContent = this.downloadUrl;
-        
-        modalBody.appendChild(downloadLabel);
-        modalBody.appendChild(urlDisplay);
-        
         // 弹窗底部按钮
         const modalFooter = document.createElement('div');
-        modalFooter.className = 'flex justify-end gap-3';
+        modalFooter.className = 'flex justify-center';
         
-        const cancelButton = document.createElement('button');
-        cancelButton.className = 'px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition-colors';
-        cancelButton.textContent = '取消';
-        cancelButton.onclick = () => modal.remove();
+        const closeButton = document.createElement('button');
+        closeButton.className = 'px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition-colors flex items-center justify-center';
+        closeButton.textContent = '关闭';
+        closeButton.onclick = () => modal.remove();
         
-        const downloadButton = document.createElement('button');
-        downloadButton.className = 'px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors';
-        downloadButton.textContent = '确认下载';
-        downloadButton.onclick = () => {
-          window.open(this.downloadUrl, '_blank', 'noopener,noreferrer');
-          
-          // 触发下载事件
-          window.dispatchEvent(new CustomEvent('downloadStarted', {
-            detail: { url: this.downloadUrl }
-          }));
-          
-          modal.remove();
-        };
-        
-        modalFooter.appendChild(cancelButton);
-        modalFooter.appendChild(downloadButton);
+        modalFooter.appendChild(closeButton);
         
         // 组装弹窗
         modalContent.appendChild(modalHeader);
@@ -1023,6 +1261,7 @@ const structuredData = {
         
         // 添加到文档
         document.body.appendChild(modal);
+      }
       }
     }
 

@@ -17,10 +17,10 @@ export const PUT: APIRoute = async ({ request, cookies }) => {
     
     // 解析请求体
     const body = await request.json();
-    const { username, bio } = body;
+    const { displayName, bio } = body;
     
     // 验证数据
-    if (!username || username.trim() === '') {
+    if (!displayName || displayName.trim() === '') {
       return new Response(JSON.stringify({ error: '用户名不能为空' }), {
         status: 400,
         headers: { 'Content-Type': 'application/json' },
@@ -42,7 +42,7 @@ export const PUT: APIRoute = async ({ request, cookies }) => {
       const result = await supabase
         .from('profiles')
         .update({
-          username: username.trim(),
+          displayName: displayName.trim(),
           bio: bio || '',
           updated_at: new Date().toISOString()
         })
@@ -58,7 +58,7 @@ export const PUT: APIRoute = async ({ request, cookies }) => {
         .from('profiles')
         .insert({
           id: user.id,
-          username: username.trim(),
+          displayName: displayName.trim(),
           bio: bio || '',
           updated_at: new Date().toISOString()
         })
@@ -110,7 +110,7 @@ export const GET: APIRoute = async ({ cookies }) => {
     // 如果没有找到资料，返回默认资料
     const profile = data || {
       id: user.id,
-      username: user?.email?.split('@')[0] || '用户',
+      displayName: user?.email?.split('@')[0] || '用户',
       bio: '',
       avatar_url: null,
       updated_at: new Date().toISOString()
