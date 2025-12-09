@@ -1,121 +1,46 @@
-import React, { useState, useRef } from 'react';
+import React from 'react';
+import { Tab } from '@headlessui/react';
 import { cn } from '../../lib/utils';
 
-const Tabs = React.forwardRef(({ defaultValue, children, className, ...props }, ref) => {
-  const [value, setValue] = useState(defaultValue);
-  
-  React.useImperativeHandle(ref, () => ({
-    value,
-    setValue,
-  }));
-  
+const Tabs = ({ defaultIndex = 0, selectedIndex, onChange, children, className, ...props }) => {
   return (
-    <div ref={ref} className={className} {...props}>
-      {React.Children.map(children, (child) => {
-        if (child.type === TabsList) {
-          return React.cloneElement(child, { value, onValueChange: setValue });
-        }
-        return child;
-      })}
-    </div>
+    <Tab.Group defaultIndex={selectedIndex == null ? defaultIndex : undefined} selectedIndex={selectedIndex} onChange={onChange}>
+      <div className={className} {...props}>{children}</div>
+    </Tab.Group>
   );
-});
-Tabs.displayName = 'Tabs';
+};
 
-const TabsList = React.forwardRef(({ children, value, onValueChange, className, ...props }, ref) => {
+const TabsList = ({ children, className, ...props }) => {
   return (
-    <div
-      ref={ref}
-      className={cn(
-        'inline-flex h-10 items-center justify-center rounded-md bg-muted p-1 text-muted-foreground',
-        className
-      )}
-      {...props}
-    >
-      {React.Children.map(children, (child) => {
-        if (child.type === TabsTrigger) {
-          return React.cloneElement(child, {
-            pressed: child.props.value === value,
-            onPressedChange: (pressed) => {
-              if (pressed) {
-                onValueChange(child.props.value);
-              }
-            },
-          });
-        }
-        return child;
-      })}
-    </div>
+    <Tab.List className={cn('inline-flex h-10 items-center justify-center rounded-md bg-gray-100 dark:bg-gray-800 p-1 text-gray-600 dark:text-gray-300', className)} {...props}>
+      {children}
+    </Tab.List>
   );
-});
-TabsList.displayName = 'TabsList';
+};
 
-const TabsTrigger = React.forwardRef(({ children, pressed, onPressedChange, className, ...props }, ref) => {
+const TabsTrigger = ({ children, className, ...props }) => {
   return (
-    <button
-      ref={ref}
-      className={cn(
-        'inline-flex items-center justify-center whitespace-nowrap rounded-md px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm',
-        pressed && 'data-[state=active]',
-        className
-      )}
-      onClick={() => onPressedChange(true)}
+    <Tab
+      className={({ selected }) =>
+        cn(
+          'inline-flex items-center justify-center whitespace-nowrap rounded-md px-3 py-1.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2',
+          selected ? 'bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 shadow-sm' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700',
+          className
+        )
+      }
       {...props}
     >
       {children}
-    </button>
+    </Tab>
   );
-});
-TabsTrigger.displayName = 'TabsTrigger';
+};
 
-const TabsContent = React.forwardRef(({ children, value, className, ...props }, ref) => {
-  const tabValue = React.useContext(TabsValueContext);
-  const isActive = value === tabValue;
-  
+const TabsContent = ({ children, className, ...props }) => {
   return (
-    <div
-      ref={ref}
-      className={cn(
-        'mt-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
-        !isActive && 'hidden',
-        className
-      )}
-      {...props}
-    >
-      {isActive && children}
-    </div>
+    <Tab.Panel className={cn('mt-2 focus:outline-none', className)} {...props}>
+      {children}
+    </Tab.Panel>
   );
-});
-TabsContent.displayName = 'TabsContent';
+};
 
-// Context for passing tab value down to TabsContent
-const TabsValueContext = React.createContext(undefined);
-
-// Override Tabs component to provide context
-const TabsWithContext = React.forwardRef(({ defaultValue, children, className, ...props }, ref) => {
-  const [value, setValue] = useState(defaultValue);
-  
-  React.useImperativeHandle(ref, () => ({
-    value,
-    setValue,
-  }));
-  
-  return (
-    <TabsValueContext.Provider value={value}>
-      <div ref={ref} className={className} {...props}>
-        {React.Children.map(children, (child) => {
-          if (child.type === TabsList) {
-            return React.cloneElement(child, { value, onValueChange: setValue });
-          }
-          if (child.type === TabsContent) {
-            return React.cloneElement(child, { value: child.props.value });
-          }
-          return child;
-        })}
-      </div>
-    </TabsValueContext.Provider>
-  );
-});
-TabsWithContext.displayName = 'Tabs';
-
-export { TabsWithContext as Tabs, TabsList, TabsTrigger, TabsContent };
+export { Tabs, TabsList, TabsTrigger, TabsContent };

@@ -30,17 +30,64 @@
     --color-primary: #3b82f6; /* primary-500 */
     --color-accent: #3399ff;  /* accent-500 */
   }
+  
   html {
     font-family: 'Inter', system-ui, sans-serif;
+    /* 确保在所有浏览器中正确应用暗黑模式 */
+    color-scheme: light;
+  }
+  
+  html.dark {
+    color-scheme: dark;
+  }
+  
+  /* 浏览器兼容性修复 */
+  @supports not (color-scheme: dark) {
+    html.dark {
+      background-color: var(--color-bg);
+      color: var(--color-text);
+    }
   }
   
   body {
     background-color: var(--color-bg);
     color: var(--color-text);
+    /* 针对Safari的滚动条样式优化 */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
   
   * {
     border-color: var(--color-border);
+  }
+
+  section {
+    border-radius: var(--radius-sm);
+    margin: 8px;
+  }
+  
+  /* 暗黑模式下的滚动条样式 */
+  html.dark ::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  html.dark ::-webkit-scrollbar-track {
+    background: #1f2937;
+  }
+  
+  html.dark ::-webkit-scrollbar-thumb {
+    background-color: #4b5563;
+    border-radius: 4px;
+  }
+  
+  html.dark ::-webkit-scrollbar-thumb:hover {
+    background-color: #6b7280;
+  }
+  
+  /* Firefox滚动条样式 */
+  html.dark {
+    scrollbar-width: thin;
+    scrollbar-color: #4b5563 #1f2937;
   }
 }
 
@@ -113,5 +160,217 @@
 @layer utilities {
   .text-balance {
     text-wrap: balance;
+  }
+  
+  /* 暗黑模式下的动画和过渡效果 */
+  .dark {
+    /* 为所有元素添加平滑过渡 */
+    transition-property: background-color, border-color, color, fill, stroke;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 150ms;
+  }
+  
+  /* 暗黑模式下的特殊动画效果 */
+  .dark .animate-pulse {
+    animation: pulse-dark 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+  
+  @keyframes pulse-dark {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.7;
+    }
+  }
+  
+  /* 暗黑模式下的加载动画 */
+  .dark .animate-spin {
+    animation: spin-dark 1s linear infinite;
+  }
+  
+  @keyframes spin-dark {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  
+  /* 暗黑模式下的悬停效果 */
+  .dark .hover-lift {
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  }
+  
+  .dark .hover-lift:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+  }
+  
+  /* 暗黑模式下的焦点样式 */
+  .dark .focus-ring {
+    transition: box-shadow 0.2s ease-in-out;
+  }
+  
+  .dark .focus-ring:focus {
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5);
+  }
+  
+  /* 暗黑模式下的卡片悬停效果 */
+  .dark .card-hover {
+    transition: all 0.2s ease-in-out;
+  }
+  
+  .dark .card-hover:hover {
+    background-color: rgba(31, 41, 55, 0.5);
+    border-color: rgba(75, 85, 99, 0.6);
+  }
+  
+  /* 暗黑模式下的按钮动画 */
+  .dark .btn-animate {
+    position: relative;
+    overflow: hidden;
+    transition: all 0.2s ease-in-out;
+  }
+  
+  .dark .btn-animate::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    transform: translate(-50%, -50%);
+    transition: width 0.3s ease, height 0.3s ease;
+  }
+  
+  .dark .btn-animate:hover::before {
+    width: 300px;
+    height: 300px;
+  }
+  
+  /* 暗黑模式下的渐变背景动画 */
+  .dark .gradient-animate {
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+    background-size: 200% 200%;
+    animation: gradient-shift 3s ease infinite;
+  }
+  
+  @keyframes gradient-shift {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+  
+  /* 暗黑模式下的文本发光效果 */
+  .dark .text-glow {
+    text-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+    transition: text-shadow 0.2s ease-in-out;
+  }
+  
+  .dark .text-glow:hover {
+    text-shadow: 0 0 20px rgba(59, 130, 246, 0.8);
+  }
+  
+  /* 暗黑模式下的边框动画 */
+  .dark .border-animate {
+    position: relative;
+  }
+  
+  .dark .border-animate::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(45deg, #3b82f6, #8b5cf6, #ec4899, #3b82f6);
+    background-size: 400% 400%;
+    border-radius: inherit;
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    animation: gradient-rotate 3s ease infinite;
+  }
+  
+  .dark .border-animate:hover::before {
+    opacity: 0.7;
+  }
+  
+  @keyframes gradient-rotate {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+  
+  /* 暗黑模式下的模态框动画 */
+  .dark .modal-backdrop {
+    backdrop-filter: blur(4px);
+    background-color: rgba(0, 0, 0, 0.7);
+    animation: fade-in 0.2s ease-out;
+  }
+  
+  .dark .modal-content {
+    animation: scale-in 0.2s ease-out;
+  }
+  
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  
+  @keyframes scale-in {
+    from {
+      transform: scale(0.95);
+      opacity: 0;
+    }
+    to {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+  
+  /* 暗黑模式下的滚动条动画 */
+  .dark .scrollbar-animate::-webkit-scrollbar {
+    width: 8px;
+    transition: width 0.2s ease;
+  }
+  
+  .dark .scrollbar-animate:hover::-webkit-scrollbar {
+    width: 10px;
+  }
+  
+  .dark .scrollbar-animate::-webkit-scrollbar-track {
+    background: #1f2937;
+    border-radius: 4px;
+  }
+  
+  .dark .scrollbar-animate::-webkit-scrollbar-thumb {
+    background-color: #4b5563;
+    border-radius: 4px;
+    transition: background-color 0.2s ease;
+  }
+  
+  .dark .scrollbar-animate::-webkit-scrollbar-thumb:hover {
+    background-color: #6b7280;
   }
 }

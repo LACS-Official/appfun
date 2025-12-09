@@ -12,9 +12,7 @@ interface Props {
 
 const {
   title = '最新软件',
-  limit = 6, // 未使用但保留接口兼容性
   showViewAll = true,
-  sortBy = 'updatedAt', // 未使用但保留接口兼容性
   class: className = ''
 } = Astro.props;
 ---
@@ -139,8 +137,8 @@ const {
           sortOrder: 'desc'
         });
 
-        if (response.success && response.data) {
-          const softwareList = response.data;
+        if (response.success && response.data && response.data.software) {
+          const softwareList = response.data.software;
           
           if (!Array.isArray(softwareList) || softwareList.length === 0) {
             this.showEmpty();

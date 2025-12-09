@@ -1,5 +1,5 @@
 ---
-import Header from '../components/layout/Header.astro';
+import Header from '../components/react/Header.tsx';
 import Footer from '../components/layout/Footer.astro';
 import StructuredData from '../components/seo/StructuredData.astro';
 import { appConfig } from '../lib/config';
@@ -89,20 +89,169 @@ const canonicalUrl = canonical || new URL(Astro.url.pathname, Astro.site).href;
     <!-- Umami Analytics -->
     <script defer src="https://umami.lacs.cc/script.js" data-website-id={import.meta.env.PUBLIC_UMAMI_WEBSITE_ID || '99e40abd-3eaa-47a1-a6b4-84fc6831aa4e'}></script>
     
+    <!-- Theme Initialization Script -->
+    <script is:inline>
+      // 增强浏览器兼容性的主题初始化脚本
+      (function() {
+        // 主题管理类
+        const ThemeManager = {
+          // 存储键名
+          STORAGE_KEY: 'theme',
+          MANUAL_KEY: 'theme_manual_set',
+          
+          // 初始化主题
+          init() {
+            // 检查是否手动设置了主题
+            const isManualSet = this.getStorageItem(this.MANUAL_KEY) === 'true';
+            const storedTheme = this.getStorageItem(this.STORAGE_KEY);
+            
+            let theme;
+            
+            // 如果手动设置了主题，使用存储的主题
+            if (isManualSet && storedTheme) {
+              theme = storedTheme;
+            } 
+            // 否则，使用系统偏好
+            else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+              theme = 'dark';
+            } else {
+              theme = 'light';
+            }
+            
+            // 应用主题
+            this.applyTheme(theme);
+            
+            // 监听系统主题变化（仅当用户未手动设置时）
+            if (window.matchMedia) {
+              const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+              mediaQuery.addEventListener('change', (e) => {
+                // 只有在用户未手动设置主题时才响应系统变化
+                if (this.getStorageItem(this.MANUAL_KEY) !== 'true') {
+                  const systemTheme = e.matches ? 'dark' : 'light';
+                  this.applyTheme(systemTheme);
+                  // 不保存到localStorage，因为这是系统偏好
+                }
+              });
+            }
+            
+            // 监听存储变化（跨标签页同步）
+            window.addEventListener('storage', (e) => {
+              if (e.key === this.STORAGE_KEY) {
+                const newTheme = e.newValue;
+                if (newTheme) {
+                  this.applyTheme(newTheme);
+                  // 标记为手动设置
+                  this.setStorageItem(this.MANUAL_KEY, 'true');
+                }
+              }
+            });
+            
+            // 暴露全局方法
+            window.setTheme = (theme) => {
+              this.applyTheme(theme);
+              this.setStorageItem(this.STORAGE_KEY, theme);
+              this.setStorageItem(this.MANUAL_KEY, 'true');
+              
+              // 触发主题变化事件
+              window.dispatchEvent(new CustomEvent('themechange', { 
+                detail: { theme, source: 'manual' } 
+              }));
+            };
+            
+            window.getTheme = () => {
+              return document.documentElement.classList.contains('dark') ? 'dark' : 'light';
+            };
+            
+            window.isManualTheme = () => {
+              return this.getStorageItem(this.MANUAL_KEY) === 'true';
+            };
+            
+            // 重置为系统主题
+            window.resetToSystemTheme = () => {
+              const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+              this.applyTheme(systemTheme);
+              this.removeStorageItem(this.STORAGE_KEY);
+              this.removeStorageItem(this.MANUAL_KEY);
+              
+              // 触发主题变化事件
+              window.dispatchEvent(new CustomEvent('themechange', { 
+                detail: { theme: systemTheme, source: 'system' } 
+              }));
+            };
+          },
+          
+          // 应用主题
+          applyTheme(theme) {
+            if (theme === 'dark') {
+              document.documentElement.classList.add('dark');
+              // 更新meta主题色
+              this.updateMetaThemeColor('#0a0a0a');
+            } else {
+              document.documentElement.classList.remove('dark');
+              // 更新meta主题色
+              this.updateMetaThemeColor('#ffffff');
+            }
+            
+            // 触发主题变化事件
+            window.dispatchEvent(new CustomEvent('themeapplied', { 
+              detail: { theme } 
+            }));
+          },
+          
+          // 更新meta主题色
+          updateMetaThemeColor(color) {
+            let metaThemeColor = document.querySelector('meta[name="theme-color"]');
+            if (metaThemeColor) {
+              metaThemeColor.setAttribute('content', color);
+            }
+          },
+          
+          // 安全的localStorage操作
+          getStorageItem(key) {
+            try {
+              return localStorage.getItem(key);
+            } catch (e) {
+              console.warn('无法访问localStorage:', e);
+              return null;
+            }
+          },
+          
+          setStorageItem(key, value) {
+            try {
+              localStorage.setItem(key, value);
+            } catch (e) {
+              console.warn('无法保存到localStorage:', e);
+            }
+          },
+          
+          removeStorageItem(key) {
+            try {
+              localStorage.removeItem(key);
+            } catch (e) {
+              console.warn('无法从localStorage删除:', e);
+            }
+          }
+        };
+        
+        // 初始化主题管理器
+        ThemeManager.init();
+      })();
+    </script>
+    
     <!-- Structured Data -->
     <StructuredData type={structuredDataType} data={structuredDataProps} />
     
     <!-- Prevent FOUC: 使用关键样式与字体优化，避免隐藏 html -->
   </head>
   
-  <body class="min-h-screen">
+  <body class="min-h-screen bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-300">
     <!-- Skip to main content link for accessibility -->
     <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-primary-600 text-white px-4 py-2 rounded-md z-50">
       跳转到主要内容
     </a>
 
     <!-- Header -->
-    <Header title={appConfig.title} showSearch={showSearch} />
+    <Header client:idle title={appConfig.title} showSearch={showSearch} />
     
     <!-- Main Content -->
     <main id="main-content" class={`flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 ${className}`}>
@@ -129,6 +278,10 @@ const canonicalUrl = canonical || new URL(Astro.url.pathname, Astro.site).href;
         showLoading: () => void;
         hideLoading: () => void;
         showToast: (message: string, type?: 'success'|'error'|'warning'|'info', duration?: number) => void;
+        setTheme: (theme: 'light' | 'dark') => void;
+        getTheme: () => 'light' | 'dark';
+        isManualTheme: () => boolean;
+        resetToSystemTheme: () => void;
       }
 
       // Remove FOUC prevention

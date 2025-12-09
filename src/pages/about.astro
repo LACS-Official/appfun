@@ -1,7 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import Card from '../components/ui/Card.astro';
-import Badge from '../components/ui/Badge.astro';
 import { appConfig } from '../lib/config';
 
 const title = '关于我们';
@@ -272,16 +271,6 @@ const structuredData = {
           </a>
         </Card>
 
-        <Card class="text-center">
-          <div class="text-3xl mb-4">💬</div>
-          <h3 class="font-semibold text-gray-900 mb-2">技术支持</h3>
-          <p class="text-sm text-gray-600 mb-3">
-            获取技术支持和帮助
-          </p>
-          <a href={appConfig.links.support} target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:text-primary-700 text-sm font-medium">
-            获取支持
-          </a>
-        </Card>
 
         <Card class="text-center">
           <div class="text-3xl mb-4">🐙</div>
@@ -364,15 +353,6 @@ const structuredData = {
     const activeVisitorsEl = document.getElementById('active-visitors');
     const lastUpdatedEl = document.getElementById('last-updated');
 
-    // 模拟统计数据（在实际环境中，这里应该调用 Umami API）
-    function getRandomStats() {
-      return {
-        totalPageviews: Math.floor(Math.random() * 50000) + 10000,
-        uniqueVisitors: Math.floor(Math.random() * 8000) + 2000,
-        todayPageviews: Math.floor(Math.random() * 500) + 100,
-        activeVisitors: Math.floor(Math.random() * 20) + 5
-      };
-    }
 
     // 格式化数字显示
     function formatNumber(num: number): string {

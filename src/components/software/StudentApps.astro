@@ -11,7 +11,7 @@ interface Props {
 
 const {
   title = '🎓 大学专业软件',
-  limit = 6, // 未使用但保留接口兼容性
+
   showViewAll = true,
   class: className = ''
 } = Astro.props;
@@ -196,9 +196,6 @@ const {
                 ` : ''}
 
                 <div class="flex items-center justify-between">
-                  <a href="/software/${software.id}" class="text-primary-600 hover:text-primary-700 text-sm font-medium">
-                    查看详情 →
-                  </a>
                   ${software.latestDownloadUrl ? `
                     <a href="${software.latestDownloadUrl}" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm">
                       下载

@@ -41,9 +41,6 @@ initializeApiClient(apiConfig);
               </div>
               
               <!-- 查看按钮 -->
-              <div class="text-sm text-primary-600 group-hover:text-primary-700 font-medium">
-                查看软件 →
-              </div>
             </div>
           </Card>
         </a>
@@ -73,6 +70,18 @@ initializeApiClient(apiConfig);
 </Layout>
 
 <script is:inline>
+  // 从Astro前端传递softwareCategories数据
+  const softwareCategories = [
+    {id: "development", name: "开发工具", icon: "💻"},
+    {id: "design", name: "设计软件", icon: "🎨"},
+    {id: "office", name: "办公软件", icon: "📊"},
+    {id: "multimedia", name: "多媒体", icon: "🎬"},
+    {id: "network", name: "网络工具", icon: "🌐"},
+    {id: "system", name: "系统工具", icon: "⚙️"},
+    {id: "security", name: "安全软件", icon: "🔒"},
+    {id: "education", name: "教育学习", icon: "📚"}
+  ];
+
   // 使用全局apiClient
   document.addEventListener('DOMContentLoaded', async () => {
     await loadCategoryCounts();
@@ -276,6 +285,10 @@ initializeApiClient(apiConfig);
     color: var(--color-primary-700);
   }
   
+  .bg-primary-50 {
+    background-color: var(--color-primary-50);
+  }
+  
   .bg-primary-100 {
     background-color: var(--color-primary-100);
   }
@@ -296,3 +309,6 @@ initializeApiClient(apiConfig);
     border-color: var(--color-primary-600);
   }
 </style>
+
+
+

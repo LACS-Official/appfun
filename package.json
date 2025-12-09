@@ -9,9 +9,10 @@
     "preview": "astro preview",
     "astro": "astro",
     "check": "astro check",
-    "lint": "eslint . --ext .js,.jsx,.ts,.tsx,.astro",
+    "lint": "eslint src/components/react src/__tests__ --ext .js,.jsx,.ts,.tsx",
     "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx,.astro --fix",
-    "update-sitemap": "node scripts/update-sitemap.js"
+    "update-sitemap": "node scripts/update-sitemap.js",
+    "test": "vitest --coverage"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.4",
@@ -32,12 +33,18 @@
     "typescript": "^5.6.3"
   },
   "devDependencies": {
+    "@headlessui/react": "^2.2.9",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.0",
     "@typescript-eslint/eslint-plugin": "^8.15.0",
     "@typescript-eslint/parser": "^8.15.0",
+    "@vitest/coverage-v8": "^4.0.15",
     "eslint": "^9.15.0",
     "eslint-plugin-astro": "^1.2.4",
     "eslint-plugin-jsx-a11y": "^6.10.2",
+    "jsdom": "^27.3.0",
     "prettier": "^3.3.3",
-    "prettier-plugin-astro": "^0.14.1"
+    "prettier-plugin-astro": "^0.14.1",
+    "vitest": "^4.0.15"
   }
 }

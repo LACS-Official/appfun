@@ -1,8 +1,8 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import DynamicCarousel from '../components/ui/DynamicCarousel.astro';
-import PopularSoftware from '../components/software/PopularSoftware.astro';
 import AllSoftwareGrid from '../components/software/AllSoftwareGrid.astro';
+import SidebarTabs from '../components/react/SidebarTabs.tsx';
 
 const title = '首页';
 const description = 'APPFUN - 发现和下载最新最有趣的软件工具，包括工具软件、开发工具、设计软件、多媒体软件等多种分类，提供免费下载和详细的使用指南';
@@ -36,57 +36,52 @@ const structuredData = {
   structuredDataType="website"
   structuredData={structuredData}
 >
-  <section class="bg-gradient-to-br from-blue-50 to-indigo-100">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
-        <div class="flex items-center justify-center">
-          <div class="w-full max-w-full">
-            <DynamicCarousel
-              websiteId={1}
-              autoPlay={true}
-              interval={5000}
-              class="w-full aspect-video rounded-xl shadow-lg"
-              limit={10}
-            />
-          </div>
+  <!-- 顶部主要区域 -->
+  <section class="bg-gray-50 dark:bg-gray-900 transition-colors duration-300 pb-12 pt-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        
+        <!-- 左侧轮播图 (占2/3) -->
+        <div class="lg:col-span-8">
+          <DynamicCarousel
+            websiteId={1}
+            autoPlay={true}
+            interval={5000}
+            class="w-full aspect-[16/9] lg:aspect-[21/9] shadow-lg"
+            limit={10}
+          />
         </div>
 
-        <div class="bg-white/90 backdrop-blur-sm rounded-xl p-5 shadow-lg flex flex-col">
-          <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-            🔥 最热门软件
-            <a href="/ranking" class="ml-auto text-sm text-blue-600 hover:text-blue-700 transition-colors">
-              更多 →
-            </a>
-          </h3>
-          <div id="top-popular-container" class="space-y-3">
-          </div>
+        <!-- 右侧排行榜 (占1/3) -->
+        <div class="lg:col-span-4 flex flex-col h-full">
+          <SidebarTabs client:idle />
         </div>
 
-        <div class="bg-white/90 backdrop-blur-sm rounded-xl p-5 shadow-lg flex flex-col">
-          <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-            🆕 最新软件
-            <a href="/software?sortBy=updatedAt&sortOrder=desc" class="ml-auto text-sm text-blue-600 hover:text-blue-700 transition-colors">
-              更多 →
-            </a>
-          </h3>
-          <div id="top-latest-container" class="space-y-3">
-          </div>
-        </div>
       </div>
     </div>
   </section>
 
-
-
-  <!-- 下部区域 (50%高度) -->
-  <section class="bg-gray-50 py-8">
+  <!-- 下部区域 -->
+  <section class="bg-white dark:bg-gray-900 py-12 border-t border-gray-100 dark:border-gray-800">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between mb-8">
+        <h2 class="text-2xl font-bold text-gray-900 dark:text-white flex items-center">
+          <span class="bg-primary-100 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400 p-2 rounded-lg mr-3">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+          </span>
+          全部软件
+        </h2>
+        <a href="/categories" class="text-sm font-medium text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 transition-colors">
+          浏览全部分类 &rarr;
+        </a>
+      </div>
       <AllSoftwareGrid limit={20} />
     </div>
   </section>
 
-
 </Layout>
+
+<!-- React 组件接管 Tab，无需脚本切换 -->
 
 <script>
   import { initializeApiClient, getApiClient } from '../lib/api';
@@ -95,205 +90,26 @@ const structuredData = {
   // 初始化 API 客户端
   initializeApiClient(apiConfig);
 
-  // 立即设置全局API客户端，确保在DOMContentLoaded之前就可用
+  // 立即设置全局API客户端
   if (window) {
     window.apiClient = getApiClient();
   }
 
-  // 页面加载完成后设置功能
-  document.addEventListener('DOMContentLoaded', () => {
-    // 测试 API 连接
-    console.log('Testing API connection...');
-    console.log('API Base URL:', apiConfig.baseUrl);
-    console.log('API Key:', apiConfig.apiKey ? 'Set' : 'Not set');
-    console.log('API Client ready:', !!window.apiClient);
-
-    loadTopSoftware();
-  });
-
-  // 加载顶部区域的热门和最新软件
-  async function loadTopSoftware() {
-    await Promise.all([
-      loadTopPopular(),
-      loadTopLatest()
-    ]);
-  }
-
-  // 加载热门软件（右上）
-  async function loadTopPopular() {
-    const container = document.getElementById('top-popular-container');
-    const mobileContainer = document.getElementById('top-popular-container-mobile');
-    if (!container && !mobileContainer) return;
-
-    try {
-      const api = getApiClient();
-      const response = await api.getSoftwareRanking({
-        page: 1,
-        limit: 3,
-        sortBy: 'viewCount',
-        sortOrder: 'desc'
-      });
-
-      if (response.success && response.data) {
-        const softwareList = response.data;
-
-        if (Array.isArray(softwareList) && softwareList.length > 0) {
-          const content = `
-            <div class="space-y-3">
-              ${softwareList.map((software, index) => `
-                <div class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-50 transition-colors">
-                  <div class="flex-shrink-0">
-                    <div class="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-bold ${
-    index === 0 ? 'bg-yellow-500' :
-      index === 1 ? 'bg-gray-400' :
-        'bg-orange-500'
-  }">
-                      ${index + 1}
-                    </div>
-                  </div>
-                  <div class="flex-1 min-w-0">
-                    <h4 class="text-sm font-medium text-gray-900 truncate hover:text-primary-600 cursor-pointer" onclick="window.location.href='/software/${software.id}'">
-                      ${software.name}
-                    </h4>
-                    <p class="text-xs text-gray-500 flex items-center">
-                      <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
-                      </svg>
-                      ${software.viewCount?.toLocaleString() || 0}
-                    </p>
-                  </div>
-                </div>
-              `).join('')}
-            </div>
-          `;
-
-          if (container) container.innerHTML = content;
-          if (mobileContainer) mobileContainer.innerHTML = content;
-        } else {
-          const emptyContent = '<p class="text-sm text-gray-500">暂无热门软件</p>';
-          if (container) container.innerHTML = emptyContent;
-          if (mobileContainer) mobileContainer.innerHTML = emptyContent;
-        }
-      }
-    } catch (error: any) {
-      console.error('加载热门软件失败:', error?.message);
-      const errorContent = '<p class="text-sm text-red-500">加载失败</p>';
-      if (container) container.innerHTML = errorContent;
-      if (mobileContainer) mobileContainer.innerHTML = errorContent;
-    }
-  }
-
-  // 加载最新软件（右下）
-  async function loadTopLatest() {
-    const container = document.getElementById('top-latest-container');
-    const mobileContainer = document.getElementById('top-latest-container-mobile');
-    if (!container && !mobileContainer) return;
-
-    try {
-      const api = getApiClient();
-      const response = await api.getSoftwareList({
-        page: 1,
-        limit: 3,
-        sortBy: 'updatedAt',
-        sortOrder: 'desc'
-      });
-
-      if (response.success && response.data && response.data.software) {
-        const softwareList = response.data.software;
-
-        if (Array.isArray(softwareList) && softwareList.length > 0) {
-          const content = `
-            <div class="space-y-3">
-              ${softwareList.map((software, index) => `
-                <div class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-50 transition-colors">
-                  <div class="flex-shrink-0">
-                    <div class="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center text-white text-xs font-bold">
-                      NEW
-                    </div>
-                  </div>
-                  <div class="flex-1 min-w-0">
-                    <h4 class="text-sm font-medium text-gray-900 truncate hover:text-primary-600 cursor-pointer" onclick="window.location.href='/software/${software.id}'">
-                      ${software.name}
-                    </h4>
-                    <p class="text-xs text-gray-500">
-                      v${software.currentVersion} • ${formatTimeAgo(software.updatedAt)}
-                    </p>
-                  </div>
-                </div>
-              `).join('')}
-            </div>
-          `;
-
-          if (container) container.innerHTML = content;
-          if (mobileContainer) mobileContainer.innerHTML = content;
-        } else {
-          const emptyContent = '<p class="text-sm text-gray-500">暂无最新软件</p>';
-          if (container) container.innerHTML = emptyContent;
-          if (mobileContainer) mobileContainer.innerHTML = emptyContent;
-        }
-      }
-    } catch (error: any) {
-      console.error('加载最新软件失败:', error?.message);
-      const errorContent = '<p class="text-sm text-red-500">加载失败</p>';
-      if (container) container.innerHTML = errorContent;
-      if (mobileContainer) mobileContainer.innerHTML = errorContent;
-    }
-  }
-
-  // 格式化时间
-  function formatTimeAgo(dateString: string): string {
-    try {
-      const date = new Date(dateString);
-      const now = new Date();
-      const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
-
-      if (diffInSeconds < 60) return '刚刚';
-      if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)}分钟前`;
-      if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)}小时前`;
-      if (diffInSeconds < 2592000) return `${Math.floor(diffInSeconds / 86400)}天前`;
-
-      return date.toLocaleDateString('zh-CN', {
-        month: 'short',
-        day: 'numeric'
-      });
-    } catch {
-      return dateString;
-    }
-  }
-
-
+  // 仅初始化 API 客户端，React 组件内部自行拉取数据
 </script>
 
 <style>
-  .line-clamp-2 {
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 4px;
   }
-  
-  .bg-primary-600 {
-    background-color: var(--color-primary-600);
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
   }
-  
-  .bg-primary-700 {
-    background-color: var(--color-primary-700);
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background-color: #e5e7eb;
+    border-radius: 20px;
   }
-  
-  .text-primary-100 {
-    color: var(--color-primary-100);
-  }
-  
-  .text-primary-600 {
-    color: var(--color-primary-600);
-  }
-  
-  .bg-primary-100 {
-    background-color: var(--color-primary-100);
-  }
-  
-  .text-primary-800 {
-    color: var(--color-primary-800);
+  .dark .custom-scrollbar::-webkit-scrollbar-thumb {
+    background-color: #374151;
   }
 </style>
