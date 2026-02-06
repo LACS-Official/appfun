@@ -102,12 +102,9 @@ export const routes = {
   home: '/',
   software: '/software',
   softwareDetail: '/software/:id',
-  categories: '/categories',
-  category: '/categories/:category',
-  tags: '/tags',
-  tag: '/tags/:tag',
   about: '/about',
   search: '/search',
+  ranking: '/ranking',
 
   // API 路由
   api: {
@@ -154,23 +151,7 @@ export const successMessages = {
   activated: '激活成功',
 } as const;
 
-/**
- * 软件分类配置
- */
-export const softwareCategories = [
-  { id: 'tools', name: '工具软件', icon: '🔧', description: '实用的系统工具和辅助软件' },
-  { id: 'development', name: '开发工具', icon: '💻', description: '编程开发工具和IDE' },
-  { id: 'design', name: '设计软件', icon: '🎨', description: '图形设计和多媒体处理软件' },
-  { id: 'multimedia', name: '多媒体', icon: '🎬', description: '音视频播放和编辑软件' },
-  { id: 'productivity', name: '办公软件', icon: '📊', description: '办公和生产力工具' },
-  { id: 'games', name: '游戏娱乐', icon: '🎮', description: '休闲游戏和娱乐软件' },
-  { id: 'security', name: '安全软件', icon: '🔒', description: '网络安全和防护软件' },
-  { id: 'system', name: '系统工具', icon: '⚙️', description: '系统管理和优化工具' },
-  { id: 'education', name: '教育学习', icon: '📚', description: '学习和教育相关软件' },
-  { id: 'communication', name: '通讯社交', icon: '💬', description: '通讯和社交软件' },
-  { id: 'network', name: '网络工具', icon: '🌐', description: '网络工具和浏览器' },
-  { id: 'other', name: '其他', icon: '📦', description: '其他各类软件' },
-] as const;
+
 
 /**
  * 优先级配置

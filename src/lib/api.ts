@@ -82,13 +82,32 @@ export class ApiClient {
     }
   }
 
+  private cache: Map<string, { data: any; timestamp: number }> = new Map();
+  private readonly CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+
   /**
-   * GET 请求
+   * GET 请求 (带缓存优化)
    */
   private async get<T>(endpoint: string, params?: Record<string, any>): Promise<T> {
     const queryString = params ? buildQueryString(params) : '';
-    const url = queryString ? `${endpoint}?${queryString}` : endpoint;
-    return this.request<T>(url);
+    const cacheKey = `${endpoint}?${queryString}`;
+    const now = Date.now();
+
+    // 检查缓存
+    if (this.cache.has(cacheKey)) {
+      const cached = this.cache.get(cacheKey);
+      if (cached && now - cached.timestamp < this.CACHE_TTL) {
+        return cached.data as T;
+      }
+      this.cache.delete(cacheKey);
+    }
+
+    const response = await this.request<T>(cacheKey);
+    
+    // 存入缓存
+    this.cache.set(cacheKey, { data: response, timestamp: now });
+    
+    return response;
   }
 
 

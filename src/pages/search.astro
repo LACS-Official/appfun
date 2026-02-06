@@ -67,23 +67,7 @@ const structuredData = {
     <!-- 筛选选项 -->
     <div class="bg-white rounded-lg border border-gray-200 p-4 mb-6">
       <div class="flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0">
-        <!-- 分类筛选 -->
-        <div class="flex items-center space-x-4">
-          <label for="category-filter" class="text-sm font-medium text-gray-700">分类:</label>
-          <select id="category-filter" class="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-primary-500 focus:border-primary-500">
-            <option value="">所有分类</option>
-            <option value="tools">工具软件</option>
-            <option value="development">开发工具</option>
-            <option value="design">设计软件</option>
-            <option value="multimedia">多媒体</option>
-            <option value="productivity">办公软件</option>
-            <option value="games">游戏娱乐</option>
-            <option value="security">安全软件</option>
-            <option value="system">系统工具</option>
-            <option value="education">教育学习</option>
-            <option value="communication">通讯社交</option>
-          </select>
-        </div>
+
 
         <!-- 排序选择 -->
         <div class="flex items-center space-x-4">
@@ -151,7 +135,7 @@ const structuredData = {
   </div>
 </Layout>
 
-<script define:vars={{ query }} is:inline>
+<script>
   import { initializeApiClient, getApiClient } from '../lib/api';
   import { apiConfig } from '../lib/config';
   import { throttle } from '../lib/utils';
@@ -161,8 +145,8 @@ const structuredData = {
 
   let currentPage = 1;
   let currentSort = 'relevance';
-  let currentCategory = '';
-  let currentQuery = query || '';
+  const urlParams = new URLSearchParams(window.location.search);
+  let currentQuery = urlParams.get('q') || '';
   const pageSize = 12;
 
   document.addEventListener('DOMContentLoaded', () => {
@@ -212,17 +196,7 @@ const structuredData = {
       });
     }
 
-    // 分类筛选
-    const categoryFilter = document.getElementById('category-filter');
-    if (categoryFilter) {
-      categoryFilter.addEventListener('change', (e) => {
-        currentCategory = e.target.value;
-        currentPage = 1;
-        if (currentQuery) {
-          performSearch();
-        }
-      });
-    }
+
 
     // 排序选择
     const sortSelect = document.getElementById('sort-select');
@@ -258,8 +232,7 @@ const structuredData = {
       const params = {
         search: currentQuery,
         page: currentPage,
-        limit: pageSize,
-        ...(currentCategory && { category: currentCategory })
+        limit: pageSize
       };
 
       // 处理排序
@@ -272,8 +245,23 @@ const structuredData = {
       const response = await api.getSoftwareList(params);
 
       if (response.success && response.data) {
-        const softwareList = response.data;
-        const pagination = response.pagination;
+        let softwareList = [];
+        let pagination = null;
+
+        if (response.data && response.data.software) {
+          // Standard SoftwareListResponse structure
+          softwareList = response.data.software;
+          pagination = response.data.pagination;
+        } else if (Array.isArray(response.data)) {
+           // Fallback for PaginatedResponse structure (if API changes)
+           softwareList = response.data;
+           pagination = response.pagination;
+        }
+
+        // Ensure pagination has default values if missing
+        if (!pagination) {
+          pagination = { total: softwareList.length, totalPages: 1, page: 1, limit: pageSize };
+        }
 
         // 更新统计信息
         if (countElement) {
@@ -292,9 +280,6 @@ const structuredData = {
                 <button onclick="clearSearch()" class="btn btn-outline">
                   清空搜索
                 </button>
-                <a href="/categories" class="btn btn-primary">
-                  浏览分类
-                </a>
               </div>
             </div>
           `;

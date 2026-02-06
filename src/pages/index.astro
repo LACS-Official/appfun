@@ -54,7 +54,7 @@ const structuredData = {
 
         <!-- 右侧排行榜 (占1/3) -->
         <div class="lg:col-span-4 flex flex-col h-full">
-          <SidebarTabs client:idle />
+          <SidebarTabs client:load />
         </div>
 
       </div>
@@ -71,8 +71,8 @@ const structuredData = {
           </span>
           全部软件
         </h2>
-        <a href="/categories" class="text-sm font-medium text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 transition-colors">
-          浏览全部分类 &rarr;
+        <a href="/ranking" class="text-sm font-medium text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 transition-colors">
+          查看完整排行榜 &rarr;
         </a>
       </div>
       <AllSoftwareGrid limit={20} />
