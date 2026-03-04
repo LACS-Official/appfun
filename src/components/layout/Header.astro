@@ -1,6 +1,6 @@
 ---
-import { appConfig } from '../../lib/config';
-import AuthButton from '../auth/AuthButton.jsx';
+import { appConfig } from "../../lib/config";
+import AuthButton from "../auth/AuthButton.jsx";
 
 interface Props {
   title?: string;
@@ -10,52 +10,89 @@ interface Props {
 const { title = appConfig.title, showSearch = true } = Astro.props;
 ---
 
-<header class="bg-white/90 dark:bg-gray-900/90 backdrop-blur-md border-b border-gray-200 dark:border-gray-800 sticky top-0 z-50 transition-colors duration-300">
+<header
+  class="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 sticky top-0 z-50 transition-colors duration-300"
+>
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="flex justify-between items-center h-16">
       <!-- Logo 和标题 -->
       <div class="flex items-center">
         <a href="/" class="flex items-center space-x-3 group">
-          <div class="w-8 h-8 rounded-lg overflow-hidden shadow-sm group-hover:shadow-md transition-shadow">
-            <img src="/img/APPFUN.webp" alt="APPFUN Logo" class="w-full h-full object-cover">
+          <div
+            class="w-8 h-8 rounded-lg overflow-hidden transition-opacity hover:opacity-90"
+          >
+            <img
+              src="/img/APPFUN.webp"
+              alt="APPFUN Logo"
+              class="w-full h-full object-cover"
+            />
           </div>
-          <span class="text-xl font-bold text-gray-900 dark:text-white transition-colors">{title}</span>
+          <span
+            class="text-xl font-bold text-gray-900 dark:text-white transition-colors"
+            >{title}</span
+          >
         </a>
       </div>
 
       <!-- 搜索框 -->
-      {showSearch && (
-        <div class="hidden md:block flex-1 max-w-lg mx-8">
-          <div class="relative group">
-            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <svg class="h-5 w-5 text-gray-400 group-focus-within:text-primary-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-              </svg>
+      {
+        showSearch && (
+          <div class="hidden md:block flex-1 max-w-lg mx-8">
+            <div class="relative group">
+              <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <svg
+                  class="h-5 w-5 text-gray-400 group-focus-within:text-primary-500 transition-colors"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                  />
+                </svg>
+              </div>
+              <input
+                type="text"
+                placeholder="搜索软件..."
+                class="block w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-700 rounded-lg leading-5 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:bg-white dark:focus:bg-gray-900 focus:ring-2 focus:ring-primary-500 focus:border-transparent sm:text-sm transition-all duration-200"
+                id="global-search"
+                aria-label="站内搜索"
+              />
             </div>
-            <input
-              type="text"
-              placeholder="搜索软件..."
-              class="block w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-700 rounded-lg leading-5 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:bg-white dark:focus:bg-gray-900 focus:ring-2 focus:ring-primary-500 focus:border-transparent sm:text-sm transition-all duration-200"
-              id="global-search" aria-label="站内搜索"
-            />
           </div>
-        </div>
-      )}
+        )
+      }
 
       <!-- 导航菜单 -->
       <div class="flex items-center space-x-4">
-        <nav class="hidden md:flex items-center space-x-1" role="navigation" aria-label="主导航">
-          <a href="/" class="text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 hover:bg-gray-50 dark:hover:bg-gray-800 px-3 py-2 rounded-md text-sm font-medium transition-all duration-200">
+        <nav
+          class="hidden md:flex items-center space-x-1"
+          role="navigation"
+          aria-label="主导航"
+        >
+          <a
+            href="/"
+            class="text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 hover:bg-gray-50 dark:hover:bg-gray-800 px-3 py-2 rounded-md text-sm font-medium transition-all duration-200"
+          >
             首页
           </a>
-          <a href="/ranking" class="text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 hover:bg-gray-50 dark:hover:bg-gray-800 px-3 py-2 rounded-md text-sm font-medium transition-all duration-200">
+          <a
+            href="/ranking"
+            class="text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 hover:bg-gray-50 dark:hover:bg-gray-800 px-3 py-2 rounded-md text-sm font-medium transition-all duration-200"
+          >
             排行榜
           </a>
-          <a href="/about" class="text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 hover:bg-gray-50 dark:hover:bg-gray-800 px-3 py-2 rounded-md text-sm font-medium transition-all duration-200">
+          <a
+            href="/about"
+            class="text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 hover:bg-gray-50 dark:hover:bg-gray-800 px-3 py-2 rounded-md text-sm font-medium transition-all duration-200"
+          >
             关于
           </a>
         </nav>
-        
+
         <!-- 主题切换按钮 -->
         <button
           id="theme-toggle"
@@ -63,11 +100,26 @@ const { title = appConfig.title, showSearch = true } = Astro.props;
           class="text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-primary-500 rounded-lg p-2.5 text-sm transition-colors"
           aria-label="切换深色模式"
         >
-          <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-            <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+          <svg
+            id="theme-toggle-dark-icon"
+            class="hidden w-5 h-5"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+          >
+            <path
+              d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"
+            ></path>
           </svg>
-          <svg id="theme-toggle-light-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-            <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path>
+          <svg
+            id="theme-toggle-light-icon"
+            class="hidden w-5 h-5"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+          >
+            <path
+              d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"
+              fill-rule="evenodd"
+              clip-rule="evenodd"></path>
           </svg>
         </button>
 
@@ -86,8 +138,17 @@ const { title = appConfig.title, showSearch = true } = Astro.props;
             aria-label="打开主菜单"
           >
             <span class="sr-only">打开主菜单</span>
-            <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+            <svg
+              class="h-6 w-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M4 6h16M4 12h16M4 18h16"></path>
             </svg>
           </button>
         </div>
@@ -97,7 +158,9 @@ const { title = appConfig.title, showSearch = true } = Astro.props;
 
   <!-- 移动端菜单 -->
   <div class="md:hidden hidden" id="mobile-menu" aria-hidden="true">
-    <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 shadow-lg">
+    <div
+      class="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 shadow-lg"
+    >
       <div class="px-3 py-2">
         <input
           type="text"
@@ -106,13 +169,22 @@ const { title = appConfig.title, showSearch = true } = Astro.props;
           id="mobile-search"
         />
       </div>
-      <a href="/" class="text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 hover:bg-gray-50 dark:hover:bg-gray-800 block px-3 py-2 rounded-md text-base font-medium transition-colors">
+      <a
+        href="/"
+        class="text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 hover:bg-gray-50 dark:hover:bg-gray-800 block px-3 py-2 rounded-md text-base font-medium transition-colors"
+      >
         首页
       </a>
-      <a href="/ranking" class="text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 hover:bg-gray-50 dark:hover:bg-gray-800 block px-3 py-2 rounded-md text-base font-medium transition-colors">
+      <a
+        href="/ranking"
+        class="text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 hover:bg-gray-50 dark:hover:bg-gray-800 block px-3 py-2 rounded-md text-base font-medium transition-colors"
+      >
         排行榜
       </a>
-      <a href="/about" class="text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 hover:bg-gray-50 dark:hover:bg-gray-800 block px-3 py-2 rounded-md text-base font-medium transition-colors">
+      <a
+        href="/about"
+        class="text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 hover:bg-gray-50 dark:hover:bg-gray-800 block px-3 py-2 rounded-md text-base font-medium transition-colors"
+      >
         关于
       </a>
     </div>
@@ -121,33 +193,33 @@ const { title = appConfig.title, showSearch = true } = Astro.props;
 
 <script>
   // 主题切换逻辑
-  const themeToggleBtn = document.getElementById('theme-toggle');
-  const darkIcon = document.getElementById('theme-toggle-dark-icon');
-  const lightIcon = document.getElementById('theme-toggle-light-icon');
+  const themeToggleBtn = document.getElementById("theme-toggle");
+  const darkIcon = document.getElementById("theme-toggle-dark-icon");
+  const lightIcon = document.getElementById("theme-toggle-light-icon");
 
   // 根据当前主题更新图标
   function updateThemeIcon() {
-    if (document.documentElement.classList.contains('dark')) {
-      darkIcon?.classList.add('hidden');
-      lightIcon?.classList.remove('hidden');
+    if (document.documentElement.classList.contains("dark")) {
+      darkIcon?.classList.add("hidden");
+      lightIcon?.classList.remove("hidden");
     } else {
-      lightIcon?.classList.add('hidden');
-      darkIcon?.classList.remove('hidden');
+      lightIcon?.classList.add("hidden");
+      darkIcon?.classList.remove("hidden");
     }
   }
 
   // 初始化图标
   updateThemeIcon();
 
-  themeToggleBtn?.addEventListener('click', () => {
+  themeToggleBtn?.addEventListener("click", () => {
     // 切换 dark 类
-    document.documentElement.classList.toggle('dark');
-    
+    document.documentElement.classList.toggle("dark");
+
     // 保存偏好
-    if (document.documentElement.classList.contains('dark')) {
-      localStorage.setItem('theme', 'dark');
+    if (document.documentElement.classList.contains("dark")) {
+      localStorage.setItem("theme", "dark");
     } else {
-      localStorage.setItem('theme', 'light');
+      localStorage.setItem("theme", "light");
     }
 
     // 更新图标
@@ -155,24 +227,25 @@ const { title = appConfig.title, showSearch = true } = Astro.props;
   });
 
   // 移动端菜单切换
-  document.addEventListener('DOMContentLoaded', () => {
-    const mobileMenuButton = document.getElementById('mobile-menu-button');
-    const mobileMenu = document.getElementById('mobile-menu');
-    
+  document.addEventListener("DOMContentLoaded", () => {
+    const mobileMenuButton = document.getElementById("mobile-menu-button");
+    const mobileMenu = document.getElementById("mobile-menu");
+
     if (mobileMenuButton && mobileMenu) {
       const toggleMenu = (open) => {
-        mobileMenuButton.setAttribute('aria-expanded', open.toString());
-        mobileMenu.setAttribute('aria-hidden', (!open).toString());
-        mobileMenu.classList.toggle('hidden', !open);
+        mobileMenuButton.setAttribute("aria-expanded", open.toString());
+        mobileMenu.setAttribute("aria-hidden", (!open).toString());
+        mobileMenu.classList.toggle("hidden", !open);
       };
 
-      mobileMenuButton.addEventListener('click', () => {
-        const isExpanded = mobileMenuButton.getAttribute('aria-expanded') === 'true';
+      mobileMenuButton.addEventListener("click", () => {
+        const isExpanded =
+          mobileMenuButton.getAttribute("aria-expanded") === "true";
         toggleMenu(!isExpanded);
       });
 
-      document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') {
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") {
           toggleMenu(false);
         }
       });
@@ -180,8 +253,8 @@ const { title = appConfig.title, showSearch = true } = Astro.props;
 
     // 搜索功能处理
     const handleSearch = (input) => {
-      input.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') {
+      input.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
           const query = (e.target as HTMLInputElement).value.trim();
           if (query) {
             window.location.href = `/search?q=${encodeURIComponent(query)}`;
@@ -190,8 +263,8 @@ const { title = appConfig.title, showSearch = true } = Astro.props;
       });
     };
 
-    const globalSearch = document.getElementById('global-search');
-    const mobileSearch = document.getElementById('mobile-search');
+    const globalSearch = document.getElementById("global-search");
+    const mobileSearch = document.getElementById("mobile-search");
 
     if (globalSearch) handleSearch(globalSearch);
     if (mobileSearch) handleSearch(mobileSearch);
@@ -212,23 +285,23 @@ const { title = appConfig.title, showSearch = true } = Astro.props;
     --color-primary-800: #1e40af;
     --color-primary-900: #1e3a8a;
   }
-  
+
   .bg-primary-600 {
     background-color: var(--color-primary-600);
   }
-  
+
   .text-primary-600 {
     color: var(--color-primary-600);
   }
-  
+
   .hover\:text-primary-600:hover {
     color: var(--color-primary-600);
   }
-  
+
   .focus\:ring-primary-500:focus {
     --tw-ring-color: var(--color-primary-500);
   }
-  
+
   .focus\:border-primary-500:focus {
     border-color: var(--color-primary-500);
   }

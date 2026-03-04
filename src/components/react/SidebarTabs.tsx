@@ -16,43 +16,60 @@ type Software = {
   createdAt?: string
 }
 
-export default function SidebarTabs() {
-  const [popular, setPopular] = useState<Software[]>([])
-  const [latest, setLatest] = useState<Software[]>([])
-  const [loading, setLoading] = useState(true)
+export default function SidebarTabs({ initialPopular = [], initialLatest = [] }: { initialPopular?: Software[], initialLatest?: Software[] }) {
+  const [popular, setPopular] = useState<Software[]>(initialPopular)
+  const [latest, setLatest] = useState<Software[]>(initialLatest)
+  const [loading, setLoading] = useState(initialPopular.length === 0 && initialLatest.length === 0)
 
   useEffect(() => {
-    const api = (window as any).apiClient
-    if (!api) return
+    let attempts = 0;
+    let isMounted = true;
 
-    const fetchData = async () => {
+    const checkApiAndFetch = () => {
+      const api = (window as any).apiClient;
+      if (api) {
+        fetchData(api);
+      } else if (attempts < 50) {
+        attempts++;
+        setTimeout(checkApiAndFetch, 100);
+      } else {
+        if (isMounted) setLoading(false);
+        console.error('API Client initialization timeout in SidebarTabs');
+      }
+    };
+
+    const fetchData = async (api: any) => {
       try {
         const [rankRes, listRes] = await Promise.all([
           api.getSoftwareRanking({ page: 1, limit: 5, sortBy: 'viewCount', sortOrder: 'desc' }),
           api.getSoftwareList({ page: 1, limit: 5, sortBy: 'createdAt', sortOrder: 'desc' }),
         ])
 
-        if (rankRes?.success && Array.isArray(rankRes.data)) {
+        if (isMounted && rankRes?.success && Array.isArray(rankRes.data)) {
           setPopular(rankRes.data.slice(0, 5))
         }
 
-        if (listRes?.success && listRes.data?.software) {
+        if (isMounted && listRes?.success && listRes.data?.software) {
           setLatest(listRes.data.software.slice(0, 5))
         }
       } catch (error) {
         console.error('Failed to fetch sidebar data:', error)
       } finally {
-        setLoading(false)
+        if (isMounted) setLoading(false)
       }
     }
 
-    fetchData()
+    checkApiAndFetch();
+
+    return () => {
+      isMounted = false;
+    }
   }, [])
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-xl shadow-gray-200/50 dark:shadow-none border border-gray-100 dark:border-gray-700/50 overflow-hidden flex flex-col h-full">
+    <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden flex flex-col h-full">
       <Tab.Group>
-        <Tab.List className="flex p-1.5 bg-gray-50/50 dark:bg-gray-900/50 m-3 rounded-2xl border border-gray-100 dark:border-gray-800">
+        <Tab.List className="flex p-1 bg-gray-100/50 dark:bg-gray-800/50 m-2 rounded-xl border border-gray-200 dark:border-gray-700">
           <Tab
             className={({ selected }) =>
               classNames(
@@ -135,7 +152,7 @@ export default function SidebarTabs() {
                                   loading="lazy"
                                 />
                               ) : (
-                                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-600 text-gray-500 flex items-center justify-center text-sm font-bold">
+                                <div className="w-10 h-10 rounded-xl bg-gray-100 dark:bg-gray-700 text-gray-500 flex items-center justify-center text-sm font-bold">
                                   {software.name.charAt(0)}
                                 </div>
                               )}
@@ -200,7 +217,7 @@ export default function SidebarTabs() {
                               loading="lazy"
                             />
                           ) : (
-                            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/30 dark:to-blue-800/30 text-blue-500 flex items-center justify-center text-sm font-bold">
+                            <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-gray-700 text-blue-500 dark:text-blue-400 flex items-center justify-center text-sm font-bold">
                               {software.name.charAt(0)}
                             </div>
                           )}

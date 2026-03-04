@@ -1,30 +1,31 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import Card from '../components/ui/Card.astro';
-import { appConfig } from '../lib/config';
+import Layout from "../layouts/Layout.astro";
+import Card from "../components/ui/Card.astro";
+import { appConfig } from "../lib/config";
 
-const title = '关于我们';
-const description = '了解APPFUN的使命、愿景和团队。APPFUN是一个致力于为用户提供优质软件管理和分发服务的平台，让软件发现和使用变得简单高效';
-const keywords = '关于APPFUN,APPFUN介绍,软件平台,领创工作室,软件管理,软件分发';
-const canonical = 'https://appfun.fun/about';
+const title = "关于我们";
+const description =
+  "了解APPFUN的使命、愿景和团队。APPFUN是一个致力于为用户提供优质软件管理和分发服务的平台，让软件发现和使用变得简单高效";
+const keywords = "关于APPFUN,APPFUN介绍,软件平台,领创工作室,软件管理,软件分发";
+const canonical = "https://appfun.fun/about";
 const structuredData = {
   "@context": "https://schema.org",
   "@type": "AboutPage",
-  "name": title,
-  "description": description,
-  "url": canonical,
-  "mainEntity": {
+  name: title,
+  description: description,
+  url: canonical,
+  mainEntity: {
     "@type": "Organization",
-    "name": "领创工作室",
-    "url": "https://appfun.fun",
-    "description": "致力于为用户提供优质的软件管理和分发服务"
-  }
+    name: "领创工作室",
+    url: "https://appfun.fun",
+    description: "致力于为用户提供优质的软件管理和分发服务",
+  },
 };
 ---
 
-<Layout 
-  title={title} 
-  description={description} 
+<Layout
+  title={title}
+  description={description}
   keywords={keywords}
   canonical={canonical}
   structuredDataType="website"
@@ -41,7 +42,7 @@ const structuredData = {
 
     <!-- 网站统计数据 -->
     <section class="mb-16">
-      <div class="bg-white rounded-2xl shadow-lg border border-gray-100 p-8">
+      <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
         <div class="text-center mb-8">
           <h2 class="text-2xl font-bold text-gray-900 mb-2">网站统计</h2>
           <p class="text-gray-600">实时访问数据统计</p>
@@ -49,54 +50,130 @@ const structuredData = {
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <!-- 总访问量 -->
-          <div class="text-center p-6 bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl">
-            <div class="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center mx-auto mb-4">
-              <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+          <div
+            class="text-center p-6 bg-blue-50 rounded-xl border border-blue-100/50"
+          >
+            <div
+              class="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center mx-auto mb-4"
+            >
+              <svg
+                class="w-6 h-6 text-white"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                ></path>
               </svg>
             </div>
-            <div class="text-2xl font-bold text-gray-900 mb-1" id="total-pageviews">
-              <div class="animate-pulse bg-gray-200 h-8 w-16 mx-auto rounded"></div>
+            <div
+              class="text-2xl font-bold text-gray-900 mb-1"
+              id="total-pageviews"
+            >
+              <div class="animate-pulse bg-gray-200 h-8 w-16 mx-auto rounded">
+              </div>
             </div>
             <p class="text-sm text-gray-600">总访问量</p>
           </div>
 
           <!-- 独立访客 -->
-          <div class="text-center p-6 bg-gradient-to-br from-green-50 to-green-100 rounded-xl">
-            <div class="w-12 h-12 bg-green-600 rounded-lg flex items-center justify-center mx-auto mb-4">
-              <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
+          <div
+            class="text-center p-6 bg-green-50 rounded-xl border border-green-100/50"
+          >
+            <div
+              class="w-12 h-12 bg-green-600 rounded-lg flex items-center justify-center mx-auto mb-4"
+            >
+              <svg
+                class="w-6 h-6 text-white"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"
+                ></path>
               </svg>
             </div>
-            <div class="text-2xl font-bold text-gray-900 mb-1" id="unique-visitors">
-              <div class="animate-pulse bg-gray-200 h-8 w-16 mx-auto rounded"></div>
+            <div
+              class="text-2xl font-bold text-gray-900 mb-1"
+              id="unique-visitors"
+            >
+              <div class="animate-pulse bg-gray-200 h-8 w-16 mx-auto rounded">
+              </div>
             </div>
             <p class="text-sm text-gray-600">独立访客</p>
           </div>
 
           <!-- 今日访问 -->
-          <div class="text-center p-6 bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl">
-            <div class="w-12 h-12 bg-purple-600 rounded-lg flex items-center justify-center mx-auto mb-4">
-              <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+          <div
+            class="text-center p-6 bg-purple-50 rounded-xl border border-purple-100/50"
+          >
+            <div
+              class="w-12 h-12 bg-purple-600 rounded-lg flex items-center justify-center mx-auto mb-4"
+            >
+              <svg
+                class="w-6 h-6 text-white"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                ></path>
               </svg>
             </div>
-            <div class="text-2xl font-bold text-gray-900 mb-1" id="today-pageviews">
-              <div class="animate-pulse bg-gray-200 h-8 w-16 mx-auto rounded"></div>
+            <div
+              class="text-2xl font-bold text-gray-900 mb-1"
+              id="today-pageviews"
+            >
+              <div class="animate-pulse bg-gray-200 h-8 w-16 mx-auto rounded">
+              </div>
             </div>
             <p class="text-sm text-gray-600">今日访问</p>
           </div>
 
           <!-- 在线用户 -->
-          <div class="text-center p-6 bg-gradient-to-br from-orange-50 to-orange-100 rounded-xl">
-            <div class="w-12 h-12 bg-orange-600 rounded-lg flex items-center justify-center mx-auto mb-4">
-              <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.636 18.364a9 9 0 010-12.728m12.728 0a9 9 0 010 12.728m-9.9-2.829a5 5 0 010-7.07m7.072 0a5 5 0 010 7.07M13 12a1 1 0 11-2 0 1 1 0 012 0z"></path>
+          <div
+            class="text-center p-6 bg-orange-50 rounded-xl border border-orange-100/50"
+          >
+            <div
+              class="w-12 h-12 bg-orange-600 rounded-lg flex items-center justify-center mx-auto mb-4"
+            >
+              <svg
+                class="w-6 h-6 text-white"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M5.636 18.364a9 9 0 010-12.728m12.728 0a9 9 0 010 12.728m-9.9-2.829a5 5 0 010-7.07m7.072 0a5 5 0 010 7.07M13 12a1 1 0 11-2 0 1 1 0 012 0z"
+                ></path>
               </svg>
             </div>
-            <div class="text-2xl font-bold text-gray-900 mb-1" id="active-visitors">
-              <div class="animate-pulse bg-gray-200 h-8 w-16 mx-auto rounded"></div>
+            <div
+              class="text-2xl font-bold text-gray-900 mb-1"
+              id="active-visitors"
+            >
+              <div class="animate-pulse bg-gray-200 h-8 w-16 mx-auto rounded">
+              </div>
             </div>
             <p class="text-sm text-gray-600">在线用户</p>
           </div>
@@ -105,7 +182,9 @@ const structuredData = {
         <!-- 数据更新时间 -->
         <div class="text-center mt-6 pt-6 border-t border-gray-200">
           <p class="text-sm text-gray-500">
-            数据更新时间：<span id="last-updated" class="font-medium">加载中...</span>
+            数据更新时间：<span id="last-updated" class="font-medium"
+              >加载中...</span
+            >
           </p>
         </div>
       </div>
@@ -121,22 +200,33 @@ const structuredData = {
               {appConfig.title} 是一个基于现代技术栈构建的APPFUN，旨在为开发者和用户提供便捷的软件发布、管理和下载服务。
             </p>
             <p>
-              我们使用 Astro 框架构建前端界面，集成了强大的 LACS API 服务，为用户提供流畅的软件浏览和管理体验。
+              我们使用 Astro 框架构建前端界面，集成了强大的 LACS API
+              服务，为用户提供流畅的软件浏览和管理体验。
             </p>
             <p>
               平台支持多种软件分类、标签系统、版本管理、激活码管理等功能，满足不同用户的需求。
             </p>
           </div>
         </div>
-        
-        <div class="bg-gradient-to-br from-primary-50 to-primary-100 rounded-2xl p-8">
+
+        <div class="bg-primary-50 rounded-2xl p-8 border border-primary-100/50">
           <div class="text-center">
-            <div class="w-20 h-20 bg-primary-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
-              <svg class="w-10 h-10 text-white" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"></path>
+            <div
+              class="w-20 h-20 bg-primary-600 rounded-2xl flex items-center justify-center mx-auto mb-6"
+            >
+              <svg
+                class="w-10 h-10 text-white"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"
+                ></path>
               </svg>
             </div>
-            <h3 class="text-xl font-semibold text-gray-900 mb-2">{appConfig.title}</h3>
+            <h3 class="text-xl font-semibold text-gray-900 mb-2">
+              {appConfig.title}
+            </h3>
             <p class="text-gray-600">版本 {appConfig.version}</p>
           </div>
         </div>
@@ -145,7 +235,9 @@ const structuredData = {
 
     <!-- 核心功能 -->
     <section class="mb-16">
-      <h2 class="text-3xl font-bold text-gray-900 text-center mb-12">核心功能</h2>
+      <h2 class="text-3xl font-bold text-gray-900 text-center mb-12">
+        核心功能
+      </h2>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         <Card class="text-center">
           <div class="text-4xl mb-4">📦</div>
@@ -200,12 +292,20 @@ const structuredData = {
     <!-- 技术栈 -->
     <section class="mb-16">
       <h2 class="text-3xl font-bold text-gray-900 text-center mb-12">技术栈</h2>
-      <div class="bg-white rounded-2xl border border-gray-200 p-8">
+      <div class="bg-white rounded-2xl border border-gray-200 shadow-sm p-8">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           <div class="text-center">
-            <div class="w-16 h-16 bg-orange-100 rounded-xl flex items-center justify-center mx-auto mb-4">
-              <svg class="w-8 h-8 text-orange-600" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 0L1.608 4.8L3.072 19.2L12 24l8.928-4.8L21.392 4.8L12 0z"/>
+            <div
+              class="w-16 h-16 bg-orange-100 rounded-xl flex items-center justify-center mx-auto mb-4"
+            >
+              <svg
+                class="w-8 h-8 text-orange-600"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+              >
+                <path
+                  d="M12 0L1.608 4.8L3.072 19.2L12 24l8.928-4.8L21.392 4.8L12 0z"
+                ></path>
               </svg>
             </div>
             <h3 class="font-semibold text-gray-900 mb-1">Astro</h3>
@@ -213,9 +313,17 @@ const structuredData = {
           </div>
 
           <div class="text-center">
-            <div class="w-16 h-16 bg-blue-100 rounded-xl flex items-center justify-center mx-auto mb-4">
-              <svg class="w-8 h-8 text-blue-600" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M14.23 12.004a2.236 2.236 0 0 1-2.235 2.236 2.236 2.236 0 0 1-2.236-2.236 2.236 2.236 0 0 1 2.235-2.236 2.236 2.236 0 0 1 2.236 2.236zm2.648-10.69c-1.346 0-3.107.96-4.888 2.622-1.78-1.653-3.542-2.602-4.887-2.602-.41 0-.783.093-1.106.278-1.375.793-1.683 3.264-.973 6.365C1.98 8.917 0 10.42 0 12.004c0 1.59 1.99 3.097 5.043 4.03-.704 3.113-.39 5.588.988 6.38.32.187.69.275 1.102.275 1.345 0 3.107-.96 4.888-2.624 1.78 1.654 3.542 2.603 4.887 2.603.41 0 .783-.09 1.106-.275 1.374-.792 1.683-3.263.973-6.365C22.02 15.096 24 13.59 24 12.004c0-1.59-1.99-3.097-5.043-4.032.704-3.11.39-5.587-.988-6.38-.318-.184-.688-.277-1.092-.278zm-.005 1.09v.006c.225 0 .406.044.558.127.666.382.955 1.835.73 3.704-.054.46-.142.945-.25 1.44-.96-.236-2.006-.417-3.107-.534-.66-.905-1.345-1.727-2.035-2.447 1.592-1.48 3.087-2.292 4.105-2.295zm-9.77.02c1.012 0 2.514.808 4.11 2.28-.686.72-1.37 1.537-2.02 2.442-1.107.117-2.154.298-3.113.538-.112-.49-.195-.964-.254-1.42-.23-1.868.054-3.32.714-3.707.19-.09.4-.127.563-.132zm4.882 3.05c.455.468.91.992 1.36 1.564-.44-.02-.89-.034-1.36-.034-.47 0-.92.014-1.36.034.44-.572.895-1.096 1.36-1.564zM12 8.1c.74 0 1.477.034 2.202.093.406.582.802 1.203 1.183 1.86.372.64.71 1.29 1.018 1.946-.308.655-.646 1.31-1.013 1.95-.38.66-.773 1.288-1.18 1.87-.728.063-1.466.098-2.21.098-.74 0-1.477-.035-2.202-.093-.406-.582-.802-1.204-1.183-1.86-.372-.64-.71-1.29-1.018-1.946.303-.657.646-1.313 1.013-1.954.38-.66.773-1.286 1.18-1.868.728-.064 1.466-.099 2.21-.099zm-3.635.254c-.24.377-.48.763-.704 1.16-.225.39-.435.782-.635 1.174-.265-.656-.49-1.31-.676-1.947.64-.15 1.315-.283 2.015-.386zm7.26 0c.695.103 1.365.23 2.006.387-.18.632-.405 1.282-.66 1.933-.2-.39-.41-.783-.64-1.174-.225-.392-.465-.774-.705-1.146zm3.063.675c.484.15.944.317 1.375.498 1.732.74 2.852 1.708 2.852 2.476-.005.768-1.125 1.74-2.857 2.475-.42.18-.88.342-1.355.493-.28-.958-.646-1.956-1.1-2.98.45-1.017.81-2.01 1.085-2.964zm-13.395.004c.278.96.645 1.957 1.1 2.98-.45 1.017-.812 2.01-1.086 2.964-.484-.15-.944-.318-1.37-.5-1.732-.737-2.852-1.706-2.852-2.474 0-.768 1.12-1.742 2.852-2.476.42-.18.88-.342 1.356-.494zm11.678 4.28c.265.657.49 1.312.676 1.948-.64.157-1.316.29-2.016.39.24-.375.48-.762.705-1.158.225-.39.435-.788.636-1.18zm-9.945.02c.2.392.41.783.64 1.175.23.39.465.772.705 1.143-.695-.102-1.365-.23-2.006-.386.18-.63.406-1.282.66-1.933zM17.92 16.32c.112.493.2.968.254 1.423.23 1.868-.054 3.32-.714 3.708-.147.09-.338.128-.563.128-1.012 0-2.514-.807-4.11-2.28.686-.72 1.37-1.536 2.02-2.44 1.107-.118 2.154-.3 3.113-.54zm-11.83.01c.96.234 2.006.415 3.107.532.66.905 1.345 1.727 2.035 2.446-1.595 1.483-3.092 2.295-4.11 2.295-.22-.005-.406-.05-.553-.132-.666-.38-.955-1.834-.73-3.703.054-.46.142-.944.25-1.438zm4.56.64c.44.02.89.034 1.36.034.47 0 .92-.014 1.36-.034-.44.572-.895 1.095-1.36 1.56-.465-.467-.92-.988-1.36-1.56z"/>
+            <div
+              class="w-16 h-16 bg-blue-100 rounded-xl flex items-center justify-center mx-auto mb-4"
+            >
+              <svg
+                class="w-8 h-8 text-blue-600"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+              >
+                <path
+                  d="M14.23 12.004a2.236 2.236 0 0 1-2.235 2.236 2.236 2.236 0 0 1-2.236-2.236 2.236 2.236 0 0 1 2.235-2.236 2.236 2.236 0 0 1 2.236 2.236zm2.648-10.69c-1.346 0-3.107.96-4.888 2.622-1.78-1.653-3.542-2.602-4.887-2.602-.41 0-.783.093-1.106.278-1.375.793-1.683 3.264-.973 6.365C1.98 8.917 0 10.42 0 12.004c0 1.59 1.99 3.097 5.043 4.03-.704 3.113-.39 5.588.988 6.38.32.187.69.275 1.102.275 1.345 0 3.107-.96 4.888-2.624 1.78 1.654 3.542 2.603 4.887 2.603.41 0 .783-.09 1.106-.275 1.374-.792 1.683-3.263.973-6.365C22.02 15.096 24 13.59 24 12.004c0-1.59-1.99-3.097-5.043-4.032.704-3.11.39-5.587-.988-6.38-.318-.184-.688-.277-1.092-.278zm-.005 1.09v.006c.225 0 .406.044.558.127.666.382.955 1.835.73 3.704-.054.46-.142.945-.25 1.44-.96-.236-2.006-.417-3.107-.534-.66-.905-1.345-1.727-2.035-2.447 1.592-1.48 3.087-2.292 4.105-2.295zm-9.77.02c1.012 0 2.514.808 4.11 2.28-.686.72-1.37 1.537-2.02 2.442-1.107.117-2.154.298-3.113.538-.112-.49-.195-.964-.254-1.42-.23-1.868.054-3.32.714-3.707.19-.09.4-.127.563-.132zm4.882 3.05c.455.468.91.992 1.36 1.564-.44-.02-.89-.034-1.36-.034-.47 0-.92.014-1.36.034.44-.572.895-1.096 1.36-1.564zM12 8.1c.74 0 1.477.034 2.202.093.406.582.802 1.203 1.183 1.86.372.64.71 1.29 1.018 1.946-.308.655-.646 1.31-1.013 1.95-.38.66-.773 1.288-1.18 1.87-.728.063-1.466.098-2.21.098-.74 0-1.477-.035-2.202-.093-.406-.582-.802-1.204-1.183-1.86-.372-.64-.71-1.29-1.018-1.946.303-.657.646-1.313 1.013-1.954.38-.66.773-1.286 1.18-1.868.728-.064 1.466-.099 2.21-.099zm-3.635.254c-.24.377-.48.763-.704 1.16-.225.39-.435.782-.635 1.174-.265-.656-.49-1.31-.676-1.947.64-.15 1.315-.283 2.015-.386zm7.26 0c.695.103 1.365.23 2.006.387-.18.632-.405 1.282-.66 1.933-.2-.39-.41-.783-.64-1.174-.225-.392-.465-.774-.705-1.146zm3.063.675c.484.15.944.317 1.375.498 1.732.74 2.852 1.708 2.852 2.476-.005.768-1.125 1.74-2.857 2.475-.42.18-.88.342-1.355.493-.28-.958-.646-1.956-1.1-2.98.45-1.017.81-2.01 1.085-2.964zm-13.395.004c.278.96.645 1.957 1.1 2.98-.45 1.017-.812 2.01-1.086 2.964-.484-.15-.944-.318-1.37-.5-1.732-.737-2.852-1.706-2.852-2.474 0-.768 1.12-1.742 2.852-2.476.42-.18.88-.342 1.356-.494zm11.678 4.28c.265.657.49 1.312.676 1.948-.64.157-1.316.29-2.016.39.24-.375.48-.762.705-1.158.225-.39.435-.788.636-1.18zm-9.945.02c.2.392.41.783.64 1.175.23.39.465.772.705 1.143-.695-.102-1.365-.23-2.006-.386.18-.63.406-1.282.66-1.933zM17.92 16.32c.112.493.2.968.254 1.423.23 1.868-.054 3.32-.714 3.708-.147.09-.338.128-.563.128-1.012 0-2.514-.807-4.11-2.28.686-.72 1.37-1.536 2.02-2.44 1.107-.118 2.154-.3 3.113-.54zm-11.83.01c.96.234 2.006.415 3.107.532.66.905 1.345 1.727 2.035 2.446-1.595 1.483-3.092 2.295-4.11 2.295-.22-.005-.406-.05-.553-.132-.666-.38-.955-1.834-.73-3.703.054-.46.142-.944.25-1.438zm4.56.64c.44.02.89.034 1.36.034.47 0 .92-.014 1.36-.034-.44.572-.895 1.095-1.36 1.56-.465-.467-.92-.988-1.36-1.56z"
+                ></path>
               </svg>
             </div>
             <h3 class="font-semibold text-gray-900 mb-1">React</h3>
@@ -223,9 +331,17 @@ const structuredData = {
           </div>
 
           <div class="text-center">
-            <div class="w-16 h-16 bg-cyan-100 rounded-xl flex items-center justify-center mx-auto mb-4">
-              <svg class="w-8 h-8 text-cyan-600" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12.001,4.8c-3.2,0-5.2,1.6-6,4.8c1.2-1.6,2.6-2.2,4.2-1.8c0.913,0.228,1.565,0.89,2.288,1.624 C13.666,10.618,15.027,12,18.001,12c3.2,0,5.2-1.6,6-4.8c-1.2,1.6-2.6,2.2-4.2,1.8c-0.913-0.228-1.565-0.89-2.288-1.624 C16.337,6.182,14.976,4.8,12.001,4.8z M6.001,12c-3.2,0-5.2,1.6-6,4.8c1.2-1.6,2.6-2.2,4.2-1.8c0.913,0.228,1.565,0.89,2.288,1.624 c1.177,1.194,2.538,2.576,5.512,2.576c3.2,0,5.2-1.6,6-4.8c-1.2,1.6-2.6,2.2-4.2,1.8c-0.913-0.228-1.565-0.89-2.288-1.624 C10.337,13.382,8.976,12,6.001,12z"/>
+            <div
+              class="w-16 h-16 bg-cyan-100 rounded-xl flex items-center justify-center mx-auto mb-4"
+            >
+              <svg
+                class="w-8 h-8 text-cyan-600"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+              >
+                <path
+                  d="M12.001,4.8c-3.2,0-5.2,1.6-6,4.8c1.2-1.6,2.6-2.2,4.2-1.8c0.913,0.228,1.565,0.89,2.288,1.624 C13.666,10.618,15.027,12,18.001,12c3.2,0,5.2-1.6,6-4.8c-1.2,1.6-2.6,2.2-4.2,1.8c-0.913-0.228-1.565-0.89-2.288-1.624 C16.337,6.182,14.976,4.8,12.001,4.8z M6.001,12c-3.2,0-5.2,1.6-6,4.8c1.2-1.6,2.6-2.2,4.2-1.8c0.913,0.228,1.565,0.89,2.288,1.624 c1.177,1.194,2.538,2.576,5.512,2.576c3.2,0,5.2-1.6,6-4.8c-1.2,1.6-2.6,2.2-4.2,1.8c-0.913-0.228-1.565-0.89-2.288-1.624 C10.337,13.382,8.976,12,6.001,12z"
+                ></path>
               </svg>
             </div>
             <h3 class="font-semibold text-gray-900 mb-1">Tailwind CSS</h3>
@@ -233,9 +349,17 @@ const structuredData = {
           </div>
 
           <div class="text-center">
-            <div class="w-16 h-16 bg-blue-100 rounded-xl flex items-center justify-center mx-auto mb-4">
-              <svg class="w-8 h-8 text-blue-600" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M1.125 0C.502 0 0 .502 0 1.125v21.75C0 23.498.502 24 1.125 24h21.75c.623 0 1.125-.502 1.125-1.125V1.125C24 .502 23.498 0 22.875 0H1.125zM12 7.5c-2.485 0-4.5 2.015-4.5 4.5s2.015 4.5 4.5 4.5 4.5-2.015 4.5-4.5-2.015-4.5-4.5-4.5z"/>
+            <div
+              class="w-16 h-16 bg-blue-100 rounded-xl flex items-center justify-center mx-auto mb-4"
+            >
+              <svg
+                class="w-8 h-8 text-blue-600"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+              >
+                <path
+                  d="M1.125 0C.502 0 0 .502 0 1.125v21.75C0 23.498.502 24 1.125 24h21.75c.623 0 1.125-.502 1.125-1.125V1.125C24 .502 23.498 0 22.875 0H1.125zM12 7.5c-2.485 0-4.5 2.015-4.5 4.5s2.015 4.5 4.5 4.5 4.5-2.015 4.5-4.5-2.015-4.5-4.5-4.5z"
+                ></path>
               </svg>
             </div>
             <h3 class="font-semibold text-gray-900 mb-1">TypeScript</h3>
@@ -247,7 +371,9 @@ const structuredData = {
 
     <!-- 联系信息 -->
     <section class="mb-16">
-      <h2 class="text-3xl font-bold text-gray-900 text-center mb-12">联系我们</h2>
+      <h2 class="text-3xl font-bold text-gray-900 text-center mb-12">
+        联系我们
+      </h2>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
         <Card class="text-center">
           <div class="text-3xl mb-4">📧</div>
@@ -255,7 +381,10 @@ const structuredData = {
           <p class="text-sm text-gray-600 mb-3">
             有任何问题或建议，欢迎发送邮件给我们
           </p>
-          <a href="mailto:support@lacs.cc" class="text-primary-600 hover:text-primary-700 text-sm font-medium">
+          <a
+            href="mailto:support@lacs.cc"
+            class="text-primary-600 hover:text-primary-700 text-sm font-medium"
+          >
             support@lacs.cc
           </a>
         </Card>
@@ -266,19 +395,26 @@ const structuredData = {
           <p class="text-sm text-gray-600 mb-3">
             查看完整的 API 文档和开发指南
           </p>
-          <a href={appConfig.links.documentation} target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:text-primary-700 text-sm font-medium">
+          <a
+            href={appConfig.links.documentation}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-primary-600 hover:text-primary-700 text-sm font-medium"
+          >
             查看文档
           </a>
         </Card>
 
-
         <Card class="text-center">
           <div class="text-3xl mb-4">🐙</div>
           <h3 class="font-semibold text-gray-900 mb-2">开源项目</h3>
-          <p class="text-sm text-gray-600 mb-3">
-            查看我们的开源项目和贡献
-          </p>
-          <a href={appConfig.links.github} target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:text-primary-700 text-sm font-medium">
+          <p class="text-sm text-gray-600 mb-3">查看我们的开源项目和贡献</p>
+          <a
+            href={appConfig.links.github}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-primary-600 hover:text-primary-700 text-sm font-medium"
+          >
             GitHub
           </a>
         </Card>
@@ -310,10 +446,10 @@ const structuredData = {
 
 <script>
   // 设置构建时间
-  document.addEventListener('DOMContentLoaded', () => {
-    const buildTimeElement = document.getElementById('build-time');
+  document.addEventListener("DOMContentLoaded", () => {
+    const buildTimeElement = document.getElementById("build-time");
     if (buildTimeElement) {
-      buildTimeElement.textContent = new Date().toLocaleDateString('zh-CN');
+      buildTimeElement.textContent = new Date().toLocaleDateString("zh-CN");
     }
   });
 </script>
@@ -322,23 +458,23 @@ const structuredData = {
   .bg-primary-50 {
     background-color: var(--color-primary-50);
   }
-  
+
   .bg-primary-100 {
     background-color: var(--color-primary-100);
   }
-  
+
   .bg-primary-600 {
     background-color: var(--color-primary-600);
   }
-  
+
   .text-primary-600 {
     color: var(--color-primary-600);
   }
-  
+
   .text-primary-700 {
     color: var(--color-primary-700);
   }
-  
+
   .hover\:text-primary-700:hover {
     color: var(--color-primary-700);
   }
@@ -346,18 +482,17 @@ const structuredData = {
 
 <script>
   // 网站统计数据获取和显示
-  document.addEventListener('DOMContentLoaded', async () => {
-    const totalPageviewsEl = document.getElementById('total-pageviews');
-    const uniqueVisitorsEl = document.getElementById('unique-visitors');
-    const todayPageviewsEl = document.getElementById('today-pageviews');
-    const activeVisitorsEl = document.getElementById('active-visitors');
-    const lastUpdatedEl = document.getElementById('last-updated');
-
+  document.addEventListener("DOMContentLoaded", async () => {
+    const totalPageviewsEl = document.getElementById("total-pageviews");
+    const uniqueVisitorsEl = document.getElementById("unique-visitors");
+    const todayPageviewsEl = document.getElementById("today-pageviews");
+    const activeVisitorsEl = document.getElementById("active-visitors");
+    const lastUpdatedEl = document.getElementById("last-updated");
 
     // 格式化数字显示
     function formatNumber(num: number): string {
       if (num >= 10000) {
-        return (num / 1000).toFixed(1) + 'K';
+        return (num / 1000).toFixed(1) + "K";
       }
       return num.toLocaleString();
     }
@@ -366,7 +501,7 @@ const structuredData = {
     async function fetchStats() {
       try {
         // 调用统计数据 API
-        const response = await fetch('/api/umami/stats');
+        const response = await fetch("/api/umami/stats");
 
         if (!response.ok) {
           throw new Error(`HTTP ${response.status}: ${response.statusText}`);
@@ -375,33 +510,37 @@ const structuredData = {
         const result = await response.json();
 
         if (!result.success) {
-          throw new Error(result.message || '获取统计数据失败');
+          throw new Error(result.message || "获取统计数据失败");
         }
 
         const stats = result.data;
 
         // 更新显示
-        if (totalPageviewsEl) totalPageviewsEl.textContent = formatNumber(stats.totalPageviews);
-        if (uniqueVisitorsEl) uniqueVisitorsEl.textContent = formatNumber(stats.uniqueVisitors);
-        if (todayPageviewsEl) todayPageviewsEl.textContent = formatNumber(stats.todayPageviews);
-        if (activeVisitorsEl) activeVisitorsEl.textContent = stats.activeVisitors.toString();
+        if (totalPageviewsEl)
+          totalPageviewsEl.textContent = formatNumber(stats.totalPageviews);
+        if (uniqueVisitorsEl)
+          uniqueVisitorsEl.textContent = formatNumber(stats.uniqueVisitors);
+        if (todayPageviewsEl)
+          todayPageviewsEl.textContent = formatNumber(stats.todayPageviews);
+        if (activeVisitorsEl)
+          activeVisitorsEl.textContent = stats.activeVisitors.toString();
 
         // 更新时间
         if (lastUpdatedEl) {
           const updateTime = new Date(stats.lastUpdated);
-          lastUpdatedEl.textContent = updateTime.toLocaleString('zh-CN');
+          lastUpdatedEl.textContent = updateTime.toLocaleString("zh-CN");
         }
 
-        console.log('统计数据已更新:', stats);
+        console.log("统计数据已更新:", stats);
       } catch (error: any) {
-        console.error('获取统计数据失败:', error?.message);
+        console.error("获取统计数据失败:", error?.message);
 
         // 显示错误状态
-        if (totalPageviewsEl) totalPageviewsEl.textContent = '--';
-        if (uniqueVisitorsEl) uniqueVisitorsEl.textContent = '--';
-        if (todayPageviewsEl) todayPageviewsEl.textContent = '--';
-        if (activeVisitorsEl) activeVisitorsEl.textContent = '--';
-        if (lastUpdatedEl) lastUpdatedEl.textContent = '获取失败';
+        if (totalPageviewsEl) totalPageviewsEl.textContent = "--";
+        if (uniqueVisitorsEl) uniqueVisitorsEl.textContent = "--";
+        if (todayPageviewsEl) todayPageviewsEl.textContent = "--";
+        if (activeVisitorsEl) activeVisitorsEl.textContent = "--";
+        if (lastUpdatedEl) lastUpdatedEl.textContent = "获取失败";
       }
     }
 
@@ -414,15 +553,15 @@ const structuredData = {
 
   // Umami 事件跟踪（如果需要）
   function trackEvent(eventName: string, eventData: Record<string, any> = {}) {
-    if (window.umami && typeof window.umami.track === 'function') {
+    if (window.umami && typeof window.umami.track === "function") {
       window.umami.track(eventName, eventData);
     }
   }
 
   // 跟踪页面停留时间
   let startTime = Date.now();
-  window.addEventListener('beforeunload', () => {
+  window.addEventListener("beforeunload", () => {
     const timeSpent = Math.round((Date.now() - startTime) / 1000);
-    trackEvent('page-time', { duration: timeSpent, page: 'about' });
+    trackEvent("page-time", { duration: timeSpent, page: "about" });
   });
 </script>

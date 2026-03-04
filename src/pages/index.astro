@@ -1,46 +1,85 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import DynamicCarousel from '../components/ui/DynamicCarousel.astro';
-import AllSoftwareGrid from '../components/software/AllSoftwareGrid.astro';
-import SidebarTabs from '../components/react/SidebarTabs.tsx';
+import Layout from "../layouts/Layout.astro";
+import DynamicCarousel from "../components/ui/DynamicCarousel.astro";
+import AllSoftwareGrid from "../components/software/AllSoftwareGrid.astro";
+import SidebarTabs from "../components/react/SidebarTabs.tsx";
+import { initializeApiClient, getApiClient } from "../lib/api";
+import { apiConfig } from "../lib/config";
 
-const title = '首页';
-const description = 'APPFUN - 发现和下载最新最有趣的软件工具，包括工具软件、开发工具、设计软件、多媒体软件等多种分类，提供免费下载和详细的使用指南';
-const keywords = '软件下载,免费软件,工具软件,开发工具,设计软件,多媒体软件,APPFUN,有趣软件';
-const canonical = 'https://appfun.fun/';
+// 提前在服务端初始化并获取数据，加速客户端首屏渲染
+initializeApiClient(apiConfig);
+const api = getApiClient();
+
+let initialPopular: any[] = [];
+let initialLatest: any[] = [];
+
+try {
+  const [rankRes, listRes] = await Promise.all([
+    api.getSoftwareRanking({
+      page: 1,
+      limit: 5,
+      sortBy: "viewCount",
+      sortOrder: "desc",
+    }),
+    api.getSoftwareList({
+      page: 1,
+      limit: 5,
+      sortBy: "createdAt",
+      sortOrder: "desc",
+    }),
+  ]);
+
+  if (rankRes?.success && Array.isArray(rankRes.data)) {
+    initialPopular = rankRes.data.slice(0, 5);
+  }
+
+  if (listRes?.success && listRes.data?.software) {
+    initialLatest = listRes.data.software.slice(0, 5);
+  }
+} catch (error) {
+  console.error("Failed to prefetch sidebar data during build:", error);
+}
+
+const title = "首页";
+const description =
+  "APPFUN - 发现和下载最新最有趣的软件工具，包括工具软件、开发工具、设计软件、多媒体软件等多种分类，提供免费下载和详细的使用指南";
+const keywords =
+  "软件下载,免费软件,工具软件,开发工具,设计软件,多媒体软件,APPFUN,有趣软件";
+const canonical = "https://appfun.fun/";
 const structuredData = {
   "@context": "https://schema.org",
   "@type": "WebSite",
-  "name": "APPFUN",
-  "alternateName": "APPFUN.FUN",
-  "url": "https://appfun.fun",
-  "description": description,
-  "potentialAction": {
+  name: "APPFUN",
+  alternateName: "APPFUN.FUN",
+  url: "https://appfun.fun",
+  description: description,
+  potentialAction: {
     "@type": "SearchAction",
-    "target": "https://appfun.fun/search?q={search_term_string}",
-    "query-input": "required name=search_term_string"
+    target: "https://appfun.fun/search?q={search_term_string}",
+    "query-input": "required name=search_term_string",
   },
-  "publisher": {
+  publisher: {
     "@type": "Organization",
-    "name": "领创工作室",
-    "url": "https://appfun.fun"
-  }
+    name: "领创工作室",
+    url: "https://appfun.fun",
+  },
 };
 ---
 
-<Layout 
-  title={title} 
-  description={description} 
+<Layout
+  title={title}
+  description={description}
   keywords={keywords}
   canonical={canonical}
   structuredDataType="website"
   structuredData={structuredData}
 >
   <!-- 顶部主要区域 -->
-  <section class="bg-gray-50 dark:bg-gray-900 transition-colors duration-300 pb-12 pt-8">
+  <section
+    class="bg-gray-50 dark:bg-gray-900 transition-colors duration-300 pb-12 pt-8"
+  >
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-        
         <!-- 左侧轮播图 (占2/3) -->
         <div class="lg:col-span-8">
           <DynamicCarousel
@@ -54,38 +93,60 @@ const structuredData = {
 
         <!-- 右侧排行榜 (占1/3) -->
         <div class="lg:col-span-4 flex flex-col h-full">
-          <SidebarTabs client:load />
+          <SidebarTabs
+            client:load
+            initialPopular={initialPopular}
+            initialLatest={initialLatest}
+          />
         </div>
-
       </div>
     </div>
   </section>
 
   <!-- 下部区域 -->
-  <section class="bg-white dark:bg-gray-900 py-12 border-t border-gray-100 dark:border-gray-800">
+  <section
+    class="bg-white dark:bg-gray-900 py-12 border-t border-gray-100 dark:border-gray-800"
+  >
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex items-center justify-between mb-8">
-        <h2 class="text-2xl font-bold text-gray-900 dark:text-white flex items-center">
-          <span class="bg-primary-100 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400 p-2 rounded-lg mr-3">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+        <h2
+          class="text-2xl font-bold text-gray-900 dark:text-white flex items-center"
+        >
+          <span
+            class="bg-primary-100 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400 p-2 rounded-lg mr-3"
+          >
+            <svg
+              class="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              ><path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"
+              ></path></svg
+            >
           </span>
           全部软件
         </h2>
-        <a href="/ranking" class="text-sm font-medium text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 transition-colors">
+        <a
+          href="/ranking"
+          class="text-sm font-medium text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 transition-colors"
+        >
           查看完整排行榜 &rarr;
         </a>
       </div>
       <AllSoftwareGrid limit={20} />
     </div>
   </section>
-
 </Layout>
 
 <!-- React 组件接管 Tab，无需脚本切换 -->
 
 <script>
-  import { initializeApiClient, getApiClient } from '../lib/api';
-  import { apiConfig } from '../lib/config';
+  import { initializeApiClient, getApiClient } from "../lib/api";
+  import { apiConfig } from "../lib/config";
 
   // 初始化 API 客户端
   initializeApiClient(apiConfig);

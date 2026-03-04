@@ -1,6 +1,6 @@
 ---
-import LoadingSpinner from '../ui/LoadingSpinner.astro';
-import ErrorMessage from '../ui/ErrorMessage.astro';
+import LoadingSpinner from "../ui/LoadingSpinner.astro";
+import ErrorMessage from "../ui/ErrorMessage.astro";
 
 interface Props {
   title?: string;
@@ -10,27 +10,39 @@ interface Props {
 }
 
 const {
-  title = '全部软件',
+  title = "全部软件",
   limit = 20,
   showViewAll = true,
-  class: className = ''
+  class: className = "",
 } = Astro.props;
 ---
 
 <section class={`${className}`}>
   <div class="flex items-center justify-between mb-6">
     <h2 class="text-2xl font-bold text-gray-900 dark:text-white">{title}</h2>
-    {showViewAll && (
-      <a 
-        href="/software" 
-        class="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium text-sm flex items-center transition-colors"
-      >
-        查看全部
-        <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-        </svg>
-      </a>
-    )}
+    {
+      showViewAll && (
+        <a
+          href="/software"
+          class="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium text-sm flex items-center transition-colors"
+        >
+          查看全部
+          <svg
+            class="w-4 h-4 ml-1"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M9 5l7 7-7 7"
+            />
+          </svg>
+        </a>
+      )
+    }
   </div>
 
   <!-- 加载状态 -->
@@ -40,13 +52,10 @@ const {
 
   <!-- 错误状态 -->
   <div id="all-software-error" class="hidden">
-    <ErrorMessage 
-      title="加载失败" 
-      message="无法加载软件列表，请稍后重试"
-    />
+    <ErrorMessage title="加载失败" message="无法加载软件列表，请稍后重试" />
     <div class="text-center mt-4">
-      <button 
-        id="all-software-retry" 
+      <button
+        id="all-software-retry"
         class="px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-md transition-colors"
       >
         重新加载
@@ -62,7 +71,9 @@ const {
   <!-- 空状态 -->
   <div id="all-software-empty" class="hidden text-center py-12">
     <div class="text-gray-400 dark:text-gray-600 text-6xl mb-4">📦</div>
-    <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">暂无软件</h3>
+    <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">
+      暂无软件
+    </h3>
     <p class="text-gray-500 dark:text-gray-400">还没有添加任何软件</p>
   </div>
 </section>
@@ -98,14 +109,16 @@ const {
     }
 
     init(): void {
-      this.container = document.getElementById('all-software-container');
-      this.loadingElement = document.getElementById('all-software-loading');
-      this.errorElement = document.getElementById('all-software-error');
-      this.emptyElement = document.getElementById('all-software-empty');
-      this.retryButton = document.getElementById('all-software-retry');
+      this.container = document.getElementById("all-software-container");
+      this.loadingElement = document.getElementById("all-software-loading");
+      this.errorElement = document.getElementById("all-software-error");
+      this.emptyElement = document.getElementById("all-software-empty");
+      this.retryButton = document.getElementById("all-software-retry");
 
       if (this.retryButton) {
-        this.retryButton.addEventListener('click', () => this.loadAllSoftware());
+        this.retryButton.addEventListener("click", () =>
+          this.loadAllSoftware(),
+        );
       }
 
       this.loadAllSoftware();
@@ -113,29 +126,29 @@ const {
 
     showLoading(): void {
       this.hideAll();
-      this.loadingElement?.classList.remove('hidden');
+      this.loadingElement?.classList.remove("hidden");
     }
 
     showError(): void {
       this.hideAll();
-      this.errorElement?.classList.remove('hidden');
+      this.errorElement?.classList.remove("hidden");
     }
 
     showEmpty(): void {
       this.hideAll();
-      this.emptyElement?.classList.remove('hidden');
+      this.emptyElement?.classList.remove("hidden");
     }
 
     showContent(): void {
       this.hideAll();
-      this.container?.classList.remove('hidden');
+      this.container?.classList.remove("hidden");
     }
 
     hideAll(): void {
-      this.loadingElement?.classList.add('hidden');
-      this.errorElement?.classList.add('hidden');
-      this.emptyElement?.classList.add('hidden');
-      this.container?.classList.add('hidden');
+      this.loadingElement?.classList.add("hidden");
+      this.errorElement?.classList.add("hidden");
+      this.emptyElement?.classList.add("hidden");
+      this.container?.classList.add("hidden");
     }
 
     async loadAllSoftware(): Promise<void> {
@@ -152,17 +165,17 @@ const {
                 resolve(window.apiClient);
               } else if (attempts > 50) {
                 clearInterval(interval);
-                reject(new Error('API客户端初始化超时'));
+                reject(new Error("API客户端初始化超时"));
               }
             }, 100);
           });
         };
 
         const api = await checkApiClient();
-        
+
         const response = await api.getSoftwareList({
           page: 1,
-          limit: this.limit
+          limit: this.limit,
         });
 
         if (response.success && response.data && response.data.software) {
@@ -176,10 +189,10 @@ const {
           this.renderSoftwareGrid(softwareList);
           this.showContent();
         } else {
-          throw new Error(response.message || '获取软件列表失败');
+          throw new Error(response.message || "获取软件列表失败");
         }
       } catch (error) {
-        console.error('加载软件列表失败:', error);
+        console.error("加载软件列表失败:", error);
         this.showError();
       }
     }
@@ -189,15 +202,18 @@ const {
 
       this.container.innerHTML = `
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-          ${softwareList.map((software) => `
-            <div class="group bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 hover:border-primary-200 dark:hover:border-primary-800 shadow-sm hover:shadow-lg transition-all duration-300 cursor-pointer flex flex-col h-full overflow-hidden" onclick="window.location.href='/software/${software.id}'">
+          ${softwareList
+            .map(
+              (software) => `
+            <div class="group bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 hover:border-primary-300 dark:hover:border-primary-700 shadow-sm hover:shadow transition-all duration-300 cursor-pointer flex flex-col h-full overflow-hidden" onclick="window.location.href='/software/${software.id}'">
               <div class="p-5 flex-1 flex flex-col">
                 <!-- 头部图标和标题 -->
                 <div class="flex items-start space-x-4 mb-4">
                   <div class="flex-shrink-0">
-                    ${software.icon ? 
-                      `<img src="${software.icon}" alt="${software.name}" class="w-12 h-12 rounded-xl object-cover shadow-sm group-hover:scale-105 transition-transform duration-300" loading="lazy">` : 
-                      `<div class="w-12 h-12 rounded-xl bg-gradient-to-br from-primary-100 to-primary-200 dark:from-primary-900 dark:to-primary-800 text-primary-600 dark:text-primary-300 flex items-center justify-center text-xl font-bold shadow-inner">${software.name.charAt(0)}</div>`
+                    ${
+                      software.icon
+                        ? `<img src="${software.icon}" alt="${software.name}" class="w-12 h-12 rounded-xl object-cover border border-gray-100 dark:border-gray-700 opacity-90 group-hover:opacity-100 transition-opacity duration-300" loading="lazy">`
+                        : `<div class="w-12 h-12 rounded-xl bg-gray-100 dark:bg-gray-700 text-gray-500 flex items-center justify-center text-xl font-bold">${software.name.charAt(0)}</div>`
                     }
                   </div>
                   <div class="flex-1 min-w-0 pt-1">
@@ -206,7 +222,7 @@ const {
                     </h3>
                     <div class="flex items-center mt-1">
                       <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300">
-                        v${software.currentVersion || '1.0'}
+                        v${software.currentVersion || "1.0"}
                       </span>
                     </div>
                   </div>
@@ -214,7 +230,7 @@ const {
 
                 <!-- 描述 -->
                 <p class="text-sm text-gray-500 dark:text-gray-400 mb-4 line-clamp-2 flex-1">
-                  ${software.description || '暂无描述'}
+                  ${software.description || "暂无描述"}
                 </p>
 
                 <!-- 底部信息 -->
@@ -226,7 +242,7 @@ const {
                     </span>
                     <span class="flex items-center" title="更新时间">
                       <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                      ${this.formatTimeAgo(software.updatedAt || '')}
+                      ${this.formatTimeAgo(software.updatedAt || "")}
                     </span>
                   </div>
                 </div>
@@ -234,45 +250,54 @@ const {
               
               <!-- 悬停显示的下载按钮 -->
             </div>
-          `).join('')}
+          `,
+            )
+            .join("")}
         </div>
       `;
     }
 
     formatNumber(num: number): string {
-      if (!num) return '0';
+      if (!num) return "0";
       if (num >= 10000) {
-        return (num / 10000).toFixed(1) + 'w';
+        return (num / 10000).toFixed(1) + "w";
       }
       return num.toLocaleString();
     }
 
     formatTimeAgo(dateString: string): string {
-      if (!dateString) return '';
+      if (!dateString) return "";
       try {
         const date = new Date(dateString);
         const now = new Date();
-        const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
+        const diffInSeconds = Math.floor(
+          (now.getTime() - date.getTime()) / 1000,
+        );
 
-        if (diffInSeconds < 60) return '刚刚';
-        if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)}分钟前`;
-        if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)}小时前`;
-        if (diffInSeconds < 2592000) return `${Math.floor(diffInSeconds / 86400)}天前`;
+        if (diffInSeconds < 60) return "刚刚";
+        if (diffInSeconds < 3600)
+          return `${Math.floor(diffInSeconds / 60)}分钟前`;
+        if (diffInSeconds < 86400)
+          return `${Math.floor(diffInSeconds / 3600)}小时前`;
+        if (diffInSeconds < 2592000)
+          return `${Math.floor(diffInSeconds / 86400)}天前`;
 
-        return date.toLocaleDateString('zh-CN', {
-          month: 'numeric',
-          day: 'numeric'
+        return date.toLocaleDateString("zh-CN", {
+          month: "numeric",
+          day: "numeric",
         });
       } catch {
-        return '';
+        return "";
       }
     }
   }
 
   // 初始化组件
-  document.addEventListener('DOMContentLoaded', () => {
-    const container = document.getElementById('all-software-container');
-    const limit = container ? parseInt(container.getAttribute('data-limit') || '20', 10) : 20;
+  document.addEventListener("DOMContentLoaded", () => {
+    const container = document.getElementById("all-software-container");
+    const limit = container
+      ? parseInt(container.getAttribute("data-limit") || "20", 10)
+      : 20;
     new AllSoftwareGridComponent(limit);
   });
 </script>

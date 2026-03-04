@@ -1,6 +1,6 @@
 ---
-import LoadingSpinner from './LoadingSpinner.astro';
-import ErrorMessage from './ErrorMessage.astro';
+import LoadingSpinner from "./LoadingSpinner.astro";
+import ErrorMessage from "./ErrorMessage.astro";
 
 interface Props {
   websiteId?: number;
@@ -14,26 +14,47 @@ const {
   websiteId = 1,
   autoPlay = true,
   interval = 5000,
-  class: className = '',
-  limit = 10
+  class: className = "",
+  limit = 10,
 } = Astro.props;
 ---
 
-<div class={`relative w-full h-full overflow-hidden rounded-2xl bg-gray-100 dark:bg-gray-800 shadow-xl ${className}`} id="dynamic-carousel">
+<div
+  class={`relative w-full h-full overflow-hidden rounded-2xl bg-gray-100 dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 ${className}`}
+  id="dynamic-carousel"
+>
   <!-- 加载状态 -->
-  <div id="carousel-loading" class="flex items-center justify-center h-full bg-gray-50 dark:bg-gray-800">
+  <div
+    id="carousel-loading"
+    class="flex items-center justify-center h-full bg-gray-50 dark:bg-gray-800"
+  >
     <div class="text-center">
       <LoadingSpinner size="lg" />
-      <p id="loading-message" class="mt-4 text-gray-600 dark:text-gray-400 font-medium">正在加载精彩内容...</p>
+      <p
+        id="loading-message"
+        class="mt-4 text-gray-600 dark:text-gray-400 font-medium"
+      >
+        正在加载精彩内容...
+      </p>
     </div>
   </div>
 
   <!-- 错误状态 -->
-  <div id="carousel-error" class="hidden flex items-center justify-center h-full bg-gray-50 dark:bg-gray-800">
+  <div
+    id="carousel-error"
+    class="hidden flex items-center justify-center h-full bg-gray-50 dark:bg-gray-800"
+  >
     <div class="text-center p-6">
       <div class="text-5xl mb-4 text-gray-400 dark:text-gray-500">⚠️</div>
-      <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">加载失败</h3>
-      <p id="error-message" class="text-gray-600 dark:text-gray-400 mb-6 text-sm">无法获取最新内容，请检查网络</p>
+      <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">
+        加载失败
+      </h3>
+      <p
+        id="error-message"
+        class="text-gray-600 dark:text-gray-400 mb-6 text-sm"
+      >
+        无法获取最新内容，请检查网络
+      </p>
       <button
         id="carousel-retry"
         class="px-5 py-2.5 bg-primary-600 hover:bg-primary-700 text-white text-sm font-medium rounded-lg shadow-md hover:shadow-lg transition-all duration-200"
@@ -44,7 +65,10 @@ const {
   </div>
 
   <!-- 空状态 -->
-  <div id="carousel-empty" class="hidden flex items-center justify-center h-full bg-gray-50 dark:bg-gray-800">
+  <div
+    id="carousel-empty"
+    class="hidden flex items-center justify-center h-full bg-gray-50 dark:bg-gray-800"
+  >
     <div class="text-center text-gray-500 dark:text-gray-400">
       <div class="text-6xl mb-4 opacity-50">🖼️</div>
       <h3 class="text-lg font-medium mb-2">暂无内容</h3>
@@ -60,28 +84,49 @@ const {
     </div>
 
     <!-- 导航点容器 -->
-    <div id="dots-container" class="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex items-center space-x-3 z-10 px-4 py-2 rounded-full bg-black/20 backdrop-blur-sm">
+    <div
+      id="dots-container"
+      class="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex items-center space-x-3 z-10 px-4 py-2 rounded-full bg-black/40"
+    >
       <!-- 动态生成的导航点将在这里 -->
     </div>
 
     <!-- 左右箭头 -->
-    <button 
-      class="absolute left-4 top-1/2 transform -translate-y-1/2 w-10 h-10 flex items-center justify-center bg-white/10 hover:bg-white/30 backdrop-blur-md border border-white/20 text-white rounded-full transition-all duration-300 opacity-0 group-hover:opacity-100 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-white/50"
+    <button
+      class="absolute left-4 top-1/2 transform -translate-y-1/2 w-10 h-10 flex items-center justify-center bg-black/30 hover:bg-black/50 text-white rounded-full transition-all duration-300 opacity-0 group-hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-white/50"
       id="carousel-prev-btn"
       aria-label="上一张"
     >
-      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"></path>
+      <svg
+        class="w-5 h-5"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2.5"
+          d="M15 19l-7-7 7-7"></path>
       </svg>
     </button>
 
-    <button 
-      class="absolute right-4 top-1/2 transform -translate-y-1/2 w-10 h-10 flex items-center justify-center bg-white/10 hover:bg-white/30 backdrop-blur-md border border-white/20 text-white rounded-full transition-all duration-300 opacity-0 group-hover:opacity-100 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-white/50"
+    <button
+      class="absolute right-4 top-1/2 transform -translate-y-1/2 w-10 h-10 flex items-center justify-center bg-black/30 hover:bg-black/50 text-white rounded-full transition-all duration-300 opacity-0 group-hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-white/50"
       id="carousel-next-btn"
       aria-label="下一张"
     >
-      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path>
+      <svg
+        class="w-5 h-5"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2.5"
+          d="M9 5l7 7-7 7"></path>
       </svg>
     </button>
   </div>
@@ -98,17 +143,17 @@ const {
       this.totalSlides = 0;
       this.autoPlayTimer = null;
       this.banners = [];
-      
-      this.loadingElement = document.getElementById('carousel-loading');
-      this.errorElement = document.getElementById('carousel-error');
-      this.emptyElement = document.getElementById('carousel-empty');
-      this.contentElement = document.getElementById('carousel-content');
-      this.slidesContainer = document.getElementById('slides-container');
-      this.dotsContainer = document.getElementById('dots-container');
-      this.retryButton = document.getElementById('carousel-retry');
-      this.prevButton = document.getElementById('carousel-prev-btn');
-      this.nextButton = document.getElementById('carousel-next-btn');
-      
+
+      this.loadingElement = document.getElementById("carousel-loading");
+      this.errorElement = document.getElementById("carousel-error");
+      this.emptyElement = document.getElementById("carousel-empty");
+      this.contentElement = document.getElementById("carousel-content");
+      this.slidesContainer = document.getElementById("slides-container");
+      this.dotsContainer = document.getElementById("dots-container");
+      this.retryButton = document.getElementById("carousel-retry");
+      this.prevButton = document.getElementById("carousel-prev-btn");
+      this.nextButton = document.getElementById("carousel-next-btn");
+
       this.init();
     }
 
@@ -119,22 +164,22 @@ const {
 
     setupEventListeners() {
       if (this.retryButton) {
-        this.retryButton.addEventListener('click', () => this.loadBanners());
+        this.retryButton.addEventListener("click", () => this.loadBanners());
       }
 
       if (this.prevButton) {
-        this.prevButton.addEventListener('click', () => this.prevSlide());
+        this.prevButton.addEventListener("click", () => this.prevSlide());
       }
 
       if (this.nextButton) {
-        this.nextButton.addEventListener('click', () => this.nextSlide());
+        this.nextButton.addEventListener("click", () => this.nextSlide());
       }
 
       // 鼠标悬停暂停自动播放
-      const carousel = document.getElementById('dynamic-carousel');
+      const carousel = document.getElementById("dynamic-carousel");
       if (carousel) {
-        carousel.addEventListener('mouseenter', () => this.stopAutoPlay());
-        carousel.addEventListener('mouseleave', () => {
+        carousel.addEventListener("mouseenter", () => this.stopAutoPlay());
+        carousel.addEventListener("mouseleave", () => {
           if (this.autoPlay && this.totalSlides > 1) {
             this.startAutoPlay();
           }
@@ -142,23 +187,23 @@ const {
       }
     }
 
-    showLoading(message = '正在加载精彩内容...') {
+    showLoading(message = "正在加载精彩内容...") {
       this.hideAll();
-      this.loadingElement?.classList.remove('hidden');
+      this.loadingElement?.classList.remove("hidden");
 
       // 更新加载消息
-      const loadingMessageEl = document.getElementById('loading-message');
+      const loadingMessageEl = document.getElementById("loading-message");
       if (loadingMessageEl) {
         loadingMessageEl.textContent = message;
       }
     }
 
-    showError(message = '无法加载内容') {
+    showError(message = "无法加载内容") {
       this.hideAll();
-      this.errorElement?.classList.remove('hidden');
+      this.errorElement?.classList.remove("hidden");
 
       // 更新错误消息
-      const errorMessageEl = document.getElementById('error-message');
+      const errorMessageEl = document.getElementById("error-message");
       if (errorMessageEl) {
         errorMessageEl.textContent = message;
       }
@@ -166,24 +211,24 @@ const {
 
     showEmpty() {
       this.hideAll();
-      this.emptyElement?.classList.remove('hidden');
+      this.emptyElement?.classList.remove("hidden");
     }
 
     showContent() {
       this.hideAll();
-      this.contentElement?.classList.remove('hidden');
+      this.contentElement?.classList.remove("hidden");
     }
 
     hideAll() {
-      this.loadingElement?.classList.add('hidden');
-      this.errorElement?.classList.add('hidden');
-      this.emptyElement?.classList.add('hidden');
-      this.contentElement?.classList.add('hidden');
+      this.loadingElement?.classList.add("hidden");
+      this.errorElement?.classList.add("hidden");
+      this.emptyElement?.classList.add("hidden");
+      this.contentElement?.classList.add("hidden");
     }
 
     async loadBanners(retryCount = 0) {
       if (retryCount === 0) {
-        this.showLoading('正在初始化...');
+        this.showLoading("正在初始化...");
       } else {
         this.showLoading(`尝试重新连接 (${retryCount + 1}/3)...`);
       }
@@ -192,17 +237,19 @@ const {
         // 等待API客户端就绪
         const api = await this.waitForApiClient();
 
-        this.showLoading('正在获取最新推荐...');
+        this.showLoading("正在获取最新推荐...");
 
         const response = await api.getBanners(this.websiteId, {
           limit: this.limit,
-          isActive: true
+          isActive: true,
         });
 
-        console.log('Banners Response:', response);
+        console.log("Banners Response:", response);
 
         if (response.success && response.data && response.data.banners) {
-          this.banners = response.data.banners.filter(banner => banner.isActive);
+          this.banners = response.data.banners.filter(
+            (banner) => banner.isActive,
+          );
 
           if (this.banners.length === 0) {
             this.showEmpty();
@@ -220,17 +267,25 @@ const {
             this.startAutoPlay();
           }
         } else {
-          throw new Error(response.message || '获取数据失败');
+          throw new Error(response.message || "获取数据失败");
         }
       } catch (error) {
         console.error(`加载失败 (尝试 ${retryCount + 1}):`, error);
 
         // 如果是网络错误且重试次数少于3次，则自动重试
-        if (retryCount < 2 && (error.message.includes('网络') || error.message.includes('timeout') || error.message.includes('fetch'))) {
+        if (
+          retryCount < 2 &&
+          (error.message.includes("网络") ||
+            error.message.includes("timeout") ||
+            error.message.includes("fetch"))
+        ) {
           console.log(`将在 ${(retryCount + 1) * 1000}ms 后自动重试...`);
-          setTimeout(() => {
-            this.loadBanners(retryCount + 1);
-          }, (retryCount + 1) * 1000);
+          setTimeout(
+            () => {
+              this.loadBanners(retryCount + 1);
+            },
+            (retryCount + 1) * 1000,
+          );
         } else {
           this.showError(`加载失败: ${error.message}`);
         }
@@ -248,7 +303,7 @@ const {
           if (window.apiClient) {
             resolve(window.apiClient);
           } else if (attempts >= maxAttempts) {
-            reject(new Error('连接超时，请刷新重试'));
+            reject(new Error("连接超时，请刷新重试"));
           } else {
             setTimeout(checkApiClient, interval);
           }
@@ -262,55 +317,71 @@ const {
       if (!this.slidesContainer || !this.dotsContainer) return;
 
       // 渲染轮播图片
-      this.slidesContainer.innerHTML = this.banners.map((banner, index) => `
+      this.slidesContainer.innerHTML = this.banners
+        .map(
+          (banner, index) => `
         <div
-          class="absolute inset-0 transition-all duration-700 ease-in-out transform ${index === 0 ? 'opacity-100 scale-100 z-10' : 'opacity-0 scale-105 z-0'}"
+          class="absolute inset-0 transition-all duration-700 ease-in-out transform ${index === 0 ? "opacity-100 scale-100 z-10" : "opacity-0 scale-105 z-0"}"
           data-slide="${index}"
         >
-          ${banner.linkUrl ? `
-            <a href="${banner.linkUrl}" target="${banner.linkTarget || '_self'}" class="block w-full h-full" data-banner-id="${banner.id}">
+          ${
+            banner.linkUrl
+              ? `
+            <a href="${banner.linkUrl}" target="${banner.linkTarget || "_self"}" class="block w-full h-full" data-banner-id="${banner.id}">
               ${this.renderSlideContent(banner)}
             </a>
-          ` : `
+          `
+              : `
             <div class="w-full h-full">
               ${this.renderSlideContent(banner)}
             </div>
-          `}
+          `
+          }
         </div>
-      `).join('');
+      `,
+        )
+        .join("");
 
       // 渲染导航点
-      this.dotsContainer.innerHTML = this.banners.map((_, index) => `
+      this.dotsContainer.innerHTML = this.banners
+        .map(
+          (_, index) => `
         <button
           class="h-2 rounded-full transition-all duration-300 ${
-            index === 0 ? 'w-6 bg-white' : 'w-2 bg-white/50 hover:bg-white/80'
+            index === 0 ? "w-6 bg-white" : "w-2 bg-white/50 hover:bg-white/80"
           }"
           data-slide-to="${index}"
           aria-label="切换到第 ${index + 1} 张图片"
         ></button>
-      `).join('');
+      `,
+        )
+        .join("");
 
       // 绑定导航点事件
-      this.dotsContainer.querySelectorAll('[data-slide-to]').forEach(dot => {
-        dot.addEventListener('click', (e) => {
-          const slideIndex = parseInt(e.target.getAttribute('data-slide-to'));
+      this.dotsContainer.querySelectorAll("[data-slide-to]").forEach((dot) => {
+        dot.addEventListener("click", (e) => {
+          const slideIndex = parseInt(e.target.getAttribute("data-slide-to"));
           this.goToSlide(slideIndex);
         });
       });
 
       // 绑定轮播图点击事件
-      this.slidesContainer.querySelectorAll('[data-banner-id]').forEach(link => {
-        link.addEventListener('click', (e) => {
-          const bannerId = parseInt(e.currentTarget.getAttribute('data-banner-id'));
-          this.trackClick(bannerId);
+      this.slidesContainer
+        .querySelectorAll("[data-banner-id]")
+        .forEach((link) => {
+          link.addEventListener("click", (e) => {
+            const bannerId = parseInt(
+              e.currentTarget.getAttribute("data-banner-id"),
+            );
+            this.trackClick(bannerId);
+          });
         });
-      });
 
       // 如果只有一张图片，隐藏导航控件
       if (this.totalSlides <= 1) {
-        this.dotsContainer.style.display = 'none';
-        if (this.prevButton) this.prevButton.style.display = 'none';
-        if (this.nextButton) this.nextButton.style.display = 'none';
+        this.dotsContainer.style.display = "none";
+        if (this.prevButton) this.prevButton.style.display = "none";
+        if (this.nextButton) this.nextButton.style.display = "none";
       }
     }
 
@@ -325,22 +396,26 @@ const {
             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
           />
           <!-- 图片加载失败时的备用内容 -->
-          <div class="hidden w-full h-full bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center">
+          <div class="hidden w-full h-full bg-primary-600 flex items-center justify-center">
             <div class="text-center text-white p-8">
               <div class="text-6xl mb-4">🖼️</div>
               <h3 class="text-2xl font-bold mb-2">${banner.title}</h3>
-              ${banner.description ? `<p class="text-primary-100">${banner.description}</p>` : ''}
+              ${banner.description ? `<p class="text-primary-100">${banner.description}</p>` : ""}
             </div>
           </div>
           <!-- 文字覆盖层 -->
-          ${banner.title || banner.description ? `
+          ${
+            banner.title || banner.description
+              ? `
             <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent p-8 pt-24">
               <div class="text-white transform translate-y-0 transition-transform duration-500">
-                ${banner.title ? `<h3 class="text-2xl font-bold mb-2 drop-shadow-md">${banner.title}</h3>` : ''}
-                ${banner.description ? `<p class="text-base text-gray-200 line-clamp-2 drop-shadow-sm max-w-2xl">${banner.description}</p>` : ''}
+                ${banner.title ? `<h3 class="text-2xl font-bold mb-2 drop-shadow-md">${banner.title}</h3>` : ""}
+                ${banner.description ? `<p class="text-base text-gray-200 line-clamp-2 drop-shadow-sm max-w-2xl">${banner.description}</p>` : ""}
               </div>
             </div>
-          ` : ''}
+          `
+              : ""
+          }
         </div>
       `;
     }
@@ -350,32 +425,40 @@ const {
       if (index === this.currentSlide) return;
 
       // 隐藏当前幻灯片
-      const currentSlideEl = this.slidesContainer.querySelector(`[data-slide="${this.currentSlide}"]`);
+      const currentSlideEl = this.slidesContainer.querySelector(
+        `[data-slide="${this.currentSlide}"]`,
+      );
       if (currentSlideEl) {
-        currentSlideEl.classList.remove('opacity-100', 'scale-100', 'z-10');
-        currentSlideEl.classList.add('opacity-0', 'scale-105', 'z-0');
+        currentSlideEl.classList.remove("opacity-100", "scale-100", "z-10");
+        currentSlideEl.classList.add("opacity-0", "scale-105", "z-0");
       }
 
       // 更新当前导航点
-      const currentDot = this.dotsContainer.querySelector(`[data-slide-to="${this.currentSlide}"]`);
+      const currentDot = this.dotsContainer.querySelector(
+        `[data-slide-to="${this.currentSlide}"]`,
+      );
       if (currentDot) {
-        currentDot.classList.remove('w-6', 'bg-white');
-        currentDot.classList.add('w-2', 'bg-white/50');
+        currentDot.classList.remove("w-6", "bg-white");
+        currentDot.classList.add("w-2", "bg-white/50");
       }
 
       // 显示新幻灯片
       this.currentSlide = index;
-      const newSlideEl = this.slidesContainer.querySelector(`[data-slide="${this.currentSlide}"]`);
+      const newSlideEl = this.slidesContainer.querySelector(
+        `[data-slide="${this.currentSlide}"]`,
+      );
       if (newSlideEl) {
-        newSlideEl.classList.remove('opacity-0', 'scale-105', 'z-0');
-        newSlideEl.classList.add('opacity-100', 'scale-100', 'z-10');
+        newSlideEl.classList.remove("opacity-0", "scale-105", "z-0");
+        newSlideEl.classList.add("opacity-100", "scale-100", "z-10");
       }
 
       // 更新新导航点
-      const newDot = this.dotsContainer.querySelector(`[data-slide-to="${this.currentSlide}"]`);
+      const newDot = this.dotsContainer.querySelector(
+        `[data-slide-to="${this.currentSlide}"]`,
+      );
       if (newDot) {
-        newDot.classList.remove('w-2', 'bg-white/50');
-        newDot.classList.add('w-6', 'bg-white');
+        newDot.classList.remove("w-2", "bg-white/50");
+        newDot.classList.add("w-6", "bg-white");
       }
     }
 
@@ -385,7 +468,8 @@ const {
     }
 
     prevSlide() {
-      const prevIndex = (this.currentSlide - 1 + this.totalSlides) % this.totalSlides;
+      const prevIndex =
+        (this.currentSlide - 1 + this.totalSlides) % this.totalSlides;
       this.goToSlide(prevIndex);
     }
 
@@ -412,7 +496,7 @@ const {
   }
 
   // 当页面加载完成后初始化
-  document.addEventListener('DOMContentLoaded', () => {
+  document.addEventListener("DOMContentLoaded", () => {
     new DynamicCarouselComponent();
   });
 </script>

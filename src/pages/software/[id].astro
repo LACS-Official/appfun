@@ -1,37 +1,39 @@
 ---
-import Layout from '../../layouts/Layout.astro';
-import LoadingSpinner from '../../components/ui/LoadingSpinner.astro';
+import Layout from "../../layouts/Layout.astro";
+import LoadingSpinner from "../../components/ui/LoadingSpinner.astro";
 // 为静态生成提供路径
 export async function getStaticPaths() {
   try {
     // 从API获取软件列表以获取所有ID
-    const response = await fetch('https://api-g.lacs.cc/app/software');
-    
+    const response = await fetch("https://api-g.lacs.cc/app/software");
+
     if (!response.ok) {
       throw new Error(`API请求失败: ${response.status}`);
     }
-    
+
     const data = await response.json();
-    
+
     // 检查响应数据格式
     if (!data.success || !data.data || !Array.isArray(data.data.software)) {
-      throw new Error('API响应格式不正确');
+      throw new Error("API响应格式不正确");
     }
-    
+
     // 从软件列表中提取ID
-    const softwareIds = data.data.software.map((software: { id: number }) => software.id.toString());
-    
+    const softwareIds = data.data.software.map((software: { id: number }) =>
+      software.id.toString(),
+    );
+
     // 为每个ID生成路径参数
     return softwareIds.map((id: string) => ({
-      params: { id }
+      params: { id },
     }));
   } catch (error) {
-    console.error('获取软件ID列表失败:', error);
-    
+    console.error("获取软件ID列表失败:", error);
+
     // 如果API调用失败，使用备用ID列表确保至少能生成一些页面
-    const fallbackIds = ['1', '2', '3'];
+    const fallbackIds = ["1", "2", "3"];
     return fallbackIds.map((id: string) => ({
-      params: { id }
+      params: { id },
     }));
   }
 }
@@ -39,39 +41,42 @@ export async function getStaticPaths() {
 const { id } = Astro.params;
 
 if (!id || isNaN(Number(id))) {
-  return Astro.redirect('/');
+  return Astro.redirect("/");
 }
 
 // SEO 元数据
-const title = '软件详情';
-const description = '查看软件的详细信息、版本历史和下载链接。在APPFUN上获取最新版本的软件，了解软件功能、大小、更新时间等详细信息';
-const keywords = '软件详情,软件下载,软件版本,软件信息,APPFUN';
+const title = "软件详情";
+const description =
+  "查看软件的详细信息、版本历史和下载链接。在APPFUN上获取最新版本的软件，了解软件功能、大小、更新时间等详细信息";
+const keywords = "软件详情,软件下载,软件版本,软件信息,APPFUN";
 const canonical = `https://appfun.fun/software/${id}`;
 const structuredData = {
   "@context": "https://schema.org",
   "@type": "SoftwareApplication",
-  "name": "",
-  "description": "",
-  "url": canonical,
-  "applicationCategory": "",
-  "operatingSystem": "",
-  "offers": {
+  name: "",
+  description: "",
+  url: canonical,
+  applicationCategory: "",
+  operatingSystem: "",
+  offers: {
     "@type": "Offer",
-    "price": "0",
-    "priceCurrency": "CNY"
-  }
+    price: "0",
+    priceCurrency: "CNY",
+  },
 };
 ---
 
-<Layout 
-  title={title} 
-  description={description} 
+<Layout
+  title={title}
+  description={description}
   keywords={keywords}
   canonical={canonical}
   structuredDataType="software"
   structuredData={structuredData}
 >
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 bg-white dark:bg-gray-900 rounded-lg shadow-sm dark:shadow-lg">
+  <div
+    class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 bg-white dark:bg-gray-900 rounded-lg shadow-sm dark:shadow-lg"
+  >
     <!-- 软件信息容器 -->
     <div id="software-container">
       <div class="flex justify-center py-12">
@@ -82,9 +87,14 @@ const structuredData = {
     <!-- 版本历史 -->
     <section class="mt-12" id="versions-section" style="display: none;">
       <div class="flex items-center justify-between mb-6">
-        <h2 class="text-2xl font-bold text-gray-900 dark:text-white">版本历史</h2>
+        <h2 class="text-2xl font-bold text-gray-900 dark:text-white">
+          版本历史
+        </h2>
         <div class="flex items-center space-x-4">
-          <select id="version-filter" class="border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-primary-500 focus:border-primary-500">
+          <select
+            id="version-filter"
+            class="border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-primary-500 focus:border-primary-500"
+          >
             <option value="all">所有版本</option>
             <option value="release">正式版</option>
             <option value="beta">测试版</option>
@@ -92,7 +102,7 @@ const structuredData = {
           </select>
         </div>
       </div>
-      
+
       <div id="versions-container">
         <div class="flex justify-center py-8">
           <LoadingSpinner size="md" text="正在加载版本历史..." />
@@ -102,7 +112,9 @@ const structuredData = {
 
     <!-- 公告 -->
     <section class="mt-12" id="announcements-section" style="display: none;">
-      <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">相关公告</h2>
+      <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">
+        相关公告
+      </h2>
       <div id="announcements-container">
         <div class="flex justify-center py-8">
           <LoadingSpinner size="md" text="正在加载公告..." />
@@ -116,8 +128,8 @@ const structuredData = {
   // 由于这是在浏览器中运行的脚本，我们需要直接定义这些函数而不是导入
   // API 配置
   const apiConfig = {
-    baseUrl: 'https://api-g.lacs.cc',
-    apiKey: '', // 暂时为空，因为API测试显示不需要API Key
+    baseUrl: "https://api-g.lacs.cc",
+    apiKey: "", // 暂时为空，因为API测试显示不需要API Key
     timeout: 10000,
   };
 
@@ -126,18 +138,28 @@ const structuredData = {
 
   // 工具函数
   function formatDate(date, options = {}) {
-    const dateObj = typeof date === 'string' ? new Date(date) : date;
+    const dateObj = typeof date === "string" ? new Date(date) : date;
     const defaultOptions = {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
+      year: "numeric",
+      month: "long",
+      day: "numeric",
     };
-    return dateObj.toLocaleDateString('zh-CN', { ...defaultOptions, ...options });
+    return dateObj.toLocaleDateString("zh-CN", {
+      ...defaultOptions,
+      ...options,
+    });
   }
 
   function getPriorityDownloadLink(downloadLinks) {
     if (!downloadLinks) return null;
-    const priorities = ['official', 'github', 'quark', 'pan123', 'baidu', 'thunder'];
+    const priorities = [
+      "official",
+      "github",
+      "quark",
+      "pan123",
+      "baidu",
+      "thunder",
+    ];
     for (const priority of priorities) {
       if (downloadLinks[priority]) {
         return downloadLinks[priority];
@@ -161,16 +183,19 @@ const structuredData = {
     async request(endpoint, options = {}) {
       const url = `${this.config.baseUrl}${endpoint}`;
       const headers = {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
         ...options.headers,
       };
 
       if (this.config.apiKey) {
-        headers['X-API-Key'] = this.config.apiKey;
+        headers["X-API-Key"] = this.config.apiKey;
       }
 
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), this.config.timeout);
+      const timeoutId = setTimeout(
+        () => controller.abort(),
+        this.config.timeout,
+      );
 
       try {
         const response = await fetch(url, {
@@ -188,15 +213,15 @@ const structuredData = {
         return await response.json();
       } catch (error) {
         clearTimeout(timeoutId);
-        if (error.name === 'AbortError') {
-          throw new Error('请求超时');
+        if (error.name === "AbortError") {
+          throw new Error("请求超时");
         }
         throw error;
       }
     }
 
     async get(endpoint, params) {
-      const queryString = params ? new URLSearchParams(params).toString() : '';
+      const queryString = params ? new URLSearchParams(params).toString() : "";
       const url = queryString ? `${endpoint}?${queryString}` : endpoint;
       return this.request(url);
     }
@@ -218,40 +243,40 @@ const structuredData = {
   async function checkGlobalLoginStatus() {
     try {
       // 首先检查localStorage中是否有登录状态
-      const storedLoginState = localStorage.getItem('isLoggedIn');
+      const storedLoginState = localStorage.getItem("isLoggedIn");
       if (storedLoginState !== null) {
-        globalLoginState = storedLoginState === 'true';
+        globalLoginState = storedLoginState === "true";
         // 更新所有下载按钮的状态
         updateAllDownloadButtons();
         return globalLoginState;
       }
-      
+
       // 如果localStorage中没有，尝试从API获取
-      const response = await fetch('/api/auth/status', {
-        method: 'GET',
+      const response = await fetch("/api/auth/status", {
+        method: "GET",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
-        credentials: 'same-origin'
+        credentials: "same-origin",
       });
-      
+
       if (response.ok) {
         const data = await response.json();
         globalLoginState = !!data.user;
         // 存储到localStorage
-        localStorage.setItem('isLoggedIn', globalLoginState.toString());
+        localStorage.setItem("isLoggedIn", globalLoginState.toString());
         // 更新所有下载按钮的状态
         updateAllDownloadButtons();
       } else {
         globalLoginState = false;
-        localStorage.setItem('isLoggedIn', 'false');
+        localStorage.setItem("isLoggedIn", "false");
         // 更新所有下载按钮的状态
         updateAllDownloadButtons();
       }
     } catch (error) {
-      console.error('检查全局登录状态失败:', error);
+      console.error("检查全局登录状态失败:", error);
       globalLoginState = false;
-      localStorage.setItem('isLoggedIn', 'false');
+      localStorage.setItem("isLoggedIn", "false");
       // 更新所有下载按钮的状态
       updateAllDownloadButtons();
     }
@@ -260,28 +285,28 @@ const structuredData = {
 
   // 更新所有下载按钮的状态
   function updateAllDownloadButtons() {
-    const downloadButtons = document.querySelectorAll('[data-download-url]');
-    downloadButtons.forEach(button => {
-      const downloadText = button.querySelector('.download-text');
-      const loginPromptText = button.querySelector('.login-prompt-text');
-      
+    const downloadButtons = document.querySelectorAll("[data-download-url]");
+    downloadButtons.forEach((button) => {
+      const downloadText = button.querySelector(".download-text");
+      const loginPromptText = button.querySelector(".login-prompt-text");
+
       if (globalLoginState) {
         // 已登录状态 - 显示"立即下载"
-        button.classList.remove('bg-orange-500', 'hover:bg-orange-600');
-        button.classList.add('bg-blue-600', 'hover:bg-blue-700');
-        
+        button.classList.remove("bg-orange-500", "hover:bg-orange-600");
+        button.classList.add("bg-blue-600", "hover:bg-blue-700");
+
         if (downloadText && loginPromptText) {
-          downloadText.classList.remove('hidden');
-          loginPromptText.classList.add('hidden');
+          downloadText.classList.remove("hidden");
+          loginPromptText.classList.add("hidden");
         }
       } else {
         // 未登录状态 - 显示"请登录后下载"
-        button.classList.remove('bg-blue-600', 'hover:bg-blue-700');
-        button.classList.add('bg-orange-500', 'hover:bg-orange-600');
-        
+        button.classList.remove("bg-blue-600", "hover:bg-blue-700");
+        button.classList.add("bg-orange-500", "hover:bg-orange-600");
+
         if (downloadText && loginPromptText) {
-          downloadText.classList.add('hidden');
-          loginPromptText.classList.remove('hidden');
+          downloadText.classList.add("hidden");
+          loginPromptText.classList.remove("hidden");
         }
       }
     });
@@ -294,21 +319,21 @@ const structuredData = {
   const apiClient = new ApiClient(apiConfig);
 
   let softwareData = null;
-  let currentVersionFilter = 'all';
+  let currentVersionFilter = "all";
 
-  document.addEventListener('DOMContentLoaded', () => {
+  document.addEventListener("DOMContentLoaded", () => {
     // 再次检查登录状态
     checkGlobalLoginStatus();
-    
+
     loadSoftwareDetails(id);
     setupEventListeners();
   });
 
   // 设置事件监听器
   function setupEventListeners() {
-    const versionFilter = document.getElementById('version-filter');
+    const versionFilter = document.getElementById("version-filter");
     if (versionFilter) {
-      versionFilter.addEventListener('change', (e) => {
+      versionFilter.addEventListener("change", (e) => {
         currentVersionFilter = e.target.value;
         loadVersions();
       });
@@ -317,39 +342,40 @@ const structuredData = {
 
   // 加载软件详情
   async function loadSoftwareDetails(id) {
-    const container = document.getElementById('software-container');
+    const container = document.getElementById("software-container");
     if (!container) {
-      console.error('软件容器元素未找到');
+      console.error("软件容器元素未找到");
       return;
     }
 
-    console.log('开始加载软件详情，ID:', id);
+    console.log("开始加载软件详情，ID:", id);
 
     try {
       const response = await apiClient.getSoftwareById(parseInt(id));
-      console.log('API响应:', response);
+      console.log("API响应:", response);
 
       if (response.success && response.data) {
         softwareData = response.data;
         renderSoftwareDetails(softwareData);
-        
+
         // 显示其他部分
-        document.getElementById('versions-section').style.display = 'block';
-        document.getElementById('announcements-section').style.display = 'block';
-        
+        document.getElementById("versions-section").style.display = "block";
+        document.getElementById("announcements-section").style.display =
+          "block";
+
         // 加载版本历史和公告
         loadVersions();
         loadAnnouncements();
       } else {
-        throw new Error(response.message || '软件不存在');
+        throw new Error(response.message || "软件不存在");
       }
     } catch (error) {
-      console.error('加载软件详情失败:', error);
+      console.error("加载软件详情失败:", error);
       container.innerHTML = `
         <div class="text-center py-12">
           <div class="text-red-500 text-6xl mb-4">⚠️</div>
           <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">加载失败</h3>
-          <p class="text-gray-500 dark:text-gray-400 mb-4">${error.message || '无法加载软件信息，请稍后重试'}</p>
+          <p class="text-gray-500 dark:text-gray-400 mb-4">${error.message || "无法加载软件信息，请稍后重试"}</p>
           <div class="space-x-4">
             <button onclick="loadSoftwareDetails(id)" class="btn btn-primary">
               重新加载
@@ -365,17 +391,19 @@ const structuredData = {
 
   // 渲染软件详情
   function renderSoftwareDetails(software) {
-    console.log('开始渲染软件详情:', software);
-    const container = document.getElementById('software-container');
+    console.log("开始渲染软件详情:", software);
+    const container = document.getElementById("software-container");
     if (!container) {
-      console.error('软件容器元素未找到');
+      console.error("软件容器元素未找到");
       return;
     }
 
-    const downloadUrl = software.latestDownloadUrl || getPriorityDownloadLink(software.versions?.[0]?.downloadLinks);
+    const downloadUrl =
+      software.latestDownloadUrl ||
+      getPriorityDownloadLink(software.versions?.[0]?.downloadLinks);
     const systemReqs = software.systemRequirements;
-    console.log('下载链接:', downloadUrl);
-    console.log('系统要求:', systemReqs);
+    console.log("下载链接:", downloadUrl);
+    console.log("系统要求:", systemReqs);
 
     container.innerHTML = `
       <!-- 面包屑导航 -->
@@ -384,12 +412,16 @@ const structuredData = {
         <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
           <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
         </svg>
-        ${software.category ? `
+        ${
+          software.category
+            ? `
           <span class="text-gray-500 dark:text-gray-400">${software.category}</span>
           <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
             <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
           </svg>
-        ` : ''}
+        `
+            : ""
+        }
         <span class="text-gray-900 dark:text-gray-100">${software.name}</span>
       </nav>
 
@@ -401,33 +433,47 @@ const structuredData = {
             <div class="flex items-start justify-between mb-4">
               <div>
                 <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">${software.name}</h1>
-                ${software.nameEn ? `<p class="text-lg text-gray-600 dark:text-gray-300">${software.nameEn}</p>` : ''}
+                ${software.nameEn ? `<p class="text-lg text-gray-600 dark:text-gray-300">${software.nameEn}</p>` : ""}
               </div>
               <div class="flex flex-col items-end space-y-2">
                 <span class="inline-flex items-center rounded-full px-3 py-1 text-sm font-medium bg-primary-100 text-primary-800 dark:bg-primary-900 dark:text-primary-200">
                   v${software.currentVersion}
                 </span>
-                ${software.category ? `
+                ${
+                  software.category
+                    ? `
                   <span class="inline-flex items-center rounded-full px-3 py-1 text-sm font-medium bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200">
                     ${software.category}
                   </span>
-                ` : ''}
+                `
+                    : ""
+                }
               </div>
             </div>
 
-            ${software.tags && software.tags.length > 0 ? `
+            ${
+              software.tags && software.tags.length > 0
+                ? `
               <div class="flex flex-wrap gap-2 mb-4">
-                ${software.tags.map(tag => `
+                ${software.tags
+                  .map(
+                    (tag) => `
                   <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
                     ${tag}
                   </span>
-                `).join('')}
+                `,
+                  )
+                  .join("")}
               </div>
-            ` : ''}
+            `
+                : ""
+            }
 
             <!-- 操作按钮 -->
             <div class="flex items-center space-x-4">
-              ${downloadUrl ? `
+              ${
+                downloadUrl
+                  ? `
                 <button
                   id="main-download-button"
                   class="btn btn-primary btn-lg bg-orange-500 hover:bg-orange-600"
@@ -440,9 +486,13 @@ const structuredData = {
                   <span class="download-text hidden">立即下载</span>
                   <span class="login-prompt-text">请登录后下载</span>
                 </button>
-              ` : ''}
+              `
+                  : ""
+              }
               
-              ${software.officialWebsite ? `
+              ${
+                software.officialWebsite
+                  ? `
                 <a href="${software.officialWebsite}" target="_blank" rel="noopener noreferrer" 
                    class="btn btn-outline border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700">
                   <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -450,7 +500,9 @@ const structuredData = {
                   </svg>
                   官方网站
                 </a>
-              ` : ''}
+              `
+                  : ""
+              }
             </div>
           </div>
 
@@ -458,37 +510,53 @@ const structuredData = {
           <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 mb-6 card-hover">
             <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-3">软件介绍</h3>
             <div class="prose prose-sm max-w-none text-gray-600 dark:text-gray-300">
-              <p>${software.description || '暂无描述'}</p>
-              ${software.descriptionEn ? `<p class="mt-3 text-gray-500 dark:text-gray-400">${software.descriptionEn}</p>` : ''}
+              <p>${software.description || "暂无描述"}</p>
+              ${software.descriptionEn ? `<p class="mt-3 text-gray-500 dark:text-gray-400">${software.descriptionEn}</p>` : ""}
             </div>
           </div>
 
           <!-- 系统要求 -->
-          ${systemReqs ? `
+          ${
+            systemReqs
+              ? `
             <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 card-hover">
               <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-3">系统要求</h3>
               <dl class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                ${systemReqs.os ? `
+                ${
+                  systemReqs.os
+                    ? `
                   <div>
                     <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">操作系统</dt>
-                    <dd class="mt-1 text-sm text-gray-900 dark:text-gray-100">${Array.isArray(systemReqs.os) ? systemReqs.os.join(', ') : systemReqs.os}</dd>
+                    <dd class="mt-1 text-sm text-gray-900 dark:text-gray-100">${Array.isArray(systemReqs.os) ? systemReqs.os.join(", ") : systemReqs.os}</dd>
                   </div>
-                ` : ''}
-                ${systemReqs.memory ? `
+                `
+                    : ""
+                }
+                ${
+                  systemReqs.memory
+                    ? `
                   <div>
                     <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">内存要求</dt>
                     <dd class="mt-1 text-sm text-gray-900 dark:text-gray-100">${systemReqs.memory}</dd>
                   </div>
-                ` : ''}
-                ${systemReqs.storage ? `
+                `
+                    : ""
+                }
+                ${
+                  systemReqs.storage
+                    ? `
                   <div>
                     <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">存储空间</dt>
                     <dd class="mt-1 text-sm text-gray-900 dark:text-gray-100">${systemReqs.storage}</dd>
                   </div>
-                ` : ''}
+                `
+                    : ""
+                }
               </dl>
             </div>
-          ` : ''}
+          `
+              : ""
+          }
         </div>
 
         <!-- 侧边栏信息 -->
@@ -501,7 +569,9 @@ const structuredData = {
                 <dd class="mt-1 text-sm text-gray-900 dark:text-gray-100">v${software.currentVersion}</dd>
               </div>
 
-              ${software.viewCount !== undefined ? `
+              ${
+                software.viewCount !== undefined
+                  ? `
                 <div>
                   <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">浏览量</dt>
                   <dd class="mt-1 text-sm text-gray-900 dark:text-gray-100 flex items-center">
@@ -512,9 +582,13 @@ const structuredData = {
                     ${software.viewCount.toLocaleString()} 次
                   </dd>
                 </div>
-              ` : ''}
+              `
+                  : ""
+              }
 
-              ${software.rank ? `
+              ${
+                software.rank
+                  ? `
                 <div>
                   <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">热门排名</dt>
                   <dd class="mt-1 text-sm text-gray-900 dark:text-gray-100 flex items-center">
@@ -524,21 +598,31 @@ const structuredData = {
                     第 ${software.rank} 名
                   </dd>
                 </div>
-              ` : ''}
+              `
+                  : ""
+              }
 
-              ${software.filetype ? `
+              ${
+                software.filetype
+                  ? `
                 <div>
                   <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">文件格式</dt>
                   <dd class="mt-1 text-sm text-gray-900 dark:text-gray-100">${software.filetype.toUpperCase()}</dd>
                 </div>
-              ` : ''}
+              `
+                  : ""
+              }
 
-              ${software.openname ? `
+              ${
+                software.openname
+                  ? `
                 <div>
                   <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">启动文件</dt>
                   <dd class="mt-1 text-sm text-gray-900 dark:text-gray-100 font-mono">${software.openname}</dd>
                 </div>
-              ` : ''}
+              `
+                  : ""
+              }
 
               <div>
                 <dt class="text-sm font-medium text-gray-500">最后更新</dt>
@@ -557,14 +641,14 @@ const structuredData = {
 
     // 更新页面标题
     document.title = `${software.name} - APPFUN`;
-    
+
     // 初始化下载按钮
     initializeDownloadButtons();
   }
 
   // 加载版本历史
   async function loadVersions() {
-    const container = document.getElementById('versions-container');
+    const container = document.getElementById("versions-container");
     if (!container || !softwareData) return;
 
     container.innerHTML = `
@@ -577,19 +661,22 @@ const structuredData = {
       const params = {
         page: 1,
         limit: 10,
-        sortBy: 'releaseDate',
-        sortOrder: 'desc'
+        sortBy: "releaseDate",
+        sortOrder: "desc",
       };
 
-      if (currentVersionFilter !== 'all') {
+      if (currentVersionFilter !== "all") {
         params.versionType = currentVersionFilter;
       }
 
-      const response = await apiClient.getSoftwareVersions(softwareData.id, params);
+      const response = await apiClient.getSoftwareVersions(
+        softwareData.id,
+        params,
+      );
 
       if (response.success && response.data) {
         const versions = response.data.versions || response.data;
-        
+
         if (versions.length === 0) {
           container.innerHTML = `
             <div class="text-center py-8">
@@ -601,7 +688,9 @@ const structuredData = {
 
         container.innerHTML = `
           <div class="space-y-4">
-            ${versions.map(version => `
+            ${versions
+              .map(
+                (version) => `
               <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 card-hover">
                 <div class="flex items-start justify-between mb-3">
                   <div>
@@ -610,35 +699,52 @@ const structuredData = {
                   </div>
                   <div class="flex items-center space-x-2">
                     <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-    version.versionType === 'release' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' :
-      version.versionType === 'beta' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200' :
-        'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
-  }">
-                      ${version.versionType === 'release' ? '正式版' : 
-      version.versionType === 'beta' ? '测试版' : '内测版'}
+                      version.versionType === "release"
+                        ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
+                        : version.versionType === "beta"
+                          ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200"
+                          : "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200"
+                    }">
+                      ${
+                        version.versionType === "release"
+                          ? "正式版"
+                          : version.versionType === "beta"
+                            ? "测试版"
+                            : "内测版"
+                      }
                     </span>
-                    ${version.isStable ? `
+                    ${
+                      version.isStable
+                        ? `
                       <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
                         稳定版
                       </span>
-                    ` : ''}
+                    `
+                        : ""
+                    }
                   </div>
                 </div>
                 
-                ${version.releaseNotes ? `
+                ${
+                  version.releaseNotes
+                    ? `
                   <div class="mb-4">
                     <h5 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">更新内容</h5>
                     <p class="text-sm text-gray-600 dark:text-gray-400">${version.releaseNotes}</p>
                   </div>
-                ` : ''}
+                `
+                    : ""
+                }
                 
               </div>
-            `).join('')}
+            `,
+              )
+              .join("")}
           </div>
         `;
       }
     } catch (error) {
-      console.error('加载版本历史失败:', error);
+      console.error("加载版本历史失败:", error);
       container.innerHTML = `
         <div class="text-center py-8">
           <p class="text-red-600 dark:text-red-400">加载失败，请稍后重试</p>
@@ -649,21 +755,24 @@ const structuredData = {
 
   // 加载公告
   async function loadAnnouncements() {
-    const container = document.getElementById('announcements-container');
+    const container = document.getElementById("announcements-container");
     if (!container || !softwareData) return;
 
     try {
-      const response = await apiClient.getSoftwareAnnouncements(softwareData.id, {
-        page: 1,
-        limit: 5,
-        isPublished: true,
-        sortBy: 'publishedAt',
-        sortOrder: 'desc'
-      });
+      const response = await apiClient.getSoftwareAnnouncements(
+        softwareData.id,
+        {
+          page: 1,
+          limit: 5,
+          isPublished: true,
+          sortBy: "publishedAt",
+          sortOrder: "desc",
+        },
+      );
 
       if (response.success && response.data) {
         const announcements = response.data.announcements || response.data;
-        
+
         if (announcements.length === 0) {
           container.innerHTML = `
             <div class="text-center py-8">
@@ -675,32 +784,54 @@ const structuredData = {
 
         container.innerHTML = `
           <div class="space-y-4">
-            ${announcements.map(announcement => `
+            ${announcements
+              .map(
+                (announcement) => `
               <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 card-hover">
                 <div class="flex items-start justify-between mb-3">
                   <h4 class="text-lg font-semibold text-gray-900 dark:text-white">${announcement.title}</h4>
                   <div class="flex items-center space-x-2">
                     <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-    announcement.type === 'security' ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200' :
-      announcement.type === 'update' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' :
-        announcement.type === 'maintenance' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200' :
-          'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
-  }">
-                      ${announcement.type === 'security' ? '安全公告' :
-      announcement.type === 'update' ? '更新通知' :
-        announcement.type === 'maintenance' ? '维护通知' :
-          announcement.type === 'feature' ? '功能介绍' :
-            announcement.type === 'bugfix' ? '修复通知' : '一般公告'}
+                      announcement.type === "security"
+                        ? "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200"
+                        : announcement.type === "update"
+                          ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
+                          : announcement.type === "maintenance"
+                            ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200"
+                            : "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200"
+                    }">
+                      ${
+                        announcement.type === "security"
+                          ? "安全公告"
+                          : announcement.type === "update"
+                            ? "更新通知"
+                            : announcement.type === "maintenance"
+                              ? "维护通知"
+                              : announcement.type === "feature"
+                                ? "功能介绍"
+                                : announcement.type === "bugfix"
+                                  ? "修复通知"
+                                  : "一般公告"
+                      }
                     </span>
                     <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-    announcement.priority === 'urgent' ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200' :
-      announcement.priority === 'high' ? 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200' :
-        announcement.priority === 'normal' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200' :
-          'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200'
-  }">
-                      ${announcement.priority === 'urgent' ? '紧急' :
-      announcement.priority === 'high' ? '高' :
-        announcement.priority === 'normal' ? '普通' : '低'}
+                      announcement.priority === "urgent"
+                        ? "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200"
+                        : announcement.priority === "high"
+                          ? "bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200"
+                          : announcement.priority === "normal"
+                            ? "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200"
+                            : "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200"
+                    }">
+                      ${
+                        announcement.priority === "urgent"
+                          ? "紧急"
+                          : announcement.priority === "high"
+                            ? "高"
+                            : announcement.priority === "normal"
+                              ? "普通"
+                              : "低"
+                      }
                     </span>
                   </div>
                 </div>
@@ -709,15 +840,17 @@ const structuredData = {
                 
                 <div class="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
                   <span>${formatDate(announcement.publishedAt)}</span>
-                  ${announcement.version ? `<span>版本: v${announcement.version}</span>` : ''}
+                  ${announcement.version ? `<span>版本: v${announcement.version}</span>` : ""}
                 </div>
               </div>
-            `).join('')}
+            `,
+              )
+              .join("")}
           </div>
         `;
       }
     } catch (error) {
-      console.error('加载公告失败:', error);
+      console.error("加载公告失败:", error);
       container.innerHTML = `
         <div class="text-center py-8">
           <p class="text-red-600 dark:text-red-400">加载失败，请稍后重试</p>
@@ -730,33 +863,43 @@ const structuredData = {
   function initializeDownloadButtons() {
     // 直接初始化，不再依赖authManager
     initDownloadButtonsWithModules();
-    
+
     // 确保主下载按钮正确初始化
-    const mainDownloadButton = document.getElementById('main-download-button');
+    const mainDownloadButton = document.getElementById("main-download-button");
     if (mainDownloadButton) {
       // 立即检查登录状态并更新按钮
       checkGlobalLoginStatus().then(() => {
         const isLoggedIn = globalLoginState;
-        const downloadText = mainDownloadButton.querySelector('.download-text');
-        const loginPromptText = mainDownloadButton.querySelector('.login-prompt-text');
-        
+        const downloadText = mainDownloadButton.querySelector(".download-text");
+        const loginPromptText =
+          mainDownloadButton.querySelector(".login-prompt-text");
+
         if (isLoggedIn) {
           // 已登录状态 - 显示"立即下载"
-          mainDownloadButton.classList.remove('bg-orange-500', 'hover:bg-orange-600');
-          mainDownloadButton.classList.add('bg-blue-600', 'hover:bg-blue-700');
-          
+          mainDownloadButton.classList.remove(
+            "bg-orange-500",
+            "hover:bg-orange-600",
+          );
+          mainDownloadButton.classList.add("bg-blue-600", "hover:bg-blue-700");
+
           if (downloadText && loginPromptText) {
-            downloadText.classList.remove('hidden');
-            loginPromptText.classList.add('hidden');
+            downloadText.classList.remove("hidden");
+            loginPromptText.classList.add("hidden");
           }
         } else {
           // 未登录状态 - 显示"请登录后下载"
-          mainDownloadButton.classList.remove('bg-blue-600', 'hover:bg-blue-700');
-          mainDownloadButton.classList.add('bg-orange-500', 'hover:bg-orange-600');
-          
+          mainDownloadButton.classList.remove(
+            "bg-blue-600",
+            "hover:bg-blue-700",
+          );
+          mainDownloadButton.classList.add(
+            "bg-orange-500",
+            "hover:bg-orange-600",
+          );
+
           if (downloadText && loginPromptText) {
-            downloadText.classList.add('hidden');
-            loginPromptText.classList.remove('hidden');
+            downloadText.classList.add("hidden");
+            loginPromptText.classList.remove("hidden");
           }
         }
       });
@@ -768,10 +911,10 @@ const structuredData = {
     class DownloadButtonManager {
       constructor(button) {
         this.button = button;
-        this.downloadUrl = button.dataset.downloadUrl || '';
-        this.downloadText = button.querySelector('.download-text');
-        this.loginPromptText = button.querySelector('.login-prompt-text');
-        this.showLoginPrompt = button.dataset.showLoginPrompt === 'true';
+        this.downloadUrl = button.dataset.downloadUrl || "";
+        this.downloadText = button.querySelector(".download-text");
+        this.loginPromptText = button.querySelector(".login-prompt-text");
+        this.showLoginPrompt = button.dataset.showLoginPrompt === "true";
         this.isLoggedIn = false;
         this.softwareData = null; // 存储软件数据
 
@@ -780,21 +923,21 @@ const structuredData = {
 
       async init() {
         // 绑定点击事件
-        this.button.addEventListener('click', (e) => this.handleClick(e));
-        
+        this.button.addEventListener("click", (e) => this.handleClick(e));
+
         // 获取软件数据
         await this.fetchSoftwareData();
-        
+
         // 检查用户登录状态
         await this.checkAuthStatus();
-        
+
         // 监听页面可见性变化，当用户从登录页面返回时更新状态
-        document.addEventListener('visibilitychange', () => {
+        document.addEventListener("visibilitychange", () => {
           if (!document.hidden) {
             this.checkAuthStatus();
           }
         });
-        
+
         // 定期检查登录状态（每30秒）
         setInterval(() => {
           this.checkAuthStatus();
@@ -805,20 +948,27 @@ const structuredData = {
         try {
           const apiClient = new ApiClient(apiConfig);
           const response = await apiClient.getSoftwareById(parseInt(id));
-          
+
           if (response.success && response.data) {
             this.softwareData = response.data;
-            
+
             // 获取最新版本的下载链接
-            if (this.softwareData.versions && this.softwareData.versions.length > 0) {
+            if (
+              this.softwareData.versions &&
+              this.softwareData.versions.length > 0
+            ) {
               // 按发布日期排序，获取最新版本
-              const sortedVersions = [...this.softwareData.versions].sort((a, b) => 
-                new Date(b.releaseDate).getTime() - new Date(a.releaseDate).getTime()
+              const sortedVersions = [...this.softwareData.versions].sort(
+                (a, b) =>
+                  new Date(b.releaseDate).getTime() -
+                  new Date(a.releaseDate).getTime(),
               );
               const latestVersion = sortedVersions[0];
-              
+
               if (latestVersion.downloadLinks) {
-                const priorityLink = getPriorityDownloadLink(latestVersion.downloadLinks);
+                const priorityLink = getPriorityDownloadLink(
+                  latestVersion.downloadLinks,
+                );
                 if (priorityLink) {
                   this.downloadUrl = priorityLink;
                 }
@@ -829,7 +979,7 @@ const structuredData = {
             }
           }
         } catch (error) {
-          console.error('获取软件数据失败:', error);
+          console.error("获取软件数据失败:", error);
         }
       }
 
@@ -840,19 +990,21 @@ const structuredData = {
           const response = await apiClient.getSoftwareVersions(parseInt(id), {
             page: 1,
             limit: 10,
-            sortBy: 'releaseDate',
-            sortOrder: 'desc'
+            sortBy: "releaseDate",
+            sortOrder: "desc",
           });
-          
+
           if (response.success && response.data && response.data.length > 0) {
             // 返回按发布日期排序的版本列表
-            return response.data.sort((a, b) => 
-              new Date(b.releaseDate).getTime() - new Date(a.releaseDate).getTime()
+            return response.data.sort(
+              (a, b) =>
+                new Date(b.releaseDate).getTime() -
+                new Date(a.releaseDate).getTime(),
             );
           }
           return [];
         } catch (error) {
-          console.error('获取软件版本失败:', error);
+          console.error("获取软件版本失败:", error);
           return [];
         }
       }
@@ -864,7 +1016,7 @@ const structuredData = {
           this.isLoggedIn = globalLoginState;
           this.updateButtonState();
         } catch (error) {
-          console.error('检查登录状态失败:', error);
+          console.error("检查登录状态失败:", error);
           this.isLoggedIn = false;
           this.updateButtonState();
         }
@@ -872,7 +1024,7 @@ const structuredData = {
 
       async checkAuthStatusWithFetch() {
         try {
-          const response = await fetch('/api/auth/status');
+          const response = await fetch("/api/auth/status");
           if (response.ok) {
             const data = await response.json();
             this.isLoggedIn = !!data.user;
@@ -880,7 +1032,7 @@ const structuredData = {
             this.isLoggedIn = false;
           }
         } catch (error) {
-          console.error('检查登录状态失败:', error);
+          console.error("检查登录状态失败:", error);
           this.isLoggedIn = false;
         }
       }
@@ -890,42 +1042,45 @@ const structuredData = {
           // 根据登录状态更新按钮状态
           if (this.isLoggedIn) {
             // 已登录状态 - 显示"立即下载"
-            this.button.classList.remove('bg-orange-500', 'hover:bg-orange-600');
-            this.button.classList.add('bg-blue-600', 'hover:bg-blue-700');
-            
+            this.button.classList.remove(
+              "bg-orange-500",
+              "hover:bg-orange-600",
+            );
+            this.button.classList.add("bg-blue-600", "hover:bg-blue-700");
+
             if (this.downloadText && this.loginPromptText) {
-              this.downloadText.classList.remove('hidden');
-              this.loginPromptText.classList.add('hidden');
+              this.downloadText.classList.remove("hidden");
+              this.loginPromptText.classList.add("hidden");
             }
           } else {
             // 未登录状态 - 显示"请登录后下载"
-            this.button.classList.remove('bg-blue-600', 'hover:bg-blue-700');
-            this.button.classList.add('bg-orange-500', 'hover:bg-orange-600');
-            
+            this.button.classList.remove("bg-blue-600", "hover:bg-blue-700");
+            this.button.classList.add("bg-orange-500", "hover:bg-orange-600");
+
             if (this.downloadText && this.loginPromptText) {
-              this.downloadText.classList.add('hidden');
-              this.loginPromptText.classList.remove('hidden');
+              this.downloadText.classList.add("hidden");
+              this.loginPromptText.classList.remove("hidden");
             }
           }
         } else {
           // 如果不需要登录提示，保持默认状态
-          this.button.classList.add('bg-blue-600', 'hover:bg-blue-700');
-          
+          this.button.classList.add("bg-blue-600", "hover:bg-blue-700");
+
           if (this.downloadText && this.loginPromptText) {
-            this.downloadText.classList.remove('hidden');
-            this.loginPromptText.classList.add('hidden');
+            this.downloadText.classList.remove("hidden");
+            this.loginPromptText.classList.add("hidden");
           }
         }
-        
+
         this.button.disabled = false;
       }
 
       handleClick(event) {
         event.preventDefault();
-        
+
         if (this.showLoginPrompt && !this.isLoggedIn) {
           // 未登录时跳转到登录页面
-          window.location.href = '/auth/login';
+          window.location.href = "/auth/login";
         } else {
           // 已登录时显示下载弹窗
           this.showDownloadModal();
@@ -934,337 +1089,430 @@ const structuredData = {
 
       async showDownloadModal() {
         // 创建弹窗
-        const modal = document.createElement('div');
-        modal.className = 'fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 modal-backdrop';
+        const modal = document.createElement("div");
+        modal.className =
+          "fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 modal-backdrop";
         modal.onclick = (e) => {
           if (e.target === modal) {
             modal.remove();
           }
         };
-        
+
         // 弹窗内容
-        const modalContent = document.createElement('div');
-        modalContent.className = 'bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full p-6 modal-content border-animate';
-        
+        const modalContent = document.createElement("div");
+        modalContent.className =
+          "bg-white dark:bg-gray-800 rounded-lg shadow-md border border-gray-200 dark:border-gray-700 max-w-md w-full p-6 modal-content border-animate";
+
         // 弹窗头部
-        const modalHeader = document.createElement('div');
-        modalHeader.className = 'flex justify-between items-center mb-4';
-        
-        const title = document.createElement('h3');
-        title.className = 'text-lg font-semibold text-gray-900 dark:text-white';
-        title.textContent = '下载软件';
-        
-        const closeButton = document.createElement('button');
-        closeButton.className = 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200';
-        closeButton.innerHTML = '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>';
+        const modalHeader = document.createElement("div");
+        modalHeader.className = "flex justify-between items-center mb-4";
+
+        const title = document.createElement("h3");
+        title.className = "text-lg font-semibold text-gray-900 dark:text-white";
+        title.textContent = "下载软件";
+
+        const closeButton = document.createElement("button");
+        closeButton.className =
+          "text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200";
+        closeButton.innerHTML =
+          '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>';
         closeButton.onclick = () => modal.remove();
-        
+
         modalHeader.appendChild(title);
         modalHeader.appendChild(closeButton);
-        
+
         // 弹窗内容
-        const modalBody = document.createElement('div');
-        modalBody.className = 'mb-4';
-        
+        const modalBody = document.createElement("div");
+        modalBody.className = "mb-4";
+
         // 软件信息
         if (this.softwareData) {
-          const softwareName = document.createElement('h4');
-          softwareName.className = 'text-md font-medium text-gray-900 dark:text-white mb-2';
-          softwareName.textContent = this.softwareData.name || '软件';
+          const softwareName = document.createElement("h4");
+          softwareName.className =
+            "text-md font-medium text-gray-900 dark:text-white mb-2";
+          softwareName.textContent = this.softwareData.name || "软件";
           modalBody.appendChild(softwareName);
-          
+
           // 版本信息
-          const versionInfo = document.createElement('p');
-          versionInfo.className = 'text-sm text-gray-600 dark:text-gray-400 mb-3';
-          
+          const versionInfo = document.createElement("p");
+          versionInfo.className =
+            "text-sm text-gray-600 dark:text-gray-400 mb-3";
+
           // 先显示加载状态
-          versionInfo.textContent = '正在获取下载链接...';
+          versionInfo.textContent = "正在获取下载链接...";
           modalBody.appendChild(versionInfo);
-          
+
           // 下载链接选项容器
-          const linksContainer = document.createElement('div');
-          linksContainer.className = 'grid grid-cols-1 gap-2 mb-4 hidden';
+          const linksContainer = document.createElement("div");
+          linksContainer.className = "grid grid-cols-1 gap-2 mb-4 hidden";
           modalBody.appendChild(linksContainer);
-          
+
           // 当前选中的链接 - 移到try-catch外部，确保整个方法都能访问
           // let selectedLink = this.downloadUrl;
-          
+
           try {
             // 调用版本API获取完整的版本信息
             const versions = await this.fetchSoftwareVersions();
             let latestVersion = this.softwareData.currentVersion;
             let downloadLinks = {};
-            
+
             if (versions && versions.length > 0) {
               // 使用API返回的最新版本信息
               const latestVersionData = versions[0];
               latestVersion = latestVersionData.version;
-              
+
               // 获取API返回的完整下载链接
               if (latestVersionData.downloadLinks) {
                 downloadLinks = latestVersionData.downloadLinks;
               }
-            } else if (this.softwareData.versions && this.softwareData.versions.length > 0) {
+            } else if (
+              this.softwareData.versions &&
+              this.softwareData.versions.length > 0
+            ) {
               // 降级使用软件详情中的版本信息
-              const sortedVersions = [...this.softwareData.versions].sort((a, b) => 
-                new Date(b.releaseDate).getTime() - new Date(a.releaseDate).getTime()
+              const sortedVersions = [...this.softwareData.versions].sort(
+                (a, b) =>
+                  new Date(b.releaseDate).getTime() -
+                  new Date(a.releaseDate).getTime(),
               );
               latestVersion = sortedVersions[0].version;
-              
+
               if (sortedVersions[0].downloadLinks) {
                 downloadLinks = sortedVersions[0].downloadLinks;
               }
             }
-            
+
             // 更新版本信息显示
-            versionInfo.textContent = `最新版本: v${latestVersion || '未知'}`;
-            
+            versionInfo.textContent = `最新版本: v${latestVersion || "未知"}`;
+
             // 更新时间
             if (this.softwareData.updatedAt) {
-              const releaseDate = document.createElement('p');
-              releaseDate.className = 'text-xs text-gray-500 mb-3';
+              const releaseDate = document.createElement("p");
+              releaseDate.className = "text-xs text-gray-500 mb-3";
               releaseDate.textContent = `更新时间: ${formatDate(this.softwareData.updatedAt)}`;
               modalBody.insertBefore(releaseDate, versionInfo.nextSibling);
             }
-            
+
             // 下载链接选择标签
-            const linksLabel = document.createElement('p');
-            linksLabel.className = 'text-gray-700 mb-2 font-medium';
-            linksLabel.textContent = '选择下载渠道:';
+            const linksLabel = document.createElement("p");
+            linksLabel.className = "text-gray-700 mb-2 font-medium";
+            linksLabel.textContent = "选择下载渠道:";
             modalBody.insertBefore(linksLabel, linksContainer);
-            
+
             // 下载渠道配置，使用更直观的图标和颜色标识，增加URL匹配规则和优先级
             const linkTypes = {
-              official: { name: '官方下载', icon: '🏢', color: 'bg-blue-100 border-blue-200', priority: 1 },
-              baidu: { name: '百度网盘', icon: '📁', color: 'bg-blue-50 border-blue-100', regex: /pan\.baidu\.com/, priority: 2 },
-              quark: { name: '夸克网盘', icon: '⚡', color: 'bg-purple-50 border-purple-100', regex: /pan\.quark\.cn/, priority: 3 },
-              thunderPan: { name: '迅雷网盘', icon: '💨', color: 'bg-orange-50 border-orange-100', regex: /kuai\.xunlei\.com/, priority: 4 },
-              pan123: { name: '123网盘', icon: '🔗', color: 'bg-green-50 border-green-100', regex: /123pan\.com/, priority: 5 },
-              github: { name: 'GitHub', icon: '🐙', color: 'bg-gray-50 border-gray-200', regex: /github\.com/, priority: 6 },
-              thunder: { name: '迅雷', icon: '⚡', color: 'bg-red-50 border-red-100', regex: /thunder:|xunlei:/, priority: 7 }
+              official: {
+                name: "官方下载",
+                icon: "🏢",
+                color: "bg-blue-100 border-blue-200",
+                priority: 1,
+              },
+              baidu: {
+                name: "百度网盘",
+                icon: "📁",
+                color: "bg-blue-50 border-blue-100",
+                regex: /pan\.baidu\.com/,
+                priority: 2,
+              },
+              quark: {
+                name: "夸克网盘",
+                icon: "⚡",
+                color: "bg-purple-50 border-purple-100",
+                regex: /pan\.quark\.cn/,
+                priority: 3,
+              },
+              thunderPan: {
+                name: "迅雷网盘",
+                icon: "💨",
+                color: "bg-orange-50 border-orange-100",
+                regex: /kuai\.xunlei\.com/,
+                priority: 4,
+              },
+              pan123: {
+                name: "123网盘",
+                icon: "🔗",
+                color: "bg-green-50 border-green-100",
+                regex: /123pan\.com/,
+                priority: 5,
+              },
+              github: {
+                name: "GitHub",
+                icon: "🐙",
+                color: "bg-gray-50 border-gray-200",
+                regex: /github\.com/,
+                priority: 6,
+              },
+              thunder: {
+                name: "迅雷",
+                icon: "⚡",
+                color: "bg-red-50 border-red-100",
+                regex: /thunder:|xunlei:/,
+                priority: 7,
+              },
             };
-              
-              // 合并直接的downloadUrl到downloadLinks对象
-              if (this.downloadUrl && !Object.values(downloadLinks).some(link => link === this.downloadUrl || 
-                  (Array.isArray(link) && link.includes(this.downloadUrl)))) {
-                // 自动识别链接类型
-                let matchedType = 'official'; // 默认类型
-                let highestPriorityMatch = Infinity;
-                
-                Object.entries(linkTypes).forEach(([key, { regex, priority }]) => {
-                  if (regex && regex.test(this.downloadUrl) && priority < highestPriorityMatch) {
+
+            // 合并直接的downloadUrl到downloadLinks对象
+            if (
+              this.downloadUrl &&
+              !Object.values(downloadLinks).some(
+                (link) =>
+                  link === this.downloadUrl ||
+                  (Array.isArray(link) && link.includes(this.downloadUrl)),
+              )
+            ) {
+              // 自动识别链接类型
+              let matchedType = "official"; // 默认类型
+              let highestPriorityMatch = Infinity;
+
+              Object.entries(linkTypes).forEach(
+                ([key, { regex, priority }]) => {
+                  if (
+                    regex &&
+                    regex.test(this.downloadUrl) &&
+                    priority < highestPriorityMatch
+                  ) {
                     matchedType = key;
                     highestPriorityMatch = priority;
                   }
-                });
-                
-                // 如果没有匹配到具体类型，使用官方下载
-                downloadLinks[matchedType] = this.downloadUrl;
-              }
-              
-              // 按优先级排序下载渠道
-              const sortedLinkTypes = Object.entries(linkTypes).sort((a, b) => a[1].priority - b[1].priority);
-              
-              // 创建链接选项 - 改为按钮形式
-              sortedLinkTypes.forEach(([key, { name, icon, color }]) => {
-                if (downloadLinks[key] && downloadLinks[key].trim()) {
-                  // 处理可能是数组的备份链接
-                  const links = Array.isArray(downloadLinks[key]) ? downloadLinks[key] : [downloadLinks[key]];
-                  
-                  links.forEach((link, index) => {
-                    if (link && link.trim()) {
-                      const linkButton = document.createElement('button');
-                      linkButton.className = `flex items-center p-3 border rounded-md cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200 ${color} w-full justify-between text-left mb-2 btn-animate card-hover`;
-                      linkButton.title = `点击跳转到${name}`;
-                      
-                      // 添加悬停动画效果
-                      linkButton.style.transform = 'scale(1)';
-                      linkButton.style.transition = 'transform 0.2s ease, box-shadow 0.2s ease';
-                      linkButton.addEventListener('mouseenter', () => {
-                        linkButton.style.transform = 'scale(1.01)';
-                        linkButton.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.1)';
-                      });
-                      linkButton.addEventListener('mouseleave', () => {
-                        linkButton.style.transform = 'scale(1)';
-                        linkButton.style.boxShadow = 'none';
-                      });
-                      
-                      // 点击事件 - 直接在新标签页打开链接
-                      linkButton.onclick = () => {
-                        window.open(link, '_blank', 'noopener,noreferrer');
-                        
-                        // 触发下载事件
-                        window.dispatchEvent(new CustomEvent('downloadStarted', {
-                          detail: { url: link }
-                        }));
-                      };
-                      
-                      const linkName = document.createElement('div');
-                      linkName.className = 'flex items-center';
-                      linkName.innerHTML = `<span class="mr-2">${icon}</span>${name}${links.length > 1 ? ` <span class="text-xs bg-gray-200 text-gray-700 px-1.5 py-0.5 rounded-full">备用${index + 1}</span>` : ''}`;
-                      
-                      const openIcon = document.createElement('span');
-                      openIcon.className = 'ml-auto text-gray-400';
-                      openIcon.innerHTML = '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>';
-                      
-                      linkButton.appendChild(linkName);
-                      linkButton.appendChild(openIcon);
-                      
-                      linksContainer.appendChild(linkButton);
-                    }
-                  });
-                }
-              });
-          
-          // 显示链接容器
-          linksContainer.classList.remove('hidden');
-          
-          // 如果没有找到任何下载链接，显示默认链接
-          if (linksContainer.children.length === 0 && this.downloadUrl) {
-            const defaultLinkButton = document.createElement('button');
-            defaultLinkButton.className = 'flex items-center p-3 border rounded-md cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors bg-gray-50 dark:bg-gray-700 w-full justify-between text-left mb-2 btn-animate card-hover';
-            defaultLinkButton.title = '点击跳转到默认下载链接';
-            
-            // 添加悬停动画效果
-            defaultLinkButton.style.transform = 'scale(1)';
-            defaultLinkButton.style.transition = 'transform 0.2s ease, box-shadow 0.2s ease';
-            defaultLinkButton.addEventListener('mouseenter', () => {
-              defaultLinkButton.style.transform = 'scale(1.01)';
-              defaultLinkButton.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.1)';
-            });
-            defaultLinkButton.addEventListener('mouseleave', () => {
-              defaultLinkButton.style.transform = 'scale(1)';
-              defaultLinkButton.style.boxShadow = 'none';
-            });
-            
-            // 点击事件 - 直接在新标签页打开链接
-            defaultLinkButton.onclick = () => {
-              window.open(this.downloadUrl, '_blank', 'noopener,noreferrer');
-              
-              // 触发下载事件
-              window.dispatchEvent(new CustomEvent('downloadStarted', {
-                detail: { url: this.downloadUrl }
-              }));
-            };
-            
-            const linkName = document.createElement('div');
-            linkName.className = 'flex items-center';
-            linkName.innerHTML = '<span class="mr-2">📥</span>默认下载';
-            
-            const openIcon = document.createElement('span');
-            openIcon.className = 'ml-auto text-gray-400';
-            openIcon.innerHTML = '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>';
-            
-            defaultLinkButton.appendChild(linkName);
-            defaultLinkButton.appendChild(openIcon);
-            
-            linksContainer.appendChild(defaultLinkButton);
-          }
-          
-          // 处理无链接情况
-          if (linksContainer.children.length === 0 && !this.downloadUrl) {
-            const noLinkMessage = document.createElement('p');
-            noLinkMessage.className = 'text-gray-500 dark:text-gray-400 text-center p-4 bg-gray-50 dark:bg-gray-700 rounded-md';
-            noLinkMessage.textContent = '暂无可下载链接';
-            linksContainer.appendChild(noLinkMessage);
-          }
-        } catch (error) {
-          console.error('获取下载链接失败:', error);
-          // 显示错误信息
-          const errorMessage = document.createElement('p');
-          errorMessage.className = 'text-red-500 dark:text-red-400 text-sm mt-2';
-          errorMessage.textContent = '获取下载链接失败，请稍后再试';
-          modalBody.appendChild(errorMessage);
-          
-          // 降级使用原有数据
-          if (this.softwareData.versions && this.softwareData.versions.length > 0) {
-            // 按发布日期排序，获取最新版本
-            const sortedVersions = [...this.softwareData.versions].sort((a, b) => 
-              new Date(b.releaseDate).getTime() - new Date(a.releaseDate).getTime()
+                },
+              );
+
+              // 如果没有匹配到具体类型，使用官方下载
+              downloadLinks[matchedType] = this.downloadUrl;
+            }
+
+            // 按优先级排序下载渠道
+            const sortedLinkTypes = Object.entries(linkTypes).sort(
+              (a, b) => a[1].priority - b[1].priority,
             );
-            const latestVersion = sortedVersions[0].version;
-            versionInfo.textContent = `最新版本: v${latestVersion || '未知'}`;
-            
-            // 显示下载链接选择区域
-            linksContainer.classList.remove('hidden');
-            
-            // 如果有降级可用的下载链接，显示它们
-                if (sortedVersions[0].downloadLinks) {
-                  const downloadLinks = sortedVersions[0].downloadLinks;
-                  // 这里可以复用之前的链接创建逻辑
-                  // 为简化，我们直接显示默认链接
-                  if (Object.values(downloadLinks).length > 0) {
-                    const defaultLinkKey = Object.keys(downloadLinks)[0];
-                    const defaultLink = downloadLinks[defaultLinkKey];
-                    const defaultLinkButton = document.createElement('button');
-                    defaultLinkButton.className = 'flex items-center p-3 border rounded-md cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors bg-gray-50 dark:bg-gray-700 w-full justify-between text-left mb-2 btn-animate card-hover';
-                    defaultLinkButton.title = '点击跳转到下载链接';
-                    
+
+            // 创建链接选项 - 改为按钮形式
+            sortedLinkTypes.forEach(([key, { name, icon, color }]) => {
+              if (downloadLinks[key] && downloadLinks[key].trim()) {
+                // 处理可能是数组的备份链接
+                const links = Array.isArray(downloadLinks[key])
+                  ? downloadLinks[key]
+                  : [downloadLinks[key]];
+
+                links.forEach((link, index) => {
+                  if (link && link.trim()) {
+                    const linkButton = document.createElement("button");
+                    linkButton.className = `flex items-center p-3 border rounded-md cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200 ${color} w-full justify-between text-left mb-2 btn-animate card-hover`;
+                    linkButton.title = `点击跳转到${name}`;
+
                     // 添加悬停动画效果
-                    defaultLinkButton.style.transform = 'scale(1)';
-                    defaultLinkButton.style.transition = 'transform 0.2s ease, box-shadow 0.2s ease';
-                    defaultLinkButton.addEventListener('mouseenter', () => {
-                      defaultLinkButton.style.transform = 'scale(1.01)';
-                      defaultLinkButton.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.1)';
+                    linkButton.style.transform = "scale(1)";
+                    linkButton.style.transition =
+                      "transform 0.2s ease, box-shadow 0.2s ease";
+                    linkButton.addEventListener("mouseenter", () => {
+                      linkButton.style.transform = "scale(1.01)";
+                      linkButton.style.boxShadow =
+                        "0 2px 8px rgba(0, 0, 0, 0.1)";
                     });
-                    defaultLinkButton.addEventListener('mouseleave', () => {
-                      defaultLinkButton.style.transform = 'scale(1)';
-                      defaultLinkButton.style.boxShadow = 'none';
+                    linkButton.addEventListener("mouseleave", () => {
+                      linkButton.style.transform = "scale(1)";
+                      linkButton.style.boxShadow = "none";
                     });
-                    
+
                     // 点击事件 - 直接在新标签页打开链接
-                    defaultLinkButton.onclick = () => {
-                      window.open(defaultLink, '_blank', 'noopener,noreferrer');
-                      
+                    linkButton.onclick = () => {
+                      window.open(link, "_blank", "noopener,noreferrer");
+
                       // 触发下载事件
-                      window.dispatchEvent(new CustomEvent('downloadStarted', {
-                        detail: { url: defaultLink }
-                      }));
+                      window.dispatchEvent(
+                        new CustomEvent("downloadStarted", {
+                          detail: { url: link },
+                        }),
+                      );
                     };
-                    
-                    const linkName = document.createElement('div');
-                    linkName.className = 'flex items-center';
-                    linkName.innerHTML = `<span class="mr-2">📥</span>${defaultLinkKey === 'official' ? '官方下载' : '下载链接'}`;
-                    
-                    const openIcon = document.createElement('span');
-                    openIcon.className = 'ml-auto text-gray-400';
-                    openIcon.innerHTML = '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>';
-                    
-                    defaultLinkButton.appendChild(linkName);
-                    defaultLinkButton.appendChild(openIcon);
-                    
-                    linksContainer.appendChild(defaultLinkButton);
+
+                    const linkName = document.createElement("div");
+                    linkName.className = "flex items-center";
+                    linkName.innerHTML = `<span class="mr-2">${icon}</span>${name}${links.length > 1 ? ` <span class="text-xs bg-gray-200 text-gray-700 px-1.5 py-0.5 rounded-full">备用${index + 1}</span>` : ""}`;
+
+                    const openIcon = document.createElement("span");
+                    openIcon.className = "ml-auto text-gray-400";
+                    openIcon.innerHTML =
+                      '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>';
+
+                    linkButton.appendChild(linkName);
+                    linkButton.appendChild(openIcon);
+
+                    linksContainer.appendChild(linkButton);
                   }
+                });
+              }
+            });
+
+            // 显示链接容器
+            linksContainer.classList.remove("hidden");
+
+            // 如果没有找到任何下载链接，显示默认链接
+            if (linksContainer.children.length === 0 && this.downloadUrl) {
+              const defaultLinkButton = document.createElement("button");
+              defaultLinkButton.className =
+                "flex items-center p-3 border rounded-md cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors bg-gray-50 dark:bg-gray-700 w-full justify-between text-left mb-2 btn-animate card-hover";
+              defaultLinkButton.title = "点击跳转到默认下载链接";
+
+              // 添加悬停动画效果
+              defaultLinkButton.style.transform = "scale(1)";
+              defaultLinkButton.style.transition =
+                "transform 0.2s ease, box-shadow 0.2s ease";
+              defaultLinkButton.addEventListener("mouseenter", () => {
+                defaultLinkButton.style.transform = "scale(1.01)";
+                defaultLinkButton.style.boxShadow =
+                  "0 2px 8px rgba(0, 0, 0, 0.1)";
+              });
+              defaultLinkButton.addEventListener("mouseleave", () => {
+                defaultLinkButton.style.transform = "scale(1)";
+                defaultLinkButton.style.boxShadow = "none";
+              });
+
+              // 点击事件 - 直接在新标签页打开链接
+              defaultLinkButton.onclick = () => {
+                window.open(this.downloadUrl, "_blank", "noopener,noreferrer");
+
+                // 触发下载事件
+                window.dispatchEvent(
+                  new CustomEvent("downloadStarted", {
+                    detail: { url: this.downloadUrl },
+                  }),
+                );
+              };
+
+              const linkName = document.createElement("div");
+              linkName.className = "flex items-center";
+              linkName.innerHTML = '<span class="mr-2">📥</span>默认下载';
+
+              const openIcon = document.createElement("span");
+              openIcon.className = "ml-auto text-gray-400";
+              openIcon.innerHTML =
+                '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>';
+
+              defaultLinkButton.appendChild(linkName);
+              defaultLinkButton.appendChild(openIcon);
+
+              linksContainer.appendChild(defaultLinkButton);
+            }
+
+            // 处理无链接情况
+            if (linksContainer.children.length === 0 && !this.downloadUrl) {
+              const noLinkMessage = document.createElement("p");
+              noLinkMessage.className =
+                "text-gray-500 dark:text-gray-400 text-center p-4 bg-gray-50 dark:bg-gray-700 rounded-md";
+              noLinkMessage.textContent = "暂无可下载链接";
+              linksContainer.appendChild(noLinkMessage);
+            }
+          } catch (error) {
+            console.error("获取下载链接失败:", error);
+            // 显示错误信息
+            const errorMessage = document.createElement("p");
+            errorMessage.className =
+              "text-red-500 dark:text-red-400 text-sm mt-2";
+            errorMessage.textContent = "获取下载链接失败，请稍后再试";
+            modalBody.appendChild(errorMessage);
+
+            // 降级使用原有数据
+            if (
+              this.softwareData.versions &&
+              this.softwareData.versions.length > 0
+            ) {
+              // 按发布日期排序，获取最新版本
+              const sortedVersions = [...this.softwareData.versions].sort(
+                (a, b) =>
+                  new Date(b.releaseDate).getTime() -
+                  new Date(a.releaseDate).getTime(),
+              );
+              const latestVersion = sortedVersions[0].version;
+              versionInfo.textContent = `最新版本: v${latestVersion || "未知"}`;
+
+              // 显示下载链接选择区域
+              linksContainer.classList.remove("hidden");
+
+              // 如果有降级可用的下载链接，显示它们
+              if (sortedVersions[0].downloadLinks) {
+                const downloadLinks = sortedVersions[0].downloadLinks;
+                // 这里可以复用之前的链接创建逻辑
+                // 为简化，我们直接显示默认链接
+                if (Object.values(downloadLinks).length > 0) {
+                  const defaultLinkKey = Object.keys(downloadLinks)[0];
+                  const defaultLink = downloadLinks[defaultLinkKey];
+                  const defaultLinkButton = document.createElement("button");
+                  defaultLinkButton.className =
+                    "flex items-center p-3 border rounded-md cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors bg-gray-50 dark:bg-gray-700 w-full justify-between text-left mb-2 btn-animate card-hover";
+                  defaultLinkButton.title = "点击跳转到下载链接";
+
+                  // 添加悬停动画效果
+                  defaultLinkButton.style.transform = "scale(1)";
+                  defaultLinkButton.style.transition =
+                    "transform 0.2s ease, box-shadow 0.2s ease";
+                  defaultLinkButton.addEventListener("mouseenter", () => {
+                    defaultLinkButton.style.transform = "scale(1.01)";
+                    defaultLinkButton.style.boxShadow =
+                      "0 2px 8px rgba(0, 0, 0, 0.1)";
+                  });
+                  defaultLinkButton.addEventListener("mouseleave", () => {
+                    defaultLinkButton.style.transform = "scale(1)";
+                    defaultLinkButton.style.boxShadow = "none";
+                  });
+
+                  // 点击事件 - 直接在新标签页打开链接
+                  defaultLinkButton.onclick = () => {
+                    window.open(defaultLink, "_blank", "noopener,noreferrer");
+
+                    // 触发下载事件
+                    window.dispatchEvent(
+                      new CustomEvent("downloadStarted", {
+                        detail: { url: defaultLink },
+                      }),
+                    );
+                  };
+
+                  const linkName = document.createElement("div");
+                  linkName.className = "flex items-center";
+                  linkName.innerHTML = `<span class="mr-2">📥</span>${defaultLinkKey === "official" ? "官方下载" : "下载链接"}`;
+
+                  const openIcon = document.createElement("span");
+                  openIcon.className = "ml-auto text-gray-400";
+                  openIcon.innerHTML =
+                    '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>';
+
+                  defaultLinkButton.appendChild(linkName);
+                  defaultLinkButton.appendChild(openIcon);
+
+                  linksContainer.appendChild(defaultLinkButton);
                 }
+              }
+            }
           }
+
+          // 弹窗底部按钮
+          const modalFooter = document.createElement("div");
+          modalFooter.className = "flex justify-center";
+
+          const closeButton = document.createElement("button");
+          closeButton.className =
+            "px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-md hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors flex items-center justify-center";
+          closeButton.textContent = "关闭";
+          closeButton.onclick = () => modal.remove();
+
+          modalFooter.appendChild(closeButton);
+
+          // 组装弹窗
+          modalContent.appendChild(modalHeader);
+          modalContent.appendChild(modalBody);
+          modalContent.appendChild(modalFooter);
+          modal.appendChild(modalContent);
+
+          // 添加到文档
+          document.body.appendChild(modal);
         }
-        
-        // 弹窗底部按钮
-        const modalFooter = document.createElement('div');
-        modalFooter.className = 'flex justify-center';
-        
-        const closeButton = document.createElement('button');
-        closeButton.className = 'px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-md hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors flex items-center justify-center';
-        closeButton.textContent = '关闭';
-        closeButton.onclick = () => modal.remove();
-        
-        modalFooter.appendChild(closeButton);
-        
-        // 组装弹窗
-        modalContent.appendChild(modalHeader);
-        modalContent.appendChild(modalBody);
-        modalContent.appendChild(modalFooter);
-        modal.appendChild(modalContent);
-        
-        // 添加到文档
-        document.body.appendChild(modal);
-      }
       }
     }
 
     // 初始化所有下载按钮
-    const downloadButtons = document.querySelectorAll('[data-download-url]');
-    downloadButtons.forEach(button => {
+    const downloadButtons = document.querySelectorAll("[data-download-url]");
+    downloadButtons.forEach((button) => {
       new DownloadButtonManager(button);
     });
 
@@ -1282,11 +1530,11 @@ const structuredData = {
   .bg-primary-100 {
     background-color: var(--color-primary-100);
   }
-  
+
   .text-primary-800 {
     color: var(--color-primary-800);
   }
-  
+
   .border-primary-600 {
     border-color: var(--color-primary-600);
   }
