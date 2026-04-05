@@ -4,9 +4,6 @@ import Button from "../ui/Button.jsx";
 import {
   Card,
   CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
 } from "../ui/Card.jsx";
 import Input from "../ui/Input.jsx";
 import Label from "../ui/Label.jsx";
@@ -42,9 +39,12 @@ export default function LoginForm({ className = "", ...props }) {
 
       // 设置localStorage登录状态
       localStorage.setItem("isLoggedIn", "true");
+      console.log("登录成功，正在跳转...");
 
-      // 登录成功后重定向到主页
-      window.location.href = "/";
+      // 稍微延迟一下以确保 Supabase 客户端完成本地存储写入
+      setTimeout(() => {
+        window.location.href = "/";
+      }, 200);
     } catch (error) {
       // 处理特定的错误消息
       if (error.message.includes("Invalid login credentials")) {

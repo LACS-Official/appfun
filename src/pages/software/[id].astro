@@ -27,9 +27,7 @@ export async function getStaticPaths() {
     return softwareIds.map((id: string) => ({
       params: { id },
     }));
-  } catch (error) {
-    console.error("获取软件ID列表失败:", error);
-
+  } catch {
     // 如果API调用失败，使用备用ID列表确保至少能生成一些页面
     const fallbackIds = ["1", "2", "3"];
     return fallbackIds.map((id: string) => ({
@@ -242,26 +240,48 @@ const structuredData = {
   // 初始化全局登录状态检查
   async function checkGlobalLoginStatus() {
     try {
-      // 访问 /api/auth/status 检查用户是否已通过 Supabase 认证
+      // 1. 尝试通过 API 检查 (服务器端 Session)
       const response = await fetch("/api/auth/status");
 
       if (response.ok) {
         const data = await response.json();
         globalLoginState = !!data.user;
-        localStorage.setItem("isLoggedIn", globalLoginState.toString());
       } else {
-        globalLoginState = false;
-        localStorage.setItem("isLoggedIn", "false");
-      }
+        // 2. 如果 API 失败（可能是 Cookie 未同步），尝试从本地存储获取状态
+        const storedLoginState = localStorage.getItem("isLoggedIn") === "true";
 
-      updateAllDownloadButtons();
-    } catch (error) {
-      console.error("检查全局登录状态失败:", error);
+        // 检查是否存在 Supabase 认证相关的 localStorage 项
+        let hasSupabaseToken = false;
+        try {
+          for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            if (
+              key &&
+              (key.includes("-auth-token") ||
+                key.includes("supabase.auth.token"))
+            ) {
+              hasSupabaseToken = true;
+              break;
+            }
+          }
+        } catch {
+          // 忽略错误
+        }
+
+        globalLoginState = storedLoginState || hasSupabaseToken;
+
+        // 如果本地认为是登录的，我们强制在本地维持一段时间，直到 API 正常
+        if (globalLoginState) {
+          localStorage.setItem("isLoggedIn", "true");
+        }
+      }
+    } catch {
       // 回退到 localStorage (如果 API 挂了)
       const storedLoginState = localStorage.getItem("isLoggedIn");
       globalLoginState = storedLoginState === "true";
-      updateAllDownloadButtons();
     }
+
+    updateAllDownloadButtons();
     return globalLoginState;
   }
 
@@ -303,10 +323,9 @@ const structuredData = {
   let softwareData = null;
   let currentVersionFilter = "all";
 
-  document.addEventListener("DOMContentLoaded", () => {
-    // 再次检查登录状态
-    checkGlobalLoginStatus();
-
+  document.addEventListener("DOMContentLoaded", async () => {
+    // 确保在加载详情前先获取最新的登录状态
+    await checkGlobalLoginStatus();
     loadSoftwareDetails(id);
     setupEventListeners();
   });
@@ -326,16 +345,11 @@ const structuredData = {
   async function loadSoftwareDetails(id) {
     const container = document.getElementById("software-container");
     if (!container) {
-      console.error("软件容器元素未找到");
       return;
     }
 
-    console.log("开始加载软件详情，ID:", id);
-
     try {
       const response = await apiClient.getSoftwareById(parseInt(id));
-      console.log("API响应:", response);
-
       if (response.success && response.data) {
         softwareData = response.data;
         renderSoftwareDetails(softwareData);
@@ -352,7 +366,6 @@ const structuredData = {
         throw new Error(response.message || "软件不存在");
       }
     } catch (error) {
-      console.error("加载软件详情失败:", error);
       container.innerHTML = `
         <div class="text-center py-12">
           <div class="text-red-500 text-6xl mb-4">⚠️</div>
@@ -373,10 +386,8 @@ const structuredData = {
 
   // 渲染软件详情
   function renderSoftwareDetails(software) {
-    console.log("开始渲染软件详情:", software);
     const container = document.getElementById("software-container");
     if (!container) {
-      console.error("软件容器元素未找到");
       return;
     }
 
@@ -384,8 +395,6 @@ const structuredData = {
       software.latestDownloadUrl ||
       getPriorityDownloadLink(software.versions?.[0]?.downloadLinks);
     const systemReqs = software.systemRequirements;
-    console.log("下载链接:", downloadUrl);
-    console.log("系统要求:", systemReqs);
 
     container.innerHTML = `
       <!-- 面包屑导航 -->
@@ -458,15 +467,15 @@ const structuredData = {
                   ? `
                 <button
                   id="main-download-button"
-                  class="btn btn-primary btn-lg bg-orange-500 hover:bg-orange-600"
-                  data-download-url="${downloadUrl}"
+                  class="btn btn-primary btn-lg ${globalLoginState ? "bg-blue-600 hover:bg-blue-700" : "bg-orange-500 hover:bg-orange-600"}"
+                  data-download-url="${globalLoginState ? downloadUrl : ""}"
                   data-show-login-prompt="true"
                   type="button">
                   <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                   </svg>
-                  <span class="download-text hidden">立即下载</span>
-                  <span class="login-prompt-text">请登录后下载</span>
+                  <span class="download-text ${globalLoginState ? "" : "hidden"}">立即下载</span>
+                  <span class="login-prompt-text ${globalLoginState ? "hidden" : ""}">请登录后下载</span>
                 </button>
               `
                   : ""
@@ -725,8 +734,7 @@ const structuredData = {
           </div>
         `;
       }
-    } catch (error) {
-      console.error("加载版本历史失败:", error);
+    } catch {
       container.innerHTML = `
         <div class="text-center py-8">
           <p class="text-red-600 dark:text-red-400">加载失败，请稍后重试</p>
@@ -849,10 +857,7 @@ const structuredData = {
     // 确保主下载按钮正确初始化
     const mainDownloadButton = document.getElementById("main-download-button");
     if (mainDownloadButton) {
-      // 立即检查登录状态并更新按钮
-      checkGlobalLoginStatus().then(() => {
-        updateAllDownloadButtons();
-      });
+      updateAllDownloadButtons();
     }
   }
 
