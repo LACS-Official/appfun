@@ -97,30 +97,32 @@ const { title = appConfig.title, showSearch = true } = Astro.props;
         <button
           id="theme-toggle"
           type="button"
-          class="text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-primary-500 rounded-lg p-2.5 text-sm transition-colors"
-          aria-label="切换深色模式"
+          class="relative flex items-center justify-center w-10 h-10 text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-primary-500 rounded-full transition-all duration-300 group shadow-inner"
+          aria-label="切换主题模式"
         >
-          <svg
-            id="theme-toggle-dark-icon"
-            class="hidden w-5 h-5"
-            fill="currentColor"
-            viewBox="0 0 20 20"
-          >
-            <path
-              d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"
-            ></path>
-          </svg>
-          <svg
-            id="theme-toggle-light-icon"
-            class="hidden w-5 h-5"
-            fill="currentColor"
-            viewBox="0 0 20 20"
-          >
-            <path
-              d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"
-              fill-rule="evenodd"
-              clip-rule="evenodd"></path>
-          </svg>
+          <div class="relative w-6 h-6 overflow-hidden">
+            <svg
+              id="theme-toggle-dark-icon"
+              class="absolute inset-0 w-6 h-6 transform transition-transform duration-500 translate-y-0 group-hover:scale-110"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+            >
+              <path
+                d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"
+              ></path>
+            </svg>
+            <svg
+              id="theme-toggle-light-icon"
+              class="absolute inset-0 w-6 h-6 transform transition-transform duration-500 translate-y-full group-hover:scale-110"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+            >
+              <path
+                d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"
+                fill-rule="evenodd"
+                clip-rule="evenodd"></path>
+            </svg>
+          </div>
         </button>
 
         <!-- 认证按钮 -->
@@ -200,11 +202,13 @@ const { title = appConfig.title, showSearch = true } = Astro.props;
   // 根据当前主题更新图标
   function updateThemeIcon() {
     if (document.documentElement.classList.contains("dark")) {
-      darkIcon?.classList.add("hidden");
-      lightIcon?.classList.remove("hidden");
+      darkIcon?.classList.add("-translate-y-full");
+      lightIcon?.classList.remove("translate-y-full");
+      lightIcon?.classList.add("translate-y-0");
     } else {
-      lightIcon?.classList.add("hidden");
-      darkIcon?.classList.remove("hidden");
+      lightIcon?.classList.add("translate-y-full");
+      darkIcon?.classList.remove("-translate-y-full");
+      darkIcon?.classList.add("translate-y-0");
     }
   }
 

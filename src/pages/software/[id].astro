@@ -242,42 +242,24 @@ const structuredData = {
   // 初始化全局登录状态检查
   async function checkGlobalLoginStatus() {
     try {
-      // 首先检查localStorage中是否有登录状态
-      const storedLoginState = localStorage.getItem("isLoggedIn");
-      if (storedLoginState !== null) {
-        globalLoginState = storedLoginState === "true";
-        // 更新所有下载按钮的状态
-        updateAllDownloadButtons();
-        return globalLoginState;
-      }
-
-      // 如果localStorage中没有，尝试从API获取
-      const response = await fetch("/api/auth/status", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "same-origin",
-      });
+      // 访问 /api/auth/status 检查用户是否已通过 Supabase 认证
+      const response = await fetch("/api/auth/status");
 
       if (response.ok) {
         const data = await response.json();
         globalLoginState = !!data.user;
-        // 存储到localStorage
         localStorage.setItem("isLoggedIn", globalLoginState.toString());
-        // 更新所有下载按钮的状态
-        updateAllDownloadButtons();
       } else {
         globalLoginState = false;
         localStorage.setItem("isLoggedIn", "false");
-        // 更新所有下载按钮的状态
-        updateAllDownloadButtons();
       }
+
+      updateAllDownloadButtons();
     } catch (error) {
       console.error("检查全局登录状态失败:", error);
-      globalLoginState = false;
-      localStorage.setItem("isLoggedIn", "false");
-      // 更新所有下载按钮的状态
+      // 回退到 localStorage (如果 API 挂了)
+      const storedLoginState = localStorage.getItem("isLoggedIn");
+      globalLoginState = storedLoginState === "true";
       updateAllDownloadButtons();
     }
     return globalLoginState;
@@ -869,39 +851,7 @@ const structuredData = {
     if (mainDownloadButton) {
       // 立即检查登录状态并更新按钮
       checkGlobalLoginStatus().then(() => {
-        const isLoggedIn = globalLoginState;
-        const downloadText = mainDownloadButton.querySelector(".download-text");
-        const loginPromptText =
-          mainDownloadButton.querySelector(".login-prompt-text");
-
-        if (isLoggedIn) {
-          // 已登录状态 - 显示"立即下载"
-          mainDownloadButton.classList.remove(
-            "bg-orange-500",
-            "hover:bg-orange-600",
-          );
-          mainDownloadButton.classList.add("bg-blue-600", "hover:bg-blue-700");
-
-          if (downloadText && loginPromptText) {
-            downloadText.classList.remove("hidden");
-            loginPromptText.classList.add("hidden");
-          }
-        } else {
-          // 未登录状态 - 显示"请登录后下载"
-          mainDownloadButton.classList.remove(
-            "bg-blue-600",
-            "hover:bg-blue-700",
-          );
-          mainDownloadButton.classList.add(
-            "bg-orange-500",
-            "hover:bg-orange-600",
-          );
-
-          if (downloadText && loginPromptText) {
-            downloadText.classList.add("hidden");
-            loginPromptText.classList.remove("hidden");
-          }
-        }
+        updateAllDownloadButtons();
       });
     }
   }

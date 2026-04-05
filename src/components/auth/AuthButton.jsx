@@ -83,17 +83,17 @@ export default function AuthButton() {
           </svg>
         </button>
         {menuOpen && (
-          <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg border border-gray-200 z-50 overflow-hidden">
+          <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-100 dark:border-gray-700 z-50 overflow-hidden py-1 animate-in fade-in zoom-in duration-200">
             <div className="py-1">
               <a
                 href="/account"
-                className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
+                className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
                 onClick={() => setMenuOpen(false)}
               >
                 个人中心
               </a>
               <button
-                className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100 transition-colors"
+                className="w-full text-left px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
                 onClick={handleLogout}
               >
                 退出登录
@@ -107,11 +107,11 @@ export default function AuthButton() {
 
   return (
     <div className="flex items-center gap-2">
-      <Button variant="ghost" size="sm" onClick={() => window.location.href = '/auth/login'}>
+      <Button 
+        className="px-6 h-9 rounded-full bg-blue-600 hover:bg-blue-700 text-white font-medium shadow-sm hover:shadow-md transition-all active:scale-[0.95]" 
+        onClick={() => window.location.href = '/auth/login'}
+      >
         登录
-      </Button>
-      <Button size="sm" onClick={() => window.location.href = '/auth/sign-up'}>
-        注册
       </Button>
     </div>
   );

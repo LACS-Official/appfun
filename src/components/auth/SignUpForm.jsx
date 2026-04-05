@@ -4,9 +4,6 @@ import Button from '../ui/Button.jsx';
 import {
   Card,
   CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
 } from '../ui/Card.jsx';
 import Input from '../ui/Input.jsx';
 import Label from '../ui/Label.jsx';
@@ -75,15 +72,15 @@ export default function SignUpForm({ className = '', ...props }) {
   return (
     <div className={cn('flex flex-col gap-6', className)} {...props}>
       <div className="text-center mb-2">
-        <h2 className="text-2xl font-bold text-gray-800">创建账号</h2>
-        <p className="text-gray-600 mt-2">加入我们，获取更多有趣软件内容</p>
+        <h2 className="text-2xl font-bold text-gray-900 dark:text-white">创建账号</h2>
+        <p className="text-gray-600 dark:text-gray-400 mt-2">加入我们，获取更多有趣软件内容</p>
       </div>
-      <Card className="border-0 shadow-none">
+      <Card className="border-0 shadow-none bg-transparent">
         <CardContent className="p-0">
           <form onSubmit={handleSignUp}>
             <div className="flex flex-col gap-6">
               <div className="grid gap-2">
-                <Label htmlFor="email" className="text-gray-700">邮箱</Label>
+                <Label htmlFor="email" className="text-gray-700 dark:text-gray-300">邮箱</Label>
                 <Input
                   id="email"
                   type="email"
@@ -91,46 +88,46 @@ export default function SignUpForm({ className = '', ...props }) {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="h-12 rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+                  className="h-12 rounded-xl border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-white focus:border-blue-500 focus:ring-blue-500 transition-all"
                 />
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="password" className="text-gray-700">密码</Label>
+                <Label htmlFor="password" className="text-gray-700 dark:text-gray-300">密码</Label>
                 <Input
                   id="password"
                   type="password"
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="h-12 rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+                  className="h-12 rounded-xl border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-white focus:border-blue-500 focus:ring-blue-500 transition-all"
                   minLength={8}
                   maxLength={16}
                 />
-                <p className="text-xs text-gray-500">密码长度需在8-50位之间</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400">密码长度需在8-16位之间</p>
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="repeat-password" className="text-gray-700">确认密码</Label>
+                <Label htmlFor="repeat-password" className="text-gray-700 dark:text-gray-300">确认密码</Label>
                 <Input
                   id="repeat-password"
                   type="password"
                   required
                   value={repeatPassword}
                   onChange={(e) => setRepeatPassword(e.target.value)}
-                  className="h-12 rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+                  className="h-12 rounded-xl border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-white focus:border-blue-500 focus:ring-blue-500 transition-all"
                   minLength={8}
                   maxLength={16}
                 />
               </div>
-              {error && <p className="text-sm text-red-500 bg-red-50 p-3 rounded-lg">{error}</p>}
-              <Button type="submit" className="w-full h-12 rounded-lg bg-blue-600 hover:bg-blue-700" disabled={isLoading}>
+              {error && <p className="text-sm text-red-500 bg-red-50 dark:bg-red-900/30 p-3 rounded-lg border border-red-100 dark:border-red-800/50">{error}</p>}
+              <Button type="submit" className="w-full h-12 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-medium transition-all shadow-md hover:shadow-lg active:scale-[0.98]" disabled={isLoading}>
                 {isLoading ? '注册中...' : '注册'}
               </Button>
             </div>
-            <div className="mt-6 text-center text-sm text-gray-600">
+            <div className="mt-6 text-center text-sm text-gray-600 dark:text-gray-400">
               已有账户？{' '}
               <a
                 href="/auth/login"
-                className="text-blue-600 font-medium hover:text-blue-800 hover:underline"
+                className="text-blue-600 dark:text-blue-400 font-medium hover:text-blue-800 dark:hover:text-blue-300 hover:underline"
               >
                 立即登录
               </a>
