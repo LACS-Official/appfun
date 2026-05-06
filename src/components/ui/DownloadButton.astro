@@ -16,7 +16,7 @@ const {
   downloadUrl,
   className = "",
   showLoginPrompt = true,
-} = Astro.props;
+} = Astro.props as DownloadButtonProps;
 
 // 组合类名
 const buttonClassName = cn(
@@ -81,9 +81,7 @@ const buttonClassName = cn(
       await this.checkAuthStatus();
 
       // 监听认证状态变化
-      const {
-        data: { subscription },
-      } = createClient().auth.onAuthStateChange((_event, session) => {
+      createClient().auth.onAuthStateChange((_event, session) => {
         this.isLoggedIn = !!session?.user;
         this.updateButtonState();
       });

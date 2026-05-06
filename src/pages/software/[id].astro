@@ -247,7 +247,12 @@ const structuredData = {
         const data = await response.json();
         globalLoginState = !!data.user;
       } else {
-        // 2. 如果 API 失败（可能是 Cookie 未同步），尝试从本地存储获取状态
+        globalLoginState = false;
+      }
+
+      // 无论 API 成功还是失败，如果结果是未登录，都尝试从本地存储获取状态作为备份
+      // 因为 Supabase 认证信息通常存储在 localStorage 中，而 API 可能因为 Cookie 未同步而返回未登录
+      if (!globalLoginState) {
         const storedLoginState = localStorage.getItem("isLoggedIn") === "true";
 
         // 检查是否存在 Supabase 认证相关的 localStorage 项
@@ -258,27 +263,50 @@ const structuredData = {
             if (
               key &&
               (key.includes("-auth-token") ||
-                key.includes("supabase.auth.token"))
+                key.includes("supabase.auth.token") ||
+                key.startsWith("sb-"))
             ) {
-              hasSupabaseToken = true;
-              break;
+              const val = localStorage.getItem(key);
+              // 检查是否包含有效的 token 结构
+              if (val && (val.includes("access_token") || val.includes("token"))) {
+                hasSupabaseToken = true;
+                break;
+              }
             }
           }
-        } catch {
-          // 忽略错误
+        } catch (e) {
+          console.warn("检查本地存储失败:", e);
         }
 
         globalLoginState = storedLoginState || hasSupabaseToken;
 
-        // 如果本地认为是登录的，我们强制在本地维持一段时间，直到 API 正常
+        // 如果本地检测到已登录，同步到状态变量，并确保本地标识位已设置
         if (globalLoginState) {
           localStorage.setItem("isLoggedIn", "true");
         }
       }
-    } catch {
-      // 回退到 localStorage (如果 API 挂了)
-      const storedLoginState = localStorage.getItem("isLoggedIn");
-      globalLoginState = storedLoginState === "true";
+    } catch (error) {
+      console.warn("API 状态检查异常:", error);
+      // 网络错误等情况下，完全依赖本地存储
+      const storedLoginState = localStorage.getItem("isLoggedIn") === "true";
+      
+      let hasSupabaseToken = false;
+      try {
+        for (let i = 0; i < localStorage.length; i++) {
+          const key = localStorage.key(i);
+          if (key && (key.includes("-auth-token") || key.startsWith("sb-"))) {
+            const val = localStorage.getItem(key);
+            if (val && val.includes("token")) {
+              hasSupabaseToken = true;
+              break;
+            }
+          }
+        }
+      } catch (e) {
+        console.error("本地状态回退检查失败:", e);
+      }
+      
+      globalLoginState = storedLoginState || hasSupabaseToken;
     }
 
     updateAllDownloadButtons();
