@@ -185,11 +185,11 @@ const canonicalUrl = canonical || new URL(Astro.url.pathname, Astro.site).href;
             if (theme === 'dark') {
               document.documentElement.classList.add('dark');
               // 更新meta主题色
-              this.updateMetaThemeColor('#0a0a0a');
+              this.updateMetaThemeColor('#000000');
             } else {
               document.documentElement.classList.remove('dark');
               // 更新meta主题色
-              this.updateMetaThemeColor('#ffffff');
+              this.updateMetaThemeColor('#f5f5f7');
             }
             
             // 触发主题变化事件
@@ -244,9 +244,9 @@ const canonicalUrl = canonical || new URL(Astro.url.pathname, Astro.site).href;
     <!-- Prevent FOUC: 使用关键样式与字体优化，避免隐藏 html -->
   </head>
   
-  <body class="min-h-screen bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-300">
+  <body class="min-h-screen bg-[#f5f5f7] dark:bg-[#000000] text-[#1d1d1f] dark:text-[#f5f5f7] flex flex-col transition-colors duration-300 antialiased selection:bg-[#0071e3]/20 selection:text-[#0071e3]">
     <!-- Skip to main content link for accessibility -->
-    <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-primary-600 text-white px-4 py-2 rounded-md z-50">
+    <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-[#0071e3] text-white px-4 py-2 rounded-full z-50">
       跳转到主要内容
     </a>
 
@@ -254,7 +254,7 @@ const canonicalUrl = canonical || new URL(Astro.url.pathname, Astro.site).href;
     <Header client:idle title={appConfig.title} showSearch={showSearch} />
     
     <!-- Main Content -->
-    <main id="main-content" class={`flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 ${className}`}>
+    <main id="main-content" class={`flex-1 w-full flex flex-col ${className}`}>
       <slot />
     </main>
     

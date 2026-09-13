@@ -11,7 +11,7 @@ export default function createSitemap(): AstroIntegration {
         
         try {
           const API_BASE_URL = 'https://api-g.lacs.cc';
-          const SITE_URL = 'https://appfun.fun';
+          const SITE_URL = 'https://appfun.lacs.cc';
           
           // 获取软件列表
           let softwareList: any[] = [];

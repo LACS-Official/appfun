@@ -14,62 +14,63 @@ const tags = 'original_app';
 
 <Layout title={title} description={description}>
   <!-- 页面头部 -->
-  <section class="bg-gradient-to-r from-green-600 to-green-800 text-white py-12">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="text-center">
-        <div class="flex justify-center mb-4">
-          <div class="bg-white/20 p-4 rounded-full">
-            <span class="text-4xl">🎨</span>
-          </div>
-        </div>
-        <h1 class="text-4xl font-bold mb-4">{title}</h1>
-        <p class="text-xl text-green-100 max-w-3xl mx-auto">
-          {description}
-        </p>
-        <div class="mt-6 flex justify-center">
-          <div class="bg-white/20 rounded-full px-4 py-2">
-            <span class="text-sm font-medium">独立开发 · 原创作品</span>
-          </div>
-        </div>
-      </div>
+  <section class="py-12 lg:py-16 text-center">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <span class="inline-flex items-center px-3.5 py-1 rounded-full text-xs font-semibold bg-[#e8f2fc] text-[#0071e3] dark:bg-[#2997ff]/15 dark:text-[#2997ff] mb-4">
+        独立创作 · 原创专区
+      </span>
+      <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-[#1d1d1f] dark:text-[#f5f5f7] mb-4">
+        {title}作品
+      </h1>
+      <p class="text-sm sm:text-base text-[#86868b] dark:text-[#a1a1a6] leading-relaxed max-w-2xl mx-auto">
+        独立开发者与精锐团队倾力打造的原创软件，凝聚匠心创意与纯净体验。
+      </p>
     </div>
   </section>
 
-  <!-- 特色介绍 -->
-  <section class="py-12 bg-gray-50">
+  <!-- 特色亮点 (Apple Squircle Minimalist) -->
+  <section class="py-4 pb-10">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <div class="text-center">
-          <div class="bg-green-100 p-3 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
-            <span class="text-2xl">💡</span>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-5 sm:gap-6">
+        <div class="rounded-3xl bg-white dark:bg-[#161617] p-6 border border-black/[0.04] dark:border-white/[0.06] shadow-[0_4px_24px_-2px_rgba(0,0,0,0.04)] hover:shadow-[0_20px_40px_-12px_rgba(0,0,0,0.08)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.5)] transition-all duration-300 hover:-translate-y-0.5">
+          <div class="w-10 h-10 rounded-2xl bg-[#e8f2fc] dark:bg-[#2997ff]/15 text-[#0071e3] dark:text-[#2997ff] flex items-center justify-center mb-4">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+            </svg>
           </div>
-          <h3 class="text-lg font-semibold text-gray-900 mb-2">创新设计</h3>
-          <p class="text-gray-600">独特的创意和设计理念，带来全新体验</p>
+          <h3 class="text-base font-bold text-[#1d1d1f] dark:text-[#f5f5f7] mb-1.5">独创产品灵感</h3>
+          <p class="text-xs text-[#86868b] dark:text-[#a1a1a6] leading-relaxed">打破常规同质化，直击痛点并带来富有温度的人性化交互。</p>
         </div>
-        <div class="text-center">
-          <div class="bg-blue-100 p-3 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
-            <span class="text-2xl">🛠️</span>
+
+        <div class="rounded-3xl bg-white dark:bg-[#161617] p-6 border border-black/[0.04] dark:border-white/[0.06] shadow-[0_4px_24px_-2px_rgba(0,0,0,0.04)] hover:shadow-[0_20px_40px_-12px_rgba(0,0,0,0.08)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.5)] transition-all duration-300 hover:-translate-y-0.5">
+          <div class="w-10 h-10 rounded-2xl bg-[#e8f2fc] dark:bg-[#2997ff]/15 text-[#0071e3] dark:text-[#2997ff] flex items-center justify-center mb-4">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 4a2 2 0 114 0v1a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-1a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-1a2 2 0 10-4 0v1a1 1 0 01-1 1H7a1 1 0 01-1-1v-3a1 1 0 00-1-1H4a2 2 0 110-4h1a1 1 0 001-1V7a1 1 0 011-1h3a1 1 0 001-1V4z" />
+            </svg>
           </div>
-          <h3 class="text-lg font-semibold text-gray-900 mb-2">精心打造</h3>
-          <p class="text-gray-600">每一个细节都经过精心设计和优化</p>
+          <h3 class="text-base font-bold text-[#1d1d1f] dark:text-[#f5f5f7] mb-1.5">纯粹轻量打磨</h3>
+          <p class="text-xs text-[#86868b] dark:text-[#a1a1a6] leading-relaxed">拒绝臃肿捆绑，专注核心功能体验与高稳定性性能表现。</p>
         </div>
-        <div class="text-center">
-          <div class="bg-purple-100 p-3 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
-            <span class="text-2xl">🚀</span>
+
+        <div class="rounded-3xl bg-white dark:bg-[#161617] p-6 border border-black/[0.04] dark:border-white/[0.06] shadow-[0_4px_24px_-2px_rgba(0,0,0,0.04)] hover:shadow-[0_20px_40px_-12px_rgba(0,0,0,0.08)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.5)] transition-all duration-300 hover:-translate-y-0.5">
+          <div class="w-10 h-10 rounded-2xl bg-[#e8f2fc] dark:bg-[#2997ff]/15 text-[#0071e3] dark:text-[#2997ff] flex items-center justify-center mb-4">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
           </div>
-          <h3 class="text-lg font-semibold text-gray-900 mb-2">持续更新</h3>
-          <p class="text-gray-600">开发者持续维护，功能不断完善</p>
+          <h3 class="text-base font-bold text-[#1d1d1f] dark:text-[#f5f5f7] mb-1.5">持续敏捷进化</h3>
+          <p class="text-xs text-[#86868b] dark:text-[#a1a1a6] leading-relaxed">开发者一线聆听社区声音，快速迭代更新并优化用户反馈。</p>
         </div>
       </div>
     </div>
   </section>
 
   <!-- 软件列表 -->
-  <section class="py-12">
+  <section class="py-8">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <SoftwareListByTags
-        title="原创软件作品"
-        description="独立开发者和团队的精心之作，每一款都值得体验"
+        title="全部原创作品"
+        description="独立开发者与精锐团队的诚意之作"
         tags={tags}
         limit={24}
         sortBy="updatedAt"
@@ -80,50 +81,54 @@ const tags = 'original_app';
     </div>
   </section>
 
-  <!-- 开发者支持 -->
-  <section class="py-12 bg-green-50">
+  <!-- 开发者支持与共建 (Apple Squircle) -->
+  <section class="py-12">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="text-center mb-8">
-        <h2 class="text-3xl font-bold text-gray-900 mb-4">支持独立开发者</h2>
-        <p class="text-lg text-gray-600 max-w-2xl mx-auto">
-          这些软件都是独立开发者和小团队的心血之作，您的使用和反馈是对他们最大的支持
-        </p>
-      </div>
-      
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div class="bg-white rounded-lg p-6 shadow-sm">
-          <h3 class="text-lg font-semibold text-gray-900 mb-3">如何支持开发者</h3>
-          <ul class="space-y-2 text-gray-600">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="rounded-3xl bg-white dark:bg-[#161617] p-8 border border-black/[0.04] dark:border-white/[0.06] shadow-[0_4px_24px_-2px_rgba(0,0,0,0.04)]">
+          <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-[#e8f2fc] text-[#0071e3] dark:bg-[#2997ff]/15 dark:text-[#2997ff] mb-3">
+            社区支持
+          </span>
+          <h3 class="text-xl font-bold text-[#1d1d1f] dark:text-[#f5f5f7] mb-3">
+            如何支持独立开发者？
+          </h3>
+          <p class="text-xs text-[#86868b] dark:text-[#a1a1a6] mb-5 leading-relaxed">
+            独立开发是一场充满热忱的旅程，每一份真实的认可都是开发者持续前行的动力：
+          </p>
+          <ul class="space-y-3 text-xs text-[#515154] dark:text-[#a1a1a6]">
             <li class="flex items-center">
-              <span class="text-green-500 mr-2">✓</span>
-              下载使用并分享给朋友
+              <span class="w-4 h-4 rounded-full bg-[#0071e3]/10 text-[#0071e3] dark:bg-[#2997ff]/20 dark:text-[#2997ff] flex items-center justify-center mr-2.5 text-[10px] font-bold">✓</span>
+              下载使用并向身边的朋友与团队推荐
             </li>
             <li class="flex items-center">
-              <span class="text-green-500 mr-2">✓</span>
-              提供使用反馈和建议
+              <span class="w-4 h-4 rounded-full bg-[#0071e3]/10 text-[#0071e3] dark:bg-[#2997ff]/20 dark:text-[#2997ff] flex items-center justify-center mr-2.5 text-[10px] font-bold">✓</span>
+              提供真实使用反馈、建议与 Bug 汇报
             </li>
             <li class="flex items-center">
-              <span class="text-green-500 mr-2">✓</span>
-              在社交媒体上推荐
-            </li>
-            <li class="flex items-center">
-              <span class="text-green-500 mr-2">✓</span>
-              参与软件的测试和改进
+              <span class="w-4 h-4 rounded-full bg-[#0071e3]/10 text-[#0071e3] dark:bg-[#2997ff]/20 dark:text-[#2997ff] flex items-center justify-center mr-2.5 text-[10px] font-bold">✓</span>
+              参与新版本的内测尝鲜与功能共建
             </li>
           </ul>
         </div>
         
-        <div class="bg-white rounded-lg p-6 shadow-sm">
-          <h3 class="text-lg font-semibold text-gray-900 mb-3">成为开发者</h3>
-          <p class="text-gray-600 mb-4">
-            如果您也是开发者，欢迎提交您的原创作品到我们的平台
-          </p>
-          <div class="flex space-x-4">
-            <a href="/software" class="btn btn-outline">
+        <div class="rounded-3xl bg-white dark:bg-[#161617] p-8 border border-black/[0.04] dark:border-white/[0.06] shadow-[0_4px_24px_-2px_rgba(0,0,0,0.04)] flex flex-col justify-between">
+          <div>
+            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-black/[0.04] text-[#515154] dark:bg-white/[0.08] dark:text-[#a1a1a6] mb-3">
+              生态入驻
+            </span>
+            <h3 class="text-xl font-bold text-[#1d1d1f] dark:text-[#f5f5f7] mb-3">
+              发布您的原创作品
+            </h3>
+            <p class="text-xs text-[#86868b] dark:text-[#a1a1a6] leading-relaxed mb-6">
+              如果您也是独立开发者或创造者，欢迎将您的作品收录至 APPFUN。我们将为您提供纯粹的软件分发与技术交流空间。
+            </p>
+          </div>
+          <div class="flex flex-wrap gap-3">
+            <a href="/software" class="inline-flex items-center justify-center px-6 py-2.5 rounded-full bg-black/5 hover:bg-black/10 dark:bg-white/10 dark:hover:bg-white/15 text-[#1d1d1f] dark:text-[#f5f5f7] font-medium text-xs sm:text-sm transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]">
               了解更多
             </a>
-            <a href="/search" class="btn btn-primary">
-              提交作品
+            <a href="/search" class="inline-flex items-center justify-center px-6 py-2.5 rounded-full bg-[#0071e3] hover:bg-[#0077ed] text-white font-medium text-xs sm:text-sm transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] shadow-sm">
+              探索软件库
             </a>
           </div>
         </div>
@@ -141,26 +146,7 @@ const tags = 'original_app';
 
   // 页面加载完成后的处理
   document.addEventListener('DOMContentLoaded', () => {
-    console.log('原创软件页面已加载');
-
     // 设置全局API客户端
     window.apiClient = getApiClient();
-
-    // 可以在这里添加页面特定的交互逻辑
-    // 比如统计页面访问量、用户行为追踪等
   });
 </script>
-
-<style>
-  .btn {
-    @apply inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 transition-colors;
-  }
-
-  .btn-primary {
-    @apply text-white bg-green-600 hover:bg-green-700 focus:ring-green-500;
-  }
-
-  .btn-outline {
-    @apply text-green-700 bg-white border-green-300 hover:bg-green-50 focus:ring-green-500;
-  }
-</style>

@@ -34,7 +34,7 @@ export const apiConfig = {
  */
 export const appConfig = {
   title: import.meta.env.VITE_APP_TITLE || 'APPFUN',
-  description: import.meta.env.VITE_APP_DESCRIPTION || 'APPFUN.FUN,APP TOO FUN,有趣软件',
+  description: import.meta.env.VITE_APP_DESCRIPTION || 'APPFUN - 有趣软件库 (appfun.lacs.cc)',
   version: '1.0.0',
   author: '领创工作室',
   
@@ -65,7 +65,7 @@ export const appConfig = {
   
   // 主题配置
   theme: {
-    primaryColor: '#3b82f6',
+    primaryColor: '#0071e3',
     secondaryColor: '#64748b',
     successColor: '#10b981',
     warningColor: '#f59e0b',

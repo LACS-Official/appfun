@@ -10,7 +10,7 @@ const description =
   "查看APPFUN上最受欢迎的软件排行榜。发现下载量最高、评分最好的热门软件，快速找到优质工具";
 const keywords =
   "软件排行榜,热门软件,软件排名,最受欢迎软件,软件下载排行,APPFUN";
-const canonical = "https://appfun.fun/ranking";
+const canonical = "https://appfun.lacs.cc/ranking";
 const structuredData = {
   "@context": "https://schema.org",
   "@type": "CollectionPage",
@@ -33,55 +33,64 @@ const structuredData = {
   structuredDataType="website"
   structuredData={structuredData}
 >
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
     <!-- 页面标题 -->
-    <div class="mb-8">
-      <h1 class="text-3xl font-bold text-gray-900">🏆 软件排行榜</h1>
-      <p class="text-gray-600 mt-2">根据浏览量统计的最受欢迎软件</p>
+    <div class="mb-10 text-center sm:text-left">
+      <span class="inline-flex items-center px-3.5 py-1 rounded-full text-xs font-semibold bg-[#e8f2fc] text-[#0071e3] dark:bg-[#2997ff]/15 dark:text-[#2997ff] mb-3">
+        热度风向标
+      </span>
+      <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-[#1d1d1f] dark:text-[#f5f5f7]">
+        软件排行榜
+      </h1>
+      <p class="text-sm text-[#86868b] dark:text-[#a1a1a6] mt-1.5">
+        依据用户浏览量与下载热度实时统计的最受欢迎软件
+      </p>
     </div>
 
     <!-- 筛选和排序 -->
-    <div class="bg-white rounded-lg border border-gray-200 p-6 mb-8">
-      <div class="flex flex-col sm:flex-row gap-4">
+    <div class="bg-white dark:bg-[#161617] rounded-3xl border border-black/[0.04] dark:border-white/[0.06] shadow-[0_4px_24px_-2px_rgba(0,0,0,0.04)] p-6 mb-8 transition-colors">
+      <div class="flex flex-col sm:flex-row gap-4 items-end">
         <!-- 时间范围 -->
-        <div class="flex-1">
+        <div class="flex-1 w-full">
           <label
             for="time-range"
-            class="block text-sm font-medium text-gray-700 mb-2"
+            class="block text-xs font-semibold text-[#515154] dark:text-[#a1a1a6] mb-2"
           >
-            时间范围
+            时间周期
           </label>
           <select
             id="time-range"
-            class="w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500"
+            class="w-full rounded-full border border-black/10 dark:border-white/10 bg-black/[0.03] dark:bg-white/[0.06] px-4 py-2.5 text-xs text-[#1d1d1f] dark:text-[#f5f5f7] focus:outline-none focus:ring-2 focus:ring-[#0071e3]/30"
           >
             <option value="all">全部时间</option>
-            <option value="today">今日</option>
-            <option value="week">本周</option>
-            <option value="month">本月</option>
-            <option value="year">本年</option>
+            <option value="today">今日精选</option>
+            <option value="week">本周热门</option>
+            <option value="month">本月焦点</option>
+            <option value="year">年度最佳</option>
           </select>
         </div>
 
         <!-- 最小浏览量 -->
-        <div class="flex-1">
+        <div class="flex-1 w-full">
           <label
             for="min-views"
-            class="block text-sm font-medium text-gray-700 mb-2"
+            class="block text-xs font-semibold text-[#515154] dark:text-[#a1a1a6] mb-2"
           >
-            最小浏览量
+            最小热度
           </label>
           <input
             type="number"
             id="min-views"
-            placeholder="如：100"
-            class="w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500"
+            placeholder="例如: 100"
+            class="w-full rounded-full border border-black/10 dark:border-white/10 bg-black/[0.03] dark:bg-white/[0.06] px-4 py-2 text-xs text-[#1d1d1f] dark:text-[#f5f5f7] placeholder-[#86868b] focus:outline-none focus:ring-2 focus:ring-[#0071e3]/30"
           />
         </div>
 
         <!-- 应用筛选按钮 -->
-        <div class="flex items-end">
-          <button id="apply-filters" class="btn btn-primary"> 应用筛选 </button>
+        <div class="w-full sm:w-auto">
+          <button id="apply-filters" class="w-full sm:w-auto px-6 py-2.5 rounded-full bg-[#0071e3] hover:bg-[#0077ed] text-white text-xs font-semibold shadow-sm hover:scale-[1.02] active:scale-[0.98] transition-all duration-200">
+            应用筛选
+          </button>
         </div>
       </div>
     </div>
@@ -89,48 +98,48 @@ const structuredData = {
     <!-- 统计信息 -->
     <div
       id="ranking-stats"
-      class="hidden grid grid-cols-1 md:grid-cols-3 gap-6 mb-12"
+      class="hidden grid grid-cols-1 md:grid-cols-3 gap-6 mb-10"
     >
       <div
-        class="bg-blue-50 dark:bg-blue-900/20 p-6 rounded-2xl border border-blue-100 dark:border-blue-800/30"
+        class="bg-white dark:bg-[#161617] p-6 rounded-3xl border border-black/[0.04] dark:border-white/[0.06] shadow-[0_4px_24px_-2px_rgba(0,0,0,0.04)]"
       >
         <div
-          class="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wider mb-2"
+          class="text-xs font-semibold text-[#86868b] dark:text-[#a1a1a6] uppercase tracking-wider mb-2"
         >
-          软件总数
+          收录软件总数
         </div>
         <div
-          class="text-4xl font-black text-gray-900 dark:text-white"
+          class="text-3xl font-black text-[#1d1d1f] dark:text-[#f5f5f7]"
           id="total-software"
         >
           -
         </div>
       </div>
       <div
-        class="bg-purple-50 dark:bg-purple-900/20 p-6 rounded-2xl border border-purple-100 dark:border-purple-800/30"
+        class="bg-white dark:bg-[#161617] p-6 rounded-3xl border border-black/[0.04] dark:border-white/[0.06] shadow-[0_4px_24px_-2px_rgba(0,0,0,0.04)]"
       >
         <div
-          class="text-xs font-bold text-purple-600 dark:text-purple-400 uppercase tracking-wider mb-2"
+          class="text-xs font-semibold text-[#86868b] dark:text-[#a1a1a6] uppercase tracking-wider mb-2"
         >
-          总浏览量
+          累计总浏览量
         </div>
         <div
-          class="text-4xl font-black text-gray-900 dark:text-white"
+          class="text-3xl font-black text-[#1d1d1f] dark:text-[#f5f5f7]"
           id="total-views"
         >
           -
         </div>
       </div>
       <div
-        class="bg-orange-50 dark:bg-orange-900/20 p-6 rounded-2xl border border-orange-100 dark:border-orange-800/30"
+        class="bg-white dark:bg-[#161617] p-6 rounded-3xl border border-black/[0.04] dark:border-white/[0.06] shadow-[0_4px_24px_-2px_rgba(0,0,0,0.04)]"
       >
         <div
-          class="text-xs font-bold text-orange-600 dark:text-orange-400 uppercase tracking-wider mb-2"
+          class="text-xs font-semibold text-[#86868b] dark:text-[#a1a1a6] uppercase tracking-wider mb-2"
         >
-          平均浏览量
+          单款平均浏览
         </div>
         <div
-          class="text-4xl font-black text-gray-900 dark:text-white"
+          class="text-3xl font-black text-[#1d1d1f] dark:text-[#f5f5f7]"
           id="average-views"
         >
           -
@@ -139,203 +148,188 @@ const structuredData = {
     </div>
 
     <!-- 加载状态 -->
-    <div id="ranking-loading" class="flex justify-center py-12">
+    <div id="ranking-loading" class="flex justify-center py-16">
       <LoadingSpinner size="lg" text="正在加载排行榜..." />
     </div>
 
     <!-- 错误状态 -->
     <div id="ranking-error" class="hidden">
       <ErrorMessage title="加载失败" message="无法加载排行榜数据，请稍后重试" />
-      <div class="text-center mt-4">
-        <button id="ranking-retry" class="btn btn-primary"> 重新加载 </button>
+      <div class="text-center mt-6">
+        <button id="ranking-retry" class="px-6 py-2.5 rounded-full bg-[#0071e3] hover:bg-[#0077ed] text-white text-xs font-semibold shadow-sm hover:scale-[1.02] active:scale-[0.98] transition-all duration-200"> 重新加载 </button>
       </div>
     </div>
 
-    <!-- 排行榜列表 -->
+    <!-- 排行榜容器 -->
     <div id="ranking-container" class="hidden">
-      <!-- 排行榜内容将在这里动态加载 -->
-      <div id="ranking-pagination" class="mt-12 flex justify-center"></div>
+      <!-- 动态排行榜卡片 -->
     </div>
+
+    <!-- 分页容器 -->
+    <div id="ranking-pagination" class="mt-8 flex justify-center"></div>
   </div>
+</Layout>
 
-  <script>
-    import { initializeApiClient, getApiClient } from "../lib/api";
-    import { apiConfig } from "../lib/config";
+<script>
+  import { getApiClient } from "../lib/api";
 
-    initializeApiClient(apiConfig);
+  class RankingManager {
+    private currentPage = 1;
+    private pageSize = 20;
+    private totalPages = 1;
 
-    class RankingPage {
-      private currentPage = 1;
-      private pageSize = 12;
-      private totalPages = 1;
+    constructor() {
+      this.init();
+    }
 
-      constructor() {
-        this.init();
-      }
+    private init() {
+      this.bindEvents();
+      this.loadRanking();
+    }
 
-      private init() {
-        const retryBtn = document.getElementById("ranking-retry");
-        const applyFiltersBtn = document.getElementById("apply-filters");
+    private bindEvents() {
+      const applyBtn = document.getElementById("apply-filters");
+      const retryBtn = document.getElementById("ranking-retry");
 
-        retryBtn?.addEventListener("click", () => this.loadRanking());
-        applyFiltersBtn?.addEventListener("click", () => {
-          this.currentPage = 1;
-          this.loadRanking();
+      applyBtn?.addEventListener("click", () => {
+        this.currentPage = 1;
+        this.loadRanking();
+      });
+
+      retryBtn?.addEventListener("click", () => {
+        this.loadRanking();
+      });
+    }
+
+    private async loadRanking() {
+      const container = document.getElementById("ranking-container");
+      const loading = document.getElementById("ranking-loading");
+      const errorElem = document.getElementById("ranking-error");
+      const stats = document.getElementById("ranking-stats");
+
+      if (!container || !loading || !errorElem) return;
+
+      container.classList.add("hidden");
+      errorElem.classList.add("hidden");
+      loading.classList.remove("hidden");
+
+      try {
+        const api = getApiClient();
+        const response = await api.getSoftwareRanking({
+          page: this.currentPage,
+          limit: this.pageSize,
+          sortBy: "viewCount",
+          sortOrder: "desc",
         });
 
-        this.loadRanking();
-      }
+        if (response.success && Array.isArray(response.data)) {
+          this.renderRanking(response.data);
 
-      private async loadRanking() {
-        const container = document.getElementById("ranking-container");
-        const loading = document.getElementById("ranking-loading");
-        const errorElem = document.getElementById("ranking-error");
-        const stats = document.getElementById("ranking-stats");
+          if (stats) {
+            stats.classList.remove("hidden");
+            const totalSoftware = document.getElementById("total-software");
+            const totalViews = document.getElementById("total-views");
+            const avgViews = document.getElementById("average-views");
 
-        if (!container || !loading || !errorElem) return;
-
-        container.classList.add("hidden");
-        errorElem.classList.add("hidden");
-        loading.classList.remove("hidden");
-
-        try {
-          const api = getApiClient();
-          const timeRange =
-            (document.getElementById("time-range") as HTMLSelectElement)
-              ?.value || "all";
-          const minViews =
-            parseInt(
-              (document.getElementById("min-views") as HTMLInputElement)?.value,
-            ) || 0;
-
-          const response = await api.getSoftwareRanking({
-            page: this.currentPage,
-            limit: this.pageSize,
-            sortBy: "viewCount",
-            sortOrder: "desc",
-          });
-
-          if (response.success && Array.isArray(response.data)) {
-            this.renderRanking(response.data);
-
-            // Update stats (mocked or simplified for now)
-            if (stats) {
-              stats.classList.remove("hidden");
-              const totalSoftware = document.getElementById("total-software");
-              const totalViews = document.getElementById("total-views");
-              const avgViews = document.getElementById("average-views");
-
-              if (totalSoftware)
-                totalSoftware.textContent = response.data.length.toString();
-              if (totalViews) {
-                const total = response.data.reduce(
-                  (acc, curr) => acc + (curr.viewCount || 0),
-                  0,
-                );
-                totalViews.textContent = total.toLocaleString();
-                if (avgViews)
-                  avgViews.textContent = Math.round(
-                    total / (response.data.length || 1),
-                  ).toLocaleString();
-              }
+            if (totalSoftware)
+              totalSoftware.textContent = response.data.length.toString();
+            if (totalViews) {
+              const total = response.data.reduce(
+                (acc: number, curr: any) => acc + (curr.viewCount || 0),
+                0,
+              );
+              totalViews.textContent = total.toLocaleString();
+              if (avgViews)
+                avgViews.textContent = Math.round(
+                  total / (response.data.length || 1),
+                ).toLocaleString();
             }
-
-            // In Ranking API, usually pagination is in response.pagination or similar
-            // For now let's assume 1 page or handle it if available
-            this.totalPages = 1; // Simplify if API doesn't return total pages for ranking
-
-            this.renderPagination();
-            container.classList.remove("hidden");
-          } else {
-            throw new Error("获取数据失败");
           }
-        } catch (error) {
-          console.error("Load ranking error:", error);
-          errorElem.classList.remove("hidden");
-        } finally {
-          loading.classList.add("hidden");
+
+          this.totalPages = 1;
+          this.renderPagination();
+          container.classList.remove("hidden");
+        } else {
+          throw new Error("获取数据失败");
         }
+      } catch (error) {
+        console.error("Load ranking error:", error);
+        errorElem.classList.remove("hidden");
+      } finally {
+        loading.classList.add("hidden");
       }
+    }
 
-      private renderRanking(softwareList: any[]) {
-        const container = document.getElementById("ranking-container");
-        if (!container) return;
+    private renderRanking(softwareList: any[]) {
+      const container = document.getElementById("ranking-container");
+      if (!container) return;
 
-        container.innerHTML = `
-        <div class="grid grid-cols-1 gap-6">
-          ${softwareList
-            .map((software, index) => {
-              const rank =
-                software.rank ||
-                (this.currentPage - 1) * this.pageSize + index + 1;
-              const isTop3 = rank <= 3;
-              const medalMap = ["🥇", "🥈", "🥉"];
-              const rankColors = [
-                "bg-amber-500",
-                "bg-slate-400",
-                "bg-orange-500",
-                "bg-blue-500",
-              ];
+      container.innerHTML = `
+      <div class="grid grid-cols-1 gap-5">
+        ${softwareList
+          .map((software, index) => {
+            const rank =
+              software.rank ||
+              (this.currentPage - 1) * this.pageSize + index + 1;
+            const isTop3 = rank <= 3;
+            const rankStyles = [
+              "bg-amber-500/15 text-amber-600 dark:text-amber-400 font-bold",
+              "bg-slate-500/15 text-slate-600 dark:text-slate-300 font-bold",
+              "bg-orange-500/15 text-orange-600 dark:text-orange-400 font-bold",
+            ];
 
-              return `
-            <div class="group bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-6 hover:shadow-md hover:border-primary-300 transition-all duration-300 flex flex-col sm:flex-row items-center sm:items-stretch gap-6">
-              <!-- 排名与图标 -->
-              <div class="flex items-center space-x-6">
-                <div class="relative flex-shrink-0">
-                  <div class="w-16 h-16 rounded-2xl ${rank <= 3 ? rankColors[rank - 1] : rankColors[3]} flex items-center justify-center text-white font-black text-2xl shadow-sm transition-transform group-hover:scale-105 duration-300">
-                    ${isTop3 ? medalMap[rank - 1] : rank}
+            return `
+          <div class="group bg-white dark:bg-[#161617] rounded-2xl sm:rounded-3xl border border-black/[0.04] dark:border-white/[0.06] p-4 sm:p-6 shadow-[0_4px_24px_-2px_rgba(0,0,0,0.04)] hover:shadow-[0_20px_40px_-12px_rgba(0,0,0,0.08)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.5)] hover:-translate-y-1 transition-all duration-300 flex flex-row items-center sm:items-stretch gap-3.5 sm:gap-6 cursor-pointer" onclick="window.location.href='/software/${software.id}'">
+            <!-- 排名与图标 -->
+            <div class="flex items-center space-x-3 sm:space-x-5 flex-shrink-0">
+              <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl ${isTop3 ? rankStyles[rank - 1] : "bg-black/[0.04] dark:bg-white/[0.06] text-[#86868b] dark:text-[#a1a1a6]"} flex items-center justify-center font-bold text-xs sm:text-sm shadow-sm transition-transform group-hover:scale-105 duration-200">
+                ${rank}
+              </div>
+              
+              <div class="flex-shrink-0">
+                ${
+                  software.icon
+                    ? `<img src="${software.icon}" alt="${software.name}" class="w-11 h-11 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl object-cover shadow-sm bg-black/[0.02] dark:bg-white/[0.05] border border-black/[0.04] dark:border-white/[0.08] transition-transform duration-200 group-hover:scale-105" />`
+                    : `<div class="w-11 h-11 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-black/[0.04] dark:bg-white/[0.08] flex items-center justify-center text-base sm:text-xl font-bold text-[#515154] dark:text-[#a1a1a6]">${software.name.charAt(0)}</div>`
+                }
+              </div>
+            </div>
+
+            <!-- 软件核心内容 -->
+            <div class="flex-1 min-w-0 text-left flex flex-col justify-center">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div class="flex-1 min-w-0">
+                  <h3 class="text-base font-bold text-[#1d1d1f] dark:text-[#f5f5f7] truncate group-hover:text-[#0071e3] dark:group-hover:text-[#2997ff] transition-colors">
+                    ${software.name}
+                  </h3>
+                  <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2 mt-1.5">
+                    <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-[11px] font-semibold bg-[#e8f2fc] text-[#0071e3] dark:bg-[#2997ff]/15 dark:text-[#2997ff]">
+                      v${software.currentVersion || "1.0"}
+                    </span>
+                    ${
+                      software.category
+                        ? `
+                      <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-[11px] font-medium bg-black/[0.04] text-[#515154] dark:bg-white/[0.08] dark:text-[#a1a1a6]">
+                        ${software.category}
+                      </span>
+                    `
+                        : ""
+                    }
                   </div>
-                  ${isTop3 ? `<div class="absolute -top-2 -right-2 bg-green-500 w-4 h-4 rounded-full border-2 border-white dark:border-gray-800 animate-pulse"></div>` : ""}
+                  <p class="text-[#86868b] dark:text-[#a1a1a6] text-xs mt-2 line-clamp-2 leading-relaxed">
+                    ${software.description || "探索更多软件特性与实用功能。"}
+                  </p>
                 </div>
                 
-                <div class="flex-shrink-0">
-                  ${
-                    software.icon
-                      ? `<img src="${software.icon}" alt="${software.name}" class="w-16 h-16 rounded-2xl object-cover shadow-sm bg-gray-50 dark:bg-gray-900" />`
-                      : `<div class="w-16 h-16 rounded-2xl bg-gray-100 dark:bg-gray-700 flex items-center justify-center text-2xl font-black text-gray-400 dark:text-gray-500">${software.name.charAt(0)}</div>`
-                  }
-                </div>
-              </div>
-
-              <!-- 软件核心内容 -->
-              <div class="flex-1 min-w-0 text-center sm:text-left">
-                <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
-                  <div class="flex-1">
-                    <h3 class="text-xl font-black text-gray-900 dark:text-white truncate group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
-                      <a href="/software/${software.id}">${software.name}</a>
-                    </h3>
-                    <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2 mt-2">
-                       <span class="inline-flex items-center rounded-lg px-2.5 py-1 text-xs font-bold bg-primary-50 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400">
-                        v${software.currentVersion || "1.0"}
-                      </span>
-                      ${
-                        software.category
-                          ? `
-                        <span class="inline-flex items-center rounded-lg px-2.5 py-1 text-xs font-bold bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400">
-                          ${software.category}
-                        </span>
-                      `
-                          : ""
-                      }
-                    </div>
-                    <p class="text-gray-500 dark:text-gray-400 text-sm mt-3 line-clamp-2 leading-relaxed">
-                      ${software.description || "发现最新发布的软件特性，探索更多可能。"}
-                    </p>
-                  </div>
+                <div class="flex flex-col items-center sm:items-end gap-3 flex-shrink-0">
+                  <span class="inline-flex items-center px-3 py-1 rounded-full bg-black/[0.03] dark:bg-white/[0.05] text-xs font-semibold text-[#86868b] dark:text-[#a1a1a6]">
+                    <svg class="w-3.5 h-3.5 mr-1.5 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                    </svg>
+                    ${software.viewCount?.toLocaleString() || 0} 次查看
+                  </span>
                   
-                  <div class="flex flex-col items-center sm:items-end gap-3">
-                    <div class="px-4 py-2 bg-orange-50 dark:bg-orange-500/10 rounded-2xl border border-orange-100 dark:border-orange-500/20 flex items-center shadow-inner">
-                      <svg class="w-4 h-4 mr-2 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
-                      </svg>
-                      <span class="text-orange-600 dark:text-orange-400 font-black tracking-tight">${software.viewCount?.toLocaleString() || 0}</span>
-                    </div>
-                    
-                    <a href="/software/${software.id}" class="inline-flex items-center px-6 py-2 bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 font-bold rounded-2xl hover:bg-primary-600 dark:hover:bg-primary-400 transition-all duration-300 shadow-lg shadow-gray-200 dark:shadow-none">
-                      查看详情
-                    </a>
-                  </div>
                 </div>
               </div>
             </div>

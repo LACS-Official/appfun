@@ -19,16 +19,16 @@ const {
 
 <section class={`${className}`}>
   <div class="flex items-center justify-between mb-6">
-    <h2 class="text-2xl font-bold text-gray-900 dark:text-white">{title}</h2>
+    <h2 class="text-2xl font-bold tracking-tight text-[#1d1d1f] dark:text-[#f5f5f7]">{title}</h2>
     {
       showViewAll && (
         <a
           href="/software"
-          class="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium text-sm flex items-center transition-colors"
+          class="text-[#0071e3] dark:text-[#2997ff] hover:opacity-80 font-semibold text-xs sm:text-sm flex items-center transition-opacity group"
         >
           查看全部
           <svg
-            class="w-4 h-4 ml-1"
+            class="w-4 h-4 ml-1 group-hover:translate-x-0.5 transition-transform"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -56,7 +56,7 @@ const {
     <div class="text-center mt-4">
       <button
         id="all-software-retry"
-        class="px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-md transition-colors"
+        class="px-5 py-2 bg-[#0071e3] hover:bg-[#0077ed] text-white rounded-full text-xs font-semibold shadow-sm hover:scale-[1.02] active:scale-[0.98] transition-all"
       >
         重新加载
       </button>
@@ -69,12 +69,16 @@ const {
   </div>
 
   <!-- 空状态 -->
-  <div id="all-software-empty" class="hidden text-center py-12">
-    <div class="text-gray-400 dark:text-gray-600 text-6xl mb-4">📦</div>
-    <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">
+  <div id="all-software-empty" class="hidden text-center py-16">
+    <div class="w-14 h-14 mx-auto mb-4 rounded-2xl bg-black/[0.03] dark:bg-white/[0.05] flex items-center justify-center text-[#86868b] dark:text-[#6e6e73]">
+      <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+      </svg>
+    </div>
+    <h3 class="text-base font-semibold text-[#1d1d1f] dark:text-[#f5f5f7] mb-1">
       暂无软件
     </h3>
-    <p class="text-gray-500 dark:text-gray-400">还没有添加任何软件</p>
+    <p class="text-xs text-[#86868b] dark:text-[#a1a1a6]">还没有添加任何软件</p>
   </div>
 </section>
 
@@ -201,27 +205,27 @@ const {
       if (!this.container) return;
 
       this.container.innerHTML = `
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+        <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4 lg:gap-6">
           ${softwareList
             .map(
               (software) => `
-            <div class="group bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 hover:border-primary-300 dark:hover:border-primary-700 shadow-sm hover:shadow transition-all duration-300 cursor-pointer flex flex-col h-full overflow-hidden" onclick="window.location.href='/software/${software.id}'">
-              <div class="p-5 flex-1 flex flex-col">
+            <div class="group bg-white dark:bg-[#161617] rounded-2xl sm:rounded-3xl border border-black/[0.04] dark:border-white/[0.06] shadow-[0_4px_24px_-2px_rgba(0,0,0,0.04)] hover:shadow-[0_20px_40px_-12px_rgba(0,0,0,0.08)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.5)] hover:-translate-y-1 transition-all duration-300 cursor-pointer flex flex-col h-full overflow-hidden" onclick="window.location.href='/software/${software.id}'">
+              <div class="p-3.5 sm:p-5 lg:p-6 flex-1 flex flex-col">
                 <!-- 头部图标和标题 -->
-                <div class="flex items-start space-x-4 mb-4">
+                <div class="flex items-start space-x-2.5 sm:space-x-3.5 mb-2.5 sm:mb-3.5">
                   <div class="flex-shrink-0">
                     ${
                       software.icon
-                        ? `<img src="${software.icon}" alt="${software.name}" class="w-12 h-12 rounded-xl object-cover border border-gray-100 dark:border-gray-700 opacity-90 group-hover:opacity-100 transition-opacity duration-300" loading="lazy">`
-                        : `<div class="w-12 h-12 rounded-xl bg-gray-100 dark:bg-gray-700 text-gray-500 flex items-center justify-center text-xl font-bold">${software.name.charAt(0)}</div>`
+                        ? `<img src="${software.icon}" alt="${software.name}" class="w-9 h-9 sm:w-11 sm:h-11 lg:w-12 lg:h-12 rounded-xl sm:rounded-2xl object-cover border border-black/[0.04] dark:border-white/[0.08] shadow-sm transition-transform duration-200 group-hover:scale-105" loading="lazy">`
+                        : `<div class="w-9 h-9 sm:w-11 sm:h-11 lg:w-12 lg:h-12 rounded-xl sm:rounded-2xl bg-black/[0.04] dark:bg-white/[0.08] text-[#515154] dark:text-[#a1a1a6] flex items-center justify-center text-sm sm:text-lg font-bold">${software.name.charAt(0)}</div>`
                     }
                   </div>
-                  <div class="flex-1 min-w-0 pt-1">
-                    <h3 class="text-base font-bold text-gray-900 dark:text-white truncate group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
+                  <div class="flex-1 min-w-0 pt-0.5">
+                    <h3 class="text-xs sm:text-sm font-bold text-[#1d1d1f] dark:text-[#f5f5f7] truncate group-hover:text-[#0071e3] dark:group-hover:text-[#2997ff] transition-colors">
                       ${software.name}
                     </h3>
-                    <div class="flex items-center mt-1">
-                      <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300">
+                    <div class="flex items-center mt-0.5 sm:mt-1">
+                      <span class="inline-flex items-center px-1.5 sm:px-2 py-0.5 rounded-full text-[10px] sm:text-[11px] font-semibold bg-[#e8f2fc] text-[#0071e3] dark:bg-[#2997ff]/15 dark:text-[#2997ff]">
                         v${software.currentVersion || "1.0"}
                       </span>
                     </div>
@@ -229,26 +233,24 @@ const {
                 </div>
 
                 <!-- 描述 -->
-                <p class="text-sm text-gray-500 dark:text-gray-400 mb-4 line-clamp-2 flex-1">
+                <p class="text-[11px] sm:text-xs text-[#86868b] dark:text-[#a1a1a6] leading-relaxed mb-2.5 sm:mb-4 line-clamp-2 flex-1">
                   ${software.description || "暂无描述"}
                 </p>
 
                 <!-- 底部信息 -->
-                <div class="flex items-center justify-between text-xs text-gray-400 dark:text-gray-500 mt-auto pt-3 border-t border-gray-50 dark:border-gray-700/50">
-                  <div class="flex items-center space-x-3">
+                <div class="flex items-center justify-between text-[10px] sm:text-[11px] text-[#86868b] dark:text-[#6e6e73] mt-auto pt-2.5 sm:pt-3 border-t border-black/[0.04] dark:border-white/[0.06]">
+                  <div class="flex items-center space-x-2 sm:space-x-3">
                     <span class="flex items-center" title="浏览量">
-                      <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                      <svg class="w-3 h-3 sm:w-3.5 sm:h-3.5 mr-0.5 sm:mr-1 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
                       ${this.formatNumber(software.viewCount || 0)}
                     </span>
                     <span class="flex items-center" title="更新时间">
-                      <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                      <svg class="w-3 h-3 sm:w-3.5 sm:h-3.5 mr-0.5 sm:mr-1 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                       ${this.formatTimeAgo(software.updatedAt || "")}
                     </span>
                   </div>
                 </div>
               </div>
-              
-              <!-- 悬停显示的下载按钮 -->
             </div>
           `,
             )

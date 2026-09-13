@@ -14,62 +14,63 @@ const tags = 'stu_app';
 
 <Layout title={title} description={description}>
   <!-- 页面头部 -->
-  <section class="bg-gradient-to-r from-blue-600 to-blue-800 text-white py-12">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="text-center">
-        <div class="flex justify-center mb-4">
-          <div class="bg-white/20 p-4 rounded-full">
-            <span class="text-4xl">🎓</span>
-          </div>
-        </div>
-        <h1 class="text-4xl font-bold mb-4">{title}</h1>
-        <p class="text-xl text-blue-100 max-w-3xl mx-auto">
-          {description}
-        </p>
-        <div class="mt-6 flex justify-center">
-          <div class="bg-white/20 rounded-full px-4 py-2">
-            <span class="text-sm font-medium">专业软件工具</span>
-          </div>
-        </div>
-      </div>
+  <section class="py-12 lg:py-16 text-center">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <span class="inline-flex items-center px-3.5 py-1 rounded-full text-xs font-semibold bg-[#e8f2fc] text-[#0071e3] dark:bg-[#2997ff]/15 dark:text-[#2997ff] mb-4">
+        学研与专业工坊
+      </span>
+      <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-[#1d1d1f] dark:text-[#f5f5f7] mb-4">
+        {title}
+      </h1>
+      <p class="text-sm sm:text-base text-[#86868b] dark:text-[#a1a1a6] leading-relaxed max-w-2xl mx-auto">
+        {description}，提供专业而纯净的数字学习与科研体验。
+      </p>
     </div>
   </section>
 
-  <!-- 特色介绍 -->
-  <section class="py-12 bg-gray-50">
+  <!-- 特色方向介绍 (Apple Squircle Minimalist) -->
+  <section class="py-4 pb-10">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <div class="text-center">
-          <div class="bg-blue-100 p-3 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
-            <span class="text-2xl">📚</span>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-5 sm:gap-6">
+        <div class="rounded-3xl bg-white dark:bg-[#161617] p-6 border border-black/[0.04] dark:border-white/[0.06] shadow-[0_4px_24px_-2px_rgba(0,0,0,0.04)] hover:shadow-[0_20px_40px_-12px_rgba(0,0,0,0.08)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.5)] transition-all duration-300 hover:-translate-y-0.5">
+          <div class="w-10 h-10 rounded-2xl bg-[#e8f2fc] dark:bg-[#2997ff]/15 text-[#0071e3] dark:text-[#2997ff] flex items-center justify-center mb-4">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+            </svg>
           </div>
-          <h3 class="text-lg font-semibold text-gray-900 mb-2">学习工具</h3>
-          <p class="text-gray-600">专业的学习辅助软件，提升学习效率</p>
+          <h3 class="text-base font-bold text-[#1d1d1f] dark:text-[#f5f5f7] mb-1.5">研读与学习工具</h3>
+          <p class="text-xs text-[#86868b] dark:text-[#a1a1a6] leading-relaxed">专业的学术研读辅助、文献整理与笔记工具，提升学习效率。</p>
         </div>
-        <div class="text-center">
-          <div class="bg-green-100 p-3 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
-            <span class="text-2xl">🔬</span>
+
+        <div class="rounded-3xl bg-white dark:bg-[#161617] p-6 border border-black/[0.04] dark:border-white/[0.06] shadow-[0_4px_24px_-2px_rgba(0,0,0,0.04)] hover:shadow-[0_20px_40px_-12px_rgba(0,0,0,0.08)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.5)] transition-all duration-300 hover:-translate-y-0.5">
+          <div class="w-10 h-10 rounded-2xl bg-[#e8f2fc] dark:bg-[#2997ff]/15 text-[#0071e3] dark:text-[#2997ff] flex items-center justify-center mb-4">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" />
+            </svg>
           </div>
-          <h3 class="text-lg font-semibold text-gray-900 mb-2">研究工具</h3>
-          <p class="text-gray-600">科研必备软件，支持数据分析和实验</p>
+          <h3 class="text-base font-bold text-[#1d1d1f] dark:text-[#f5f5f7] mb-1.5">建模与科研软件</h3>
+          <p class="text-xs text-[#86868b] dark:text-[#a1a1a6] leading-relaxed">工程建模、数据分析与计算仿真工具，助力课题研究与实验探索。</p>
         </div>
-        <div class="text-center">
-          <div class="bg-purple-100 p-3 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
-            <span class="text-2xl">💼</span>
+
+        <div class="rounded-3xl bg-white dark:bg-[#161617] p-6 border border-black/[0.04] dark:border-white/[0.06] shadow-[0_4px_24px_-2px_rgba(0,0,0,0.04)] hover:shadow-[0_20px_40px_-12px_rgba(0,0,0,0.08)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.5)] transition-all duration-300 hover:-translate-y-0.5">
+          <div class="w-10 h-10 rounded-2xl bg-[#e8f2fc] dark:bg-[#2997ff]/15 text-[#0071e3] dark:text-[#2997ff] flex items-center justify-center mb-4">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+            </svg>
           </div>
-          <h3 class="text-lg font-semibold text-gray-900 mb-2">办公软件</h3>
-          <p class="text-gray-600">专业办公套件，满足各种工作需求</p>
+          <h3 class="text-base font-bold text-[#1d1d1f] dark:text-[#f5f5f7] mb-1.5">专业生产力套件</h3>
+          <p class="text-xs text-[#86868b] dark:text-[#a1a1a6] leading-relaxed">文档排版、创意制作与协同协作套件，满足多样化项目展示需求。</p>
         </div>
       </div>
     </div>
   </section>
 
   <!-- 软件列表 -->
-  <section class="py-12">
+  <section class="py-8">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <SoftwareListByTags
-        title="大学专业软件"
-        description="为大学生和专业人士精心挑选的软件工具"
+        title="大学专业软件列表"
+        description="精挑细选的高质量专业软件，实时同步更新"
         tags={tags}
         limit={24}
         sortBy="updatedAt"
@@ -80,18 +81,22 @@ const tags = 'stu_app';
     </div>
   </section>
 
-  <!-- 底部提示 -->
-  <section class="py-8 bg-blue-50">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-      <div class="bg-white rounded-lg p-6 shadow-sm">
-        <h3 class="text-lg font-semibold text-gray-900 mb-2">找不到您需要的软件？</h3>
-        <p class="text-gray-600 mb-4">我们持续更新软件库，如果您有特定需求，欢迎联系我们</p>
-        <div class="flex justify-center space-x-4">
-          <a href="/software" class="btn btn-outline">
+  <!-- 底部反馈引导 (Apple Squircle) -->
+  <section class="py-12">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <div class="rounded-3xl bg-white dark:bg-[#161617] p-8 sm:p-10 border border-black/[0.04] dark:border-white/[0.06] shadow-[0_4px_24px_-2px_rgba(0,0,0,0.04)]">
+        <h3 class="text-lg sm:text-xl font-bold text-[#1d1d1f] dark:text-[#f5f5f7] mb-2">
+          未找到所需的专业工具？
+        </h3>
+        <p class="text-xs sm:text-sm text-[#86868b] dark:text-[#a1a1a6] mb-6 max-w-md mx-auto">
+          我们持续维护更新软件库，如需收录特定学术或工程应用，欢迎随时与我们交流。
+        </p>
+        <div class="flex flex-wrap justify-center gap-3">
+          <a href="/software" class="inline-flex items-center justify-center px-6 py-2.5 rounded-full bg-black/5 hover:bg-black/10 dark:bg-white/10 dark:hover:bg-white/15 text-[#1d1d1f] dark:text-[#f5f5f7] font-medium text-xs sm:text-sm transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]">
             浏览全部软件
           </a>
-          <a href="/search" class="btn btn-primary">
-            搜索软件
+          <a href="/search" class="inline-flex items-center justify-center px-6 py-2.5 rounded-full bg-[#0071e3] hover:bg-[#0077ed] text-white font-medium text-xs sm:text-sm transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] shadow-sm">
+            精准搜索软件
           </a>
         </div>
       </div>
@@ -108,26 +113,7 @@ const tags = 'stu_app';
 
   // 页面加载完成后的处理
   document.addEventListener('DOMContentLoaded', () => {
-    console.log('大学专业软件页面已加载');
-
     // 设置全局API客户端
     window.apiClient = getApiClient();
-
-    // 可以在这里添加页面特定的交互逻辑
-    // 比如统计页面访问量、用户行为追踪等
   });
 </script>
-
-<style>
-  .btn {
-    @apply inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 transition-colors;
-  }
-
-  .btn-primary {
-    @apply text-white bg-blue-600 hover:bg-blue-700 focus:ring-blue-500;
-  }
-
-  .btn-outline {
-    @apply text-blue-700 bg-white border-blue-300 hover:bg-blue-50 focus:ring-blue-500;
-  }
-</style>

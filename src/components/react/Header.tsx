@@ -54,33 +54,33 @@ export default function Header({
   return (
     <Disclosure
       as="nav"
-      className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 sticky top-0 z-50"
+      className="backdrop-blur-xl bg-white/80 dark:bg-black/80 border-b border-black/[0.04] dark:border-white/[0.08] sticky top-0 z-50 transition-colors duration-200"
     >
       {() => (
         <>
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex justify-between h-16">
+            <div className="flex justify-between items-center h-16">
               <div className="flex items-center">
                 <a href="/" className="flex items-center space-x-3 group">
-                  <div className="w-8 h-8 rounded-lg overflow-hidden transition-opacity hover:opacity-90">
+                  <div className="w-8 h-8 rounded-xl overflow-hidden shadow-sm border border-black/[0.06] dark:border-white/[0.1] transition-transform duration-200 group-hover:scale-105">
                     <img
                       src="/img/APPFUN.webp"
                       alt="APPFUN Logo"
                       className="w-full h-full object-cover"
                     />
                   </div>
-                  <span className="text-xl font-bold text-gray-900 dark:text-white transition-colors">
+                  <span className="text-lg font-bold tracking-tight text-[#1d1d1f] dark:text-[#f5f5f7] transition-colors">
                     {title}
                   </span>
                 </a>
               </div>
 
               {showSearch && (
-                <div className="hidden md:flex flex-1 max-w-lg mx-8 items-center">
+                <div className="hidden md:flex flex-1 max-w-md mx-8 items-center">
                   <div className="relative w-full group">
-                    <div className="pointer-events-none absolute inset-y-0 left-0 pl-3 flex items-center">
+                    <div className="pointer-events-none absolute inset-y-0 left-0 pl-3.5 flex items-center">
                       <svg
-                        className="h-5 w-5 text-gray-400 group-focus-within:text-primary-500"
+                        className="h-4 w-4 text-[#86868b] group-focus-within:text-[#0071e3]"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -96,8 +96,8 @@ export default function Header({
                     <input
                       id="global-search"
                       type="text"
-                      placeholder="搜索软件..."
-                      className="block w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-700 rounded-lg leading-5 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:bg-white dark:focus:bg-gray-900 focus:ring-2 focus:ring-primary-500 focus:border-transparent sm:text-sm transition-all"
+                      placeholder="搜索软件、工具、分类..."
+                      className="block w-full pl-10 pr-4 py-2 border border-black/[0.04] dark:border-white/[0.08] rounded-full text-sm bg-black/[0.03] dark:bg-white/[0.06] text-[#1d1d1f] dark:text-[#f5f5f7] placeholder-[#86868b] focus:outline-none focus:bg-white dark:focus:bg-[#161617] focus:ring-2 focus:ring-[#0071e3]/30 focus:border-[#0071e3] transition-all duration-200"
                       onKeyDown={(e) => {
                         if (e.key === "Enter") {
                           const query = (
@@ -112,13 +112,13 @@ export default function Header({
                 </div>
               )}
 
-              <div className="flex items-center space-x-3">
+              <div className="flex items-center space-x-2.5">
                 <Switch
                   checked={dark}
                   onChange={handleThemeChange}
                   className={classNames(
-                    dark ? "bg-primary-600" : "bg-gray-200",
-                    "relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500",
+                    dark ? "bg-[#0071e3]" : "bg-black/10 dark:bg-white/20",
+                    "relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#0071e3]",
                   )}
                   aria-label="切换深色模式"
                 >
@@ -126,27 +126,27 @@ export default function Header({
                   <span
                     className={classNames(
                       dark ? "translate-x-6" : "translate-x-1",
-                      "inline-block h-4 w-4 transform rounded-full bg-white transition-transform",
+                      "inline-block h-4 w-4 transform rounded-full bg-white shadow-sm transition-transform duration-200",
                     )}
                   />
                 </Switch>
 
-                <div className="hidden md:flex items-center">
+                <div className="hidden md:flex items-center space-x-1">
                   <a
                     href="/"
-                    className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 hover:bg-gray-50 dark:hover:bg-gray-800"
+                    className="px-3.5 py-1.5 rounded-full text-[13px] font-medium text-[#515154] dark:text-[#a1a1a6] hover:text-[#1d1d1f] dark:hover:text-[#f5f5f7] hover:bg-black/[0.04] dark:hover:bg-white/[0.08] transition-all duration-150"
                   >
                     首页
                   </a>
                   <a
                     href="/ranking"
-                    className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 hover:bg-gray-50 dark:hover:bg-gray-800"
+                    className="px-3.5 py-1.5 rounded-full text-[13px] font-medium text-[#515154] dark:text-[#a1a1a6] hover:text-[#1d1d1f] dark:hover:text-[#f5f5f7] hover:bg-black/[0.04] dark:hover:bg-white/[0.08] transition-all duration-150"
                   >
                     排行榜
                   </a>
                   <a
                     href="/about"
-                    className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 hover:bg-gray-50 dark:hover:bg-gray-800"
+                    className="px-3.5 py-1.5 rounded-full text-[13px] font-medium text-[#515154] dark:text-[#a1a1a6] hover:text-[#1d1d1f] dark:hover:text-[#f5f5f7] hover:bg-black/[0.04] dark:hover:bg-white/[0.08] transition-all duration-150"
                   >
                     关于
                   </a>
@@ -157,11 +157,11 @@ export default function Header({
                 {/* 加群按钮 */}
                 <button
                   onClick={() => setIsGroupModalOpen(true)}
-                  className="hidden md:flex items-center px-3 py-2 text-sm font-medium text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 hover:bg-primary-50 dark:hover:bg-primary-900/30 rounded-lg transition-colors"
+                  className="hidden md:inline-flex items-center px-3.5 py-1.5 rounded-full text-xs font-semibold bg-[#e8f2fc] text-[#0071e3] dark:bg-[#2997ff]/15 dark:text-[#2997ff] hover:bg-[#0071e3] hover:text-white dark:hover:bg-[#2997ff] dark:hover:text-black transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]"
                   title="加入交流群"
                 >
                   <svg
-                    className="w-5 h-5 mr-1.5"
+                    className="w-4 h-4 mr-1.5"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -176,10 +176,10 @@ export default function Header({
                   <span>加群</span>
                 </button>
 
-                <Disclosure.Button className="md:hidden inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-500">
+                <Disclosure.Button className="md:hidden inline-flex items-center justify-center rounded-full p-2 text-[#86868b] hover:text-[#1d1d1f] dark:hover:text-white hover:bg-black/[0.04] dark:hover:bg-white/[0.08] focus:outline-none">
                   <span className="sr-only">打开主菜单</span>
                   <svg
-                    className="h-6 w-6"
+                    className="h-5 w-5"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -197,28 +197,28 @@ export default function Header({
           </div>
 
           <Disclosure.Panel className="md:hidden">
-            <div className="space-y-1 px-2 pt-2 pb-3 border-t border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
+            <div className="mx-4 mb-3 p-3 rounded-2xl border border-black/[0.04] dark:border-white/[0.08] bg-white/90 dark:bg-[#161617]/90 backdrop-blur-xl shadow-lg space-y-1">
               <a
                 href="/"
-                className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 hover:bg-gray-50 dark:hover:bg-gray-800"
+                className="block px-4 py-2.5 rounded-xl text-sm font-medium text-[#1d1d1f] dark:text-[#f5f5f7] hover:bg-black/[0.04] dark:hover:bg-white/[0.08] transition-colors"
               >
                 首页
               </a>
               <a
                 href="/ranking"
-                className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 hover:bg-gray-50 dark:hover:bg-gray-800"
+                className="block px-4 py-2.5 rounded-xl text-sm font-medium text-[#1d1d1f] dark:text-[#f5f5f7] hover:bg-black/[0.04] dark:hover:bg-white/[0.08] transition-colors"
               >
                 排行榜
               </a>
               <a
                 href="/about"
-                className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 hover:bg-gray-50 dark:hover:bg-gray-800"
+                className="block px-4 py-2.5 rounded-xl text-sm font-medium text-[#1d1d1f] dark:text-[#f5f5f7] hover:bg-black/[0.04] dark:hover:bg-white/[0.08] transition-colors"
               >
                 关于
               </a>
               <button
                 onClick={() => setIsGroupModalOpen(true)}
-                className="w-full text-left px-3 py-2 rounded-md text-base font-medium text-primary-600 dark:text-primary-400 hover:bg-primary-50 dark:hover:bg-primary-900/30 transition-colors"
+                className="w-full text-left px-4 py-2.5 rounded-xl text-sm font-medium text-[#0071e3] dark:text-[#2997ff] hover:bg-[#e8f2fc] dark:hover:bg-[#2997ff]/10 transition-colors"
               >
                 加入交流群
               </button>

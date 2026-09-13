@@ -2,7 +2,7 @@ User-agent: *
 Allow: /
 
 # Sitemap
-Sitemap: https://appfun.fun/api/sitemap
+Sitemap: https://appfun.lacs.cc/api/sitemap
 
 # Disallow specific paths if needed
 # Disallow: /api/

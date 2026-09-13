@@ -12,7 +12,7 @@ const query = url.searchParams.get('q') || '';
 const title = query ? `搜索: ${query}` : '搜索软件';
 const description = query ? `搜索${query}相关的软件工具 - 在APPFUN上发现和下载您需要的软件` : '在APPFUN上搜索和发现您需要的软件工具。支持按名称、分类、标签等多种方式搜索，快速找到适合的软件';
 const keywords = '软件搜索,软件查找,搜索工具,APPFUN搜索,软件查询';
-const canonical = 'https://appfun.fun/search';
+const canonical = 'https://appfun.lacs.cc/search';
 const structuredData = {
   "@context": "https://schema.org",
   "@type": "WebPage",
@@ -21,7 +21,7 @@ const structuredData = {
   "url": canonical,
   "potentialAction": {
     "@type": "SearchAction",
-    "target": "https://appfun.fun/search?q={search_term_string}",
+    "target": "https://appfun.lacs.cc/search?q={search_term_string}",
     "query-input": "required name=search_term_string"
   }
 };
@@ -38,25 +38,25 @@ const structuredData = {
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
     <!-- 搜索标题 -->
     <div class="mb-8">
-      <h1 class="text-3xl font-bold text-gray-900">搜索软件</h1>
+      <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-[#1d1d1f] dark:text-[#f5f5f7]">搜索软件</h1>
       {query && (
-        <p class="text-gray-600 mt-2">搜索结果: "{query}"</p>
+        <p class="text-xs sm:text-sm text-[#86868b] dark:text-[#a1a1a6] mt-1.5">搜索结果: "{query}"</p>
       )}
     </div>
 
     <!-- 搜索框 -->
-    <div class="mb-8">
+    <div class="mb-6">
       <div class="max-w-2xl">
         <div class="relative">
-          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+            <svg class="h-4 w-4 text-[#86868b]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
             </svg>
           </div>
           <input
             type="text"
             placeholder="搜索软件名称、分类或标签..."
-            class="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-primary-500 focus:border-primary-500 text-lg"
+            class="block w-full pl-11 pr-4 py-3 border border-black/[0.06] dark:border-white/[0.08] rounded-full text-sm bg-black/[0.03] dark:bg-white/[0.06] text-[#1d1d1f] dark:text-[#f5f5f7] placeholder-[#86868b] focus:outline-none focus:bg-white dark:focus:bg-[#161617] focus:ring-2 focus:ring-[#0071e3]/30 transition-all shadow-sm"
             id="search-input"
             value={query}
           />
@@ -65,15 +65,13 @@ const structuredData = {
     </div>
 
     <!-- 筛选选项 -->
-    <div class="bg-white rounded-lg border border-gray-200 p-4 mb-6">
+    <div class="bg-white dark:bg-[#161617] rounded-3xl border border-black/[0.04] dark:border-white/[0.06] p-4 sm:p-5 mb-6 shadow-[0_4px_24px_-2px_rgba(0,0,0,0.04)]">
       <div class="flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0">
-
-
         <!-- 排序选择 -->
-        <div class="flex items-center space-x-4">
-          <label for="sort-select" class="text-sm font-medium text-gray-700">排序:</label>
-          <select id="sort-select" class="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-primary-500 focus:border-primary-500">
-            <option value="relevance">相关性</option>
+        <div class="flex items-center space-x-3">
+          <label for="sort-select" class="text-xs font-semibold text-[#515154] dark:text-[#a1a1a6]">排序依据:</label>
+          <select id="sort-select" class="border border-black/10 dark:border-white/10 rounded-full px-3.5 py-1.5 text-xs bg-black/[0.03] dark:bg-white/[0.06] text-[#1d1d1f] dark:text-[#f5f5f7] focus:outline-none focus:ring-2 focus:ring-[#0071e3]/30">
+            <option value="relevance">相关性最高</option>
             <option value="updatedAt-desc">最近更新</option>
             <option value="name-asc">名称 A-Z</option>
             <option value="name-desc">名称 Z-A</option>
@@ -86,13 +84,13 @@ const structuredData = {
     <!-- 搜索结果统计 -->
     <div class="mb-6">
       <div class="flex items-center justify-between">
-        <div class="text-sm text-gray-600">
+        <div class="text-xs text-[#86868b] dark:text-[#a1a1a6]">
           <span id="search-count">正在搜索...</span>
         </div>
         
         <!-- 搜索建议标签 -->
-        <div id="suggested-tags" class="flex flex-wrap gap-2" style="display: none;">
-          <span class="text-sm text-gray-500">相关标签:</span>
+        <div id="suggested-tags" class="flex flex-wrap items-center gap-2" style="display: none;">
+          <span class="text-xs text-[#86868b]">相关标签:</span>
         </div>
       </div>
     </div>
@@ -100,14 +98,18 @@ const structuredData = {
     <!-- 搜索结果 -->
     <div id="search-results-container">
       {query ? (
-        <div class="flex justify-center py-12">
-          <LoadingSpinner size="lg" text="正在搜索..." />
+        <div class="flex justify-center py-16">
+          <LoadingSpinner size="lg" text="正在搜索软件..." />
         </div>
       ) : (
-        <div class="text-center py-12">
-          <div class="text-6xl mb-4">🔍</div>
-          <h3 class="text-lg font-medium text-gray-900 mb-2">开始搜索</h3>
-          <p class="text-gray-500">输入关键词搜索软件</p>
+        <div class="text-center py-16">
+          <div class="w-14 h-14 mx-auto mb-4 rounded-2xl bg-black/[0.03] dark:bg-white/[0.05] flex items-center justify-center text-[#86868b] dark:text-[#6e6e73]">
+            <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </div>
+          <h3 class="text-base font-semibold text-[#1d1d1f] dark:text-[#f5f5f7] mb-1">开始搜索</h3>
+          <p class="text-xs text-[#86868b] dark:text-[#a1a1a6]">输入关键词发现您需要的优质软件工具</p>
         </div>
       )}
     </div>
@@ -117,18 +119,18 @@ const structuredData = {
 
     <!-- 搜索历史 -->
     <section class="mt-16" id="search-history-section">
-      <h2 class="text-2xl font-bold text-gray-900 mb-6">搜索历史</h2>
+      <h2 class="text-lg font-bold tracking-tight text-[#1d1d1f] dark:text-[#f5f5f7] mb-4">搜索历史</h2>
       <div id="search-history-container">
-        <p class="text-gray-500 text-center py-8">暂无搜索历史</p>
+        <p class="text-xs text-[#86868b] text-center py-6">暂无搜索历史</p>
       </div>
     </section>
 
     <!-- 热门搜索 -->
-    <section class="mt-16">
-      <h2 class="text-2xl font-bold text-gray-900 mb-6">热门搜索</h2>
+    <section class="mt-12">
+      <h2 class="text-lg font-bold tracking-tight text-[#1d1d1f] dark:text-[#f5f5f7] mb-4">热门标签</h2>
       <div id="popular-searches-container">
-        <div class="flex justify-center py-8">
-          <LoadingSpinner size="md" text="加载热门搜索..." />
+        <div class="flex justify-center py-6">
+          <LoadingSpinner size="md" text="加载热门标签..." />
         </div>
       </div>
     </section>
@@ -270,86 +272,88 @@ const structuredData = {
 
         if (softwareList.length === 0) {
           container.innerHTML = `
-            <div class="text-center py-12">
-              <div class="text-6xl mb-4">😔</div>
-              <h3 class="text-lg font-medium text-gray-900 mb-2">未找到相关软件</h3>
-              <p class="text-gray-500 mb-4">
+            <div class="text-center py-16">
+              <div class="w-14 h-14 mx-auto mb-4 rounded-2xl bg-black/[0.03] dark:bg-white/[0.05] flex items-center justify-center text-[#86868b] dark:text-[#6e6e73]">
+                <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <h3 class="text-base font-semibold text-[#1d1d1f] dark:text-[#f5f5f7] mb-1">未找到相关软件</h3>
+              <p class="text-xs text-[#86868b] dark:text-[#a1a1a6] mb-5">
                 没有找到包含 "${currentQuery}" 的软件，请尝试其他关键词
               </p>
-              <div class="space-x-4">
-                <button onclick="clearSearch()" class="btn btn-outline">
-                  清空搜索
-                </button>
-              </div>
+              <button onclick="clearSearch()" class="px-5 py-2 rounded-full bg-black/5 hover:bg-black/10 dark:bg-white/10 dark:hover:bg-white/15 text-[#1d1d1f] dark:text-[#f5f5f7] font-medium text-xs transition-all">
+                清空搜索
+              </button>
             </div>
           `;
           document.getElementById('pagination-container').innerHTML = '';
           return;
         }
 
-        // 渲染搜索结果
+        // 渲染搜索结果 (双列竖屏支持)
         container.innerHTML = `
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-5 lg:gap-6">
             ${softwareList.map(software => `
-              <div class="bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow duration-200 cursor-pointer" onclick="window.location.href='/software/${software.id}'">
-                <div class="p-6">
-                  <div class="flex items-start justify-between mb-3">
+              <div class="group bg-white dark:bg-[#161617] rounded-2xl sm:rounded-3xl border border-black/[0.04] dark:border-white/[0.06] shadow-[0_4px_24px_-2px_rgba(0,0,0,0.04)] hover:shadow-[0_20px_40px_-12px_rgba(0,0,0,0.08)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.5)] hover:-translate-y-1 transition-all duration-300 cursor-pointer overflow-hidden flex flex-col h-full" onclick="window.location.href='/software/${software.id}'">
+                <div class="p-3.5 sm:p-5 lg:p-6 flex flex-col h-full">
+                  <div class="flex items-start justify-between mb-2.5 sm:mb-3">
                     <div class="flex-1 min-w-0">
-                      <h3 class="text-lg font-semibold text-gray-900 truncate hover:text-primary-600 transition-colors">
+                      <h3 class="text-xs sm:text-base font-bold text-[#1d1d1f] dark:text-[#f5f5f7] truncate group-hover:text-[#0071e3] dark:group-hover:text-[#2997ff] transition-colors">
                         ${highlightSearchTerm(software.name, currentQuery)}
                       </h3>
-                      ${software.nameEn ? `<p class="text-sm text-gray-500 truncate mt-1">${highlightSearchTerm(software.nameEn, currentQuery)}</p>` : ''}
+                      ${software.nameEn ? `<p class="text-[10px] sm:text-xs text-[#86868b] dark:text-[#a1a1a6] truncate mt-0.5">${highlightSearchTerm(software.nameEn, currentQuery)}</p>` : ''}
                     </div>
-                    <div class="flex flex-col items-end space-y-1 ml-4">
-                      <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium bg-primary-100 text-primary-800">
+                    <div class="flex flex-col items-end space-y-1 ml-2 sm:ml-4 flex-shrink-0">
+                      <span class="inline-flex items-center rounded-full px-1.5 sm:px-2.5 py-0.5 text-[10px] sm:text-[11px] font-semibold bg-[#e8f2fc] text-[#0071e3] dark:bg-[#2997ff]/15 dark:text-[#2997ff]">
                         v${software.currentVersion}
                       </span>
                       ${software.category ? `
-                        <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium bg-gray-100 text-gray-800">
+                        <span class="hidden sm:inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-medium bg-black/[0.04] text-[#515154] dark:bg-white/[0.08] dark:text-[#a1a1a6]">
                           ${software.category}
                         </span>
                       ` : ''}
                     </div>
                   </div>
                   ${software.description ? `
-                    <p class="text-gray-600 text-sm mb-4 line-clamp-2">
+                    <p class="text-[11px] sm:text-xs text-[#86868b] dark:text-[#a1a1a6] leading-relaxed mb-2.5 sm:mb-4 line-clamp-2 flex-1">
                       ${highlightSearchTerm(software.description, currentQuery)}
                     </p>
-                  ` : ''}
+                  ` : '<div class="flex-1"></div>'}
                   ${software.tags && software.tags.length > 0 ? `
-                    <div class="flex flex-wrap gap-1 mb-4">
-                      ${software.tags.slice(0, 3).map(tag => `
-                        <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium bg-blue-100 text-blue-800">
+                    <div class="flex flex-wrap gap-1 sm:gap-1.5 mb-2.5 sm:mb-4">
+                      ${software.tags.slice(0, 2).map(tag => `
+                        <span class="inline-flex items-center rounded-full px-1.5 sm:px-2 py-0.5 text-[9px] sm:text-[10px] font-medium bg-black/[0.03] text-[#515154] dark:bg-white/[0.06] dark:text-[#a1a1a6]">
                           ${highlightSearchTerm(tag, currentQuery)}
                         </span>
                       `).join('')}
-                      ${software.tags.length > 3 ? `
-                        <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium bg-gray-100 text-gray-800">
-                          +${software.tags.length - 3}
+                      ${software.tags.length > 2 ? `
+                        <span class="inline-flex items-center rounded-full px-1 py-0.5 text-[9px] sm:text-[10px] text-[#86868b]">
+                          +${software.tags.length - 2}
                         </span>
                       ` : ''}
                     </div>
                   ` : ''}
-                  <div class="flex items-center justify-between">
-                    <div class="flex items-center space-x-2">
+                  <div class="flex items-center justify-between mt-auto pt-2.5 sm:pt-3 border-t border-black/[0.04] dark:border-white/[0.06]">
+                    <div class="flex items-center space-x-1 sm:space-x-2">
                       ${software.officialWebsite ? `
                         <a 
                           href="${software.officialWebsite}"
                           target="_blank"
                           rel="noopener noreferrer"
-                          class="text-gray-400 hover:text-gray-600 transition-colors"
+                          class="text-[#86868b] hover:text-[#1d1d1f] dark:hover:text-[#f5f5f7] transition-colors p-1"
                           title="官方网站"
                           onclick="event.stopPropagation()"
                         >
-                          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
                           </svg>
                         </a>
                       ` : ''}
                     </div>
                     ${software.latestDownloadUrl ? `
-                      <a href="${software.latestDownloadUrl}" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm" data-protected-download="true" onclick="event.stopPropagation()">
-                        下载
+                      <a href="${software.latestDownloadUrl}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center px-3 sm:px-4 py-1 sm:py-1.5 rounded-full bg-[#0071e3] hover:bg-[#0077ed] text-white text-[11px] sm:text-xs font-semibold shadow-sm hover:scale-[1.02] active:scale-[0.98] transition-all" data-protected-download="true" onclick="event.stopPropagation()">
+                        获取
                       </a>
                     ` : ''}
                   </div>
@@ -368,11 +372,15 @@ const structuredData = {
     } catch (error) {
       console.error('搜索失败:', error);
       container.innerHTML = `
-        <div class="text-center py-12">
-          <div class="text-red-500 text-6xl mb-4">⚠️</div>
-          <h3 class="text-lg font-medium text-gray-900 mb-2">搜索失败</h3>
-          <p class="text-gray-500 mb-4">搜索时发生错误，请稍后重试</p>
-          <button onclick="performSearch()" class="btn btn-primary">
+        <div class="text-center py-16">
+          <div class="w-14 h-14 mx-auto mb-4 rounded-2xl bg-rose-50 dark:bg-rose-950/30 text-rose-500 flex items-center justify-center">
+            <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+          </div>
+          <h3 class="text-base font-semibold text-[#1d1d1f] dark:text-[#f5f5f7] mb-1">搜索失败</h3>
+          <p class="text-xs text-[#86868b] dark:text-[#a1a1a6] mb-5">搜索时发生错误，请稍后重试</p>
+          <button onclick="performSearch()" class="px-5 py-2 rounded-full bg-[#0071e3] hover:bg-[#0077ed] text-white font-medium text-xs shadow-sm hover:scale-[1.02] active:scale-[0.98] transition-all">
             重新搜索
           </button>
         </div>
@@ -389,7 +397,7 @@ const structuredData = {
     if (!searchTerm || !text) return text;
     
     const regex = new RegExp(`(${searchTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
-    return text.replace(regex, '<mark class="bg-yellow-200 px-1 rounded">$1</mark>');
+    return text.replace(regex, '<mark class="bg-[#0071e3]/15 text-[#0071e3] dark:bg-[#2997ff]/20 dark:text-[#2997ff] px-1 rounded">$1</mark>');
   }
 
   // 加载建议标签
@@ -408,10 +416,10 @@ const structuredData = {
     if (tags.length > 0) {
       container.style.display = 'flex';
       container.innerHTML = `
-        <span class="text-sm text-gray-500">相关标签:</span>
+        <span class="text-xs text-[#86868b]">相关标签:</span>
         ${tags.map(tag => `
-          <button onclick="searchByTag('${tag}')" class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800 hover:bg-gray-200 transition-colors">
-            ${tag}
+          <button onclick="searchByTag('${tag}')" class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-black/[0.04] dark:bg-white/[0.06] text-[#515154] dark:text-[#a1a1a6] hover:bg-[#0071e3] hover:text-white dark:hover:bg-[#2997ff] dark:hover:text-black transition-all">
+            #${tag}
           </button>
         `).join('')}
       `;
@@ -431,17 +439,17 @@ const structuredData = {
     const endItem = Math.min(page * pageSize, total);
 
     container.innerHTML = `
-      <div class="flex items-center justify-between">
-        <div class="text-sm text-gray-700">
-          显示第 <span class="font-medium">${startItem}</span> 到 
-          <span class="font-medium">${endItem}</span> 项，共 
-          <span class="font-medium">${total}</span> 项
+      <div class="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs">
+        <div class="text-[#86868b] dark:text-[#a1a1a6]">
+          显示第 <span class="font-medium text-[#1d1d1f] dark:text-[#f5f5f7]">${startItem}</span> - 
+          <span class="font-medium text-[#1d1d1f] dark:text-[#f5f5f7]">${endItem}</span> 项，共 
+          <span class="font-medium text-[#1d1d1f] dark:text-[#f5f5f7]">${total}</span> 项
         </div>
-        <nav class="flex items-center space-x-1">
+        <nav class="flex items-center space-x-1.5">
           <button 
             onclick="changePage(${page - 1})" 
             ${page === 1 ? 'disabled' : ''}
-            class="relative inline-flex items-center px-2 py-2 text-sm font-medium rounded-md border border-gray-300 bg-white text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+            class="relative inline-flex items-center px-3 py-1.5 text-xs font-medium rounded-full border border-black/[0.06] dark:border-white/[0.08] bg-white dark:bg-[#161617] text-[#515154] dark:text-[#a1a1a6] hover:bg-black/[0.03] dark:hover:bg-white/[0.05] disabled:opacity-40 disabled:cursor-not-allowed transition-all"
           >
             上一页
           </button>
@@ -449,7 +457,7 @@ const structuredData = {
           <button 
             onclick="changePage(${page + 1})" 
             ${page === totalPages ? 'disabled' : ''}
-            class="relative inline-flex items-center px-2 py-2 text-sm font-medium rounded-md border border-gray-300 bg-white text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+            class="relative inline-flex items-center px-3 py-1.5 text-xs font-medium rounded-full border border-black/[0.06] dark:border-white/[0.08] bg-white dark:bg-[#161617] text-[#515154] dark:text-[#a1a1a6] hover:bg-black/[0.03] dark:hover:bg-white/[0.05] disabled:opacity-40 disabled:cursor-not-allowed transition-all"
           >
             下一页
           </button>
@@ -470,10 +478,10 @@ const structuredData = {
       pages.push(`
         <button 
           onclick="changePage(${i})" 
-          class="relative inline-flex items-center px-4 py-2 text-sm font-medium rounded-md border ${
+          class="relative inline-flex items-center px-3 py-1.5 text-xs font-medium rounded-full border transition-all ${
     isActive 
-      ? 'z-10 bg-primary-50 border-primary-500 text-primary-600' 
-      : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50'
+      ? 'bg-[#0071e3] border-[#0071e3] text-white font-bold' 
+      : 'bg-white dark:bg-[#161617] border-black/[0.06] dark:border-white/[0.08] text-[#515154] dark:text-[#a1a1a6] hover:bg-black/[0.03] dark:hover:bg-white/[0.05]'
   }"
         >
           ${i}
@@ -522,10 +530,14 @@ const structuredData = {
     
     if (container) {
       container.innerHTML = `
-        <div class="text-center py-12">
-          <div class="text-6xl mb-4">🔍</div>
-          <h3 class="text-lg font-medium text-gray-900 mb-2">开始搜索</h3>
-          <p class="text-gray-500">输入关键词搜索软件</p>
+        <div class="text-center py-16">
+          <div class="w-14 h-14 mx-auto mb-4 rounded-2xl bg-black/[0.03] dark:bg-white/[0.05] flex items-center justify-center text-[#86868b] dark:text-[#6e6e73]">
+            <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </div>
+          <h3 class="text-base font-semibold text-[#1d1d1f] dark:text-[#f5f5f7] mb-1">开始搜索</h3>
+          <p class="text-xs text-[#86868b] dark:text-[#a1a1a6]">输入关键词发现您需要的优质软件工具</p>
         </div>
       `;
     }
@@ -572,25 +584,25 @@ const structuredData = {
       const history = JSON.parse(localStorage.getItem('search-history') || '[]');
       
       if (history.length === 0) {
-        container.innerHTML = '<p class="text-gray-500 text-center py-8">暂无搜索历史</p>';
+        container.innerHTML = '<p class="text-xs text-[#86868b] text-center py-6">暂无搜索历史</p>';
         return;
       }
 
       container.innerHTML = `
-        <div class="flex flex-wrap gap-2">
+        <div class="flex flex-wrap items-center gap-2">
           ${history.map(item => `
-            <button onclick="searchByTag('${item}')" class="inline-flex items-center px-3 py-2 rounded-full text-sm font-medium bg-gray-100 text-gray-800 hover:bg-gray-200 transition-colors">
+            <button onclick="searchByTag('${item}')" class="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium bg-black/[0.04] dark:bg-white/[0.06] text-[#515154] dark:text-[#a1a1a6] hover:bg-black/[0.08] dark:hover:bg-white/[0.1] transition-all">
               ${item}
             </button>
           `).join('')}
-          <button onclick="clearSearchHistory()" class="inline-flex items-center px-3 py-2 rounded-full text-sm font-medium text-red-600 hover:bg-red-50 transition-colors">
+          <button onclick="clearSearchHistory()" class="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium text-rose-500 hover:text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/20 transition-all">
             清空历史
           </button>
         </div>
       `;
     } catch (error) {
       console.error('加载搜索历史失败:', error);
-      container.innerHTML = '<p class="text-red-600 text-center py-8">加载搜索历史失败</p>';
+      container.innerHTML = '<p class="text-xs text-rose-500 text-center py-6">加载搜索历史失败</p>';
     }
   }
 
@@ -614,27 +626,27 @@ const structuredData = {
       });
 
       if (response.success && response.data && response.data.tags) {
-        const popularTags = response.data.tags.slice(0, 10);
+        const popularTags = response.data.tags.slice(0, 12);
         
         container.innerHTML = `
-          <div class="flex flex-wrap gap-3">
+          <div class="flex flex-wrap gap-2 sm:gap-2.5">
             ${popularTags.map(tag => {
-      const tagName = typeof tag === 'string' ? tag : tag.name;
-      const tagCount = typeof tag === 'object' && tag.count ? tag.count : '';
+              const tagName = typeof tag === 'string' ? tag : tag.name;
+              const tagCount = typeof tag === 'object' && tag.count ? tag.count : '';
               
-      return `
-                <button onclick="searchByTag('${tagName}')" class="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium bg-primary-50 text-primary-700 hover:bg-primary-100 transition-colors">
-                  ${tagName}
-                  ${tagCount ? `<span class="ml-2 text-xs bg-primary-200 text-primary-800 px-2 py-0.5 rounded-full">${tagCount}</span>` : ''}
+              return `
+                <button onclick="searchByTag('${tagName}')" class="inline-flex items-center px-3.5 py-1.5 rounded-full text-xs font-medium bg-[#e8f2fc] text-[#0071e3] dark:bg-[#2997ff]/15 dark:text-[#2997ff] hover:bg-[#0071e3] hover:text-white dark:hover:bg-[#2997ff] dark:hover:text-black transition-all">
+                  <span>#${tagName}</span>
+                  ${tagCount ? `<span class="ml-1.5 text-[10px] opacity-75">${tagCount}</span>` : ''}
                 </button>
               `;
-    }).join('')}
+            }).join('')}
           </div>
         `;
       }
     } catch (error) {
       console.error('加载热门搜索失败:', error);
-      container.innerHTML = '<p class="text-red-600 text-center py-8">加载失败</p>';
+      container.innerHTML = '<p class="text-xs text-rose-500 text-center py-6">加载失败</p>';
     }
   }
 

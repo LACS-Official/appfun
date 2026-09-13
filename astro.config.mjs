@@ -5,7 +5,7 @@ import createSitemap from './src/utils/sitemap';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://appfun.fun',
+  site: 'https://appfun.lacs.cc',
   integrations: [
     tailwind({
       applyBaseStyles: false,

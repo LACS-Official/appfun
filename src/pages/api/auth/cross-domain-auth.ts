@@ -12,7 +12,7 @@ const config = {
   // 允许的域名白名单
   allowedOrigins: import.meta.env.ALLOWED_ORIGINS ? 
     import.meta.env.ALLOWED_ORIGINS.split(',').map((origin: string) => origin.trim()) : 
-    ['http://localhost:4321', 'https://app.lacs.cc'],
+    ['http://localhost:4321', 'https://app.lacs.cc', 'https://appfun.lacs.cc'],
   
   // 会话过期时间（24小时）
   sessionExpiry: 24 * 60 * 60 * 1000,

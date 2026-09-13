@@ -34,16 +34,16 @@ const shadowClasses = {
 const hoverClass = hover ? 'hover:shadow-md transition-shadow duration-200' : '';
 ---
 
-<div class={`bg-white rounded-lg border border-gray-200 ${shadowClasses[shadow]} ${hoverClass} ${className}`}>
+<div class={`bg-white dark:bg-[#1c1c1e] rounded-2xl border border-black/[0.04] dark:border-white/[0.06] ${shadowClasses[shadow]} ${hoverClass} ${className}`}>
   {(title || subtitle) && (
-    <div class={`border-b border-gray-200 ${paddingClasses[padding]}`}>
+    <div class={`border-b border-black/[0.04] dark:border-white/[0.06] ${paddingClasses[padding]}`}>
       {title && (
-        <h3 class="text-lg font-semibold text-gray-900">
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
           {title}
         </h3>
       )}
       {subtitle && (
-        <p class="text-sm text-gray-600 mt-1">
+        <p class="text-sm text-gray-600 dark:text-neutral-400 mt-1">
           {subtitle}
         </p>
       )}

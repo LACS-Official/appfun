@@ -7,7 +7,7 @@ const title = "关于我们";
 const description =
   "了解APPFUN的使命、愿景和团队。APPFUN是一个致力于为用户提供优质软件管理和分发服务的平台，让软件发现和使用变得简单高效";
 const keywords = "关于APPFUN,APPFUN介绍,软件平台,领创工作室,软件管理,软件分发";
-const canonical = "https://appfun.fun/about";
+const canonical = "https://appfun.lacs.cc/about";
 const structuredData = {
   "@context": "https://schema.org",
   "@type": "AboutPage",
@@ -17,7 +17,7 @@ const structuredData = {
   mainEntity: {
     "@type": "Organization",
     name: "领创工作室",
-    url: "https://appfun.fun",
+    url: "https://appfun.lacs.cc",
     description: "致力于为用户提供优质的软件管理和分发服务",
   },
 };
@@ -31,33 +31,33 @@ const structuredData = {
   structuredDataType="website"
   structuredData={structuredData}
 >
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
     <!-- 页面标题 -->
-    <div class="text-center mb-16">
-      <h1 class="text-4xl font-bold text-gray-900 mb-4">关于我们</h1>
-      <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+    <div class="text-center mb-14">
+      <h1 class="text-4xl font-semibold tracking-tight text-neutral-900 dark:text-white mb-3">关于我们</h1>
+      <p class="text-lg text-neutral-500 dark:text-neutral-400 max-w-2xl mx-auto leading-relaxed">
         致力于为用户提供优质的软件管理和分发服务，让软件发现和使用变得简单高效
       </p>
     </div>
 
     <!-- 网站统计数据 -->
     <section class="mb-16">
-      <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
+      <div class="bg-white dark:bg-[#1c1c1e] rounded-3xl shadow-apple-card border border-black/[0.04] dark:border-white/[0.06] p-6 sm:p-8">
         <div class="text-center mb-8">
-          <h2 class="text-2xl font-bold text-gray-900 mb-2">网站统计</h2>
-          <p class="text-gray-600">实时访问数据统计</p>
+          <h2 class="text-2xl font-semibold tracking-tight text-neutral-900 dark:text-white mb-1.5">网站统计</h2>
+          <p class="text-sm text-neutral-500 dark:text-neutral-400">实时访问数据统计</p>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
           <!-- 总访问量 -->
           <div
-            class="text-center p-6 bg-blue-50 rounded-xl border border-blue-100/50"
+            class="text-center p-5 sm:p-6 bg-neutral-50/80 dark:bg-white/[0.03] rounded-2xl border border-black/[0.03] dark:border-white/[0.04]"
           >
             <div
-              class="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center mx-auto mb-4"
+              class="w-10 h-10 rounded-xl bg-primary-50 dark:bg-primary-950/40 text-primary-600 dark:text-primary-400 flex items-center justify-center mx-auto mb-3"
             >
               <svg
-                class="w-6 h-6 text-white"
+                class="w-5 h-5"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -65,35 +65,35 @@ const structuredData = {
                 <path
                   stroke-linecap="round"
                   stroke-linejoin="round"
-                  stroke-width="2"
+                  stroke-width="1.8"
                   d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                 <path
                   stroke-linecap="round"
                   stroke-linejoin="round"
-                  stroke-width="2"
+                  stroke-width="1.8"
                   d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
                 ></path>
               </svg>
             </div>
             <div
-              class="text-2xl font-bold text-gray-900 mb-1"
+              class="text-2xl font-semibold text-neutral-900 dark:text-white mb-1 tracking-tight"
               id="total-pageviews"
             >
-              <div class="animate-pulse bg-gray-200 h-8 w-16 mx-auto rounded">
+              <div class="animate-pulse bg-neutral-200 dark:bg-neutral-700 h-7 w-16 mx-auto rounded-lg">
               </div>
             </div>
-            <p class="text-sm text-gray-600">总访问量</p>
+            <p class="text-xs text-neutral-500 dark:text-neutral-400 font-medium">总访问量</p>
           </div>
 
           <!-- 独立访客 -->
           <div
-            class="text-center p-6 bg-green-50 rounded-xl border border-green-100/50"
+            class="text-center p-5 sm:p-6 bg-neutral-50/80 dark:bg-white/[0.03] rounded-2xl border border-black/[0.03] dark:border-white/[0.04]"
           >
             <div
-              class="w-12 h-12 bg-green-600 rounded-lg flex items-center justify-center mx-auto mb-4"
+              class="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mx-auto mb-3"
             >
               <svg
-                class="w-6 h-6 text-white"
+                class="w-5 h-5"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -101,30 +101,30 @@ const structuredData = {
                 <path
                   stroke-linecap="round"
                   stroke-linejoin="round"
-                  stroke-width="2"
+                  stroke-width="1.8"
                   d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"
                 ></path>
               </svg>
             </div>
             <div
-              class="text-2xl font-bold text-gray-900 mb-1"
+              class="text-2xl font-semibold text-neutral-900 dark:text-white mb-1 tracking-tight"
               id="unique-visitors"
             >
-              <div class="animate-pulse bg-gray-200 h-8 w-16 mx-auto rounded">
+              <div class="animate-pulse bg-neutral-200 dark:bg-neutral-700 h-7 w-16 mx-auto rounded-lg">
               </div>
             </div>
-            <p class="text-sm text-gray-600">独立访客</p>
+            <p class="text-xs text-neutral-500 dark:text-neutral-400 font-medium">独立访客</p>
           </div>
 
           <!-- 今日访问 -->
           <div
-            class="text-center p-6 bg-purple-50 rounded-xl border border-purple-100/50"
+            class="text-center p-5 sm:p-6 bg-neutral-50/80 dark:bg-white/[0.03] rounded-2xl border border-black/[0.03] dark:border-white/[0.04]"
           >
             <div
-              class="w-12 h-12 bg-purple-600 rounded-lg flex items-center justify-center mx-auto mb-4"
+              class="w-10 h-10 rounded-xl bg-purple-50 dark:bg-purple-950/40 text-purple-600 dark:text-purple-400 flex items-center justify-center mx-auto mb-3"
             >
               <svg
-                class="w-6 h-6 text-white"
+                class="w-5 h-5"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -132,30 +132,30 @@ const structuredData = {
                 <path
                   stroke-linecap="round"
                   stroke-linejoin="round"
-                  stroke-width="2"
+                  stroke-width="1.8"
                   d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
                 ></path>
               </svg>
             </div>
             <div
-              class="text-2xl font-bold text-gray-900 mb-1"
+              class="text-2xl font-semibold text-neutral-900 dark:text-white mb-1 tracking-tight"
               id="today-pageviews"
             >
-              <div class="animate-pulse bg-gray-200 h-8 w-16 mx-auto rounded">
+              <div class="animate-pulse bg-neutral-200 dark:bg-neutral-700 h-7 w-16 mx-auto rounded-lg">
               </div>
             </div>
-            <p class="text-sm text-gray-600">今日访问</p>
+            <p class="text-xs text-neutral-500 dark:text-neutral-400 font-medium">今日访问</p>
           </div>
 
           <!-- 在线用户 -->
           <div
-            class="text-center p-6 bg-orange-50 rounded-xl border border-orange-100/50"
+            class="text-center p-5 sm:p-6 bg-neutral-50/80 dark:bg-white/[0.03] rounded-2xl border border-black/[0.03] dark:border-white/[0.04]"
           >
             <div
-              class="w-12 h-12 bg-orange-600 rounded-lg flex items-center justify-center mx-auto mb-4"
+              class="w-10 h-10 rounded-xl bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 flex items-center justify-center mx-auto mb-3"
             >
               <svg
-                class="w-6 h-6 text-white"
+                class="w-5 h-5"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -163,26 +163,26 @@ const structuredData = {
                 <path
                   stroke-linecap="round"
                   stroke-linejoin="round"
-                  stroke-width="2"
+                  stroke-width="1.8"
                   d="M5.636 18.364a9 9 0 010-12.728m12.728 0a9 9 0 010 12.728m-9.9-2.829a5 5 0 010-7.07m7.072 0a5 5 0 010 7.07M13 12a1 1 0 11-2 0 1 1 0 012 0z"
                 ></path>
               </svg>
             </div>
             <div
-              class="text-2xl font-bold text-gray-900 mb-1"
+              class="text-2xl font-semibold text-neutral-900 dark:text-white mb-1 tracking-tight"
               id="active-visitors"
             >
-              <div class="animate-pulse bg-gray-200 h-8 w-16 mx-auto rounded">
+              <div class="animate-pulse bg-neutral-200 dark:bg-neutral-700 h-7 w-16 mx-auto rounded-lg">
               </div>
             </div>
-            <p class="text-sm text-gray-600">在线用户</p>
+            <p class="text-xs text-neutral-500 dark:text-neutral-400 font-medium">在线用户</p>
           </div>
         </div>
 
         <!-- 数据更新时间 -->
-        <div class="text-center mt-6 pt-6 border-t border-gray-200">
-          <p class="text-sm text-gray-500">
-            数据更新时间：<span id="last-updated" class="font-medium"
+        <div class="text-center mt-6 pt-5 border-t border-black/[0.04] dark:border-white/[0.06]">
+          <p class="text-xs text-neutral-400 dark:text-neutral-500">
+            数据更新时间：<span id="last-updated" class="font-medium text-neutral-600 dark:text-neutral-400"
               >加载中...</span
             >
           </p>
@@ -192,97 +192,118 @@ const structuredData = {
 
     <!-- 平台介绍 -->
     <section class="mb-16">
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
         <div>
-          <h2 class="text-3xl font-bold text-gray-900 mb-6">我们的平台</h2>
-          <div class="space-y-4 text-gray-600">
+          <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight text-neutral-900 dark:text-white mb-5">我们的平台</h2>
+          <div class="space-y-4 text-neutral-600 dark:text-neutral-300 leading-relaxed text-sm sm:text-base">
             <p>
-              {appConfig.title} 是一个基于现代技术栈构建的APPFUN，旨在为开发者和用户提供便捷的软件发布、管理和下载服务。
+              {appConfig.title} 是一个基于现代技术栈构建的软件管理与分发服务平台，旨在为开发者和用户提供便捷的软件发布、管理和下载服务。
             </p>
             <p>
-              我们使用 Astro 框架构建前端界面，集成了强大的 LACS API
-              服务，为用户提供流畅的软件浏览和管理体验。
+              我们使用 Astro 框架构建前端界面，集成了高可用 API 服务，为用户提供纯净、流畅的软件浏览体验。
             </p>
             <p>
-              平台支持多种软件分类、标签系统、版本管理、激活码管理等功能，满足不同用户的需求。
+              平台支持多端软件分类、标签索引、版本记录、激活码分配等功能，满足多样化的日常与专业需求。
             </p>
           </div>
         </div>
 
-        <div class="bg-primary-50 rounded-2xl p-8 border border-primary-100/50">
-          <div class="text-center">
-            <div
-              class="w-20 h-20 bg-primary-600 rounded-2xl flex items-center justify-center mx-auto mb-6"
+        <div class="bg-neutral-50/80 dark:bg-white/[0.03] rounded-3xl p-8 border border-black/[0.04] dark:border-white/[0.06] text-center">
+          <div
+            class="w-16 h-16 bg-primary-600 text-white rounded-2xl flex items-center justify-center mx-auto mb-5 shadow-sm"
+          >
+            <svg
+              class="w-8 h-8"
+              fill="currentColor"
+              viewBox="0 0 20 20"
             >
-              <svg
-                class="w-10 h-10 text-white"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-              >
-                <path
-                  d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"
-                ></path>
-              </svg>
-            </div>
-            <h3 class="text-xl font-semibold text-gray-900 mb-2">
-              {appConfig.title}
-            </h3>
-            <p class="text-gray-600">版本 {appConfig.version}</p>
+              <path
+                d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"
+              ></path>
+            </svg>
           </div>
+          <h3 class="text-xl font-semibold text-neutral-900 dark:text-white mb-1.5">
+            {appConfig.title}
+          </h3>
+          <p class="text-sm text-neutral-500 dark:text-neutral-400">版本 {appConfig.version}</p>
         </div>
       </div>
     </section>
 
     <!-- 核心功能 -->
     <section class="mb-16">
-      <h2 class="text-3xl font-bold text-gray-900 text-center mb-12">
+      <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight text-neutral-900 dark:text-white text-center mb-10">
         核心功能
       </h2>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        <Card class="text-center">
-          <div class="text-4xl mb-4">📦</div>
-          <h3 class="text-lg font-semibold text-gray-900 mb-2">软件管理</h3>
-          <p class="text-gray-600 text-sm">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <Card class="p-6">
+          <div class="w-10 h-10 rounded-xl bg-primary-50 dark:bg-primary-950/40 text-primary-600 dark:text-primary-400 flex items-center justify-center mb-4">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+            </svg>
+          </div>
+          <h3 class="text-base font-semibold text-neutral-900 dark:text-white mb-2">软件管理</h3>
+          <p class="text-neutral-500 dark:text-neutral-400 text-sm leading-relaxed">
             完整的软件信息管理，包括版本历史、下载链接、系统要求等详细信息
           </p>
         </Card>
 
-        <Card class="text-center">
-          <div class="text-4xl mb-4">🏷️</div>
-          <h3 class="text-lg font-semibold text-gray-900 mb-2">分类标签</h3>
-          <p class="text-gray-600 text-sm">
+        <Card class="p-6">
+          <div class="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mb-4">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+            </svg>
+          </div>
+          <h3 class="text-base font-semibold text-neutral-900 dark:text-white mb-2">分类标签</h3>
+          <p class="text-neutral-500 dark:text-neutral-400 text-sm leading-relaxed">
             灵活的分类和标签系统，帮助用户快速找到所需的软件工具
           </p>
         </Card>
 
-        <Card class="text-center">
-          <div class="text-4xl mb-4">🔑</div>
-          <h3 class="text-lg font-semibold text-gray-900 mb-2">激活码管理</h3>
-          <p class="text-gray-600 text-sm">
+        <Card class="p-6">
+          <div class="w-10 h-10 rounded-xl bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 flex items-center justify-center mb-4">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
+            </svg>
+          </div>
+          <h3 class="text-base font-semibold text-neutral-900 dark:text-white mb-2">激活码管理</h3>
+          <p class="text-neutral-500 dark:text-neutral-400 text-sm leading-relaxed">
             强大的激活码生成、验证和管理功能，支持软件许可证管理
           </p>
         </Card>
 
-        <Card class="text-center">
-          <div class="text-4xl mb-4">📊</div>
-          <h3 class="text-lg font-semibold text-gray-900 mb-2">数据统计</h3>
-          <p class="text-gray-600 text-sm">
+        <Card class="p-6">
+          <div class="w-10 h-10 rounded-xl bg-purple-50 dark:bg-purple-950/40 text-purple-600 dark:text-purple-400 flex items-center justify-center mb-4">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+            </svg>
+          </div>
+          <h3 class="text-base font-semibold text-neutral-900 dark:text-white mb-2">数据统计</h3>
+          <p class="text-neutral-500 dark:text-neutral-400 text-sm leading-relaxed">
             详细的用户行为统计和软件使用分析，帮助了解软件使用情况
           </p>
         </Card>
 
-        <Card class="text-center">
-          <div class="text-4xl mb-4">🔍</div>
-          <h3 class="text-lg font-semibold text-gray-900 mb-2">智能搜索</h3>
-          <p class="text-gray-600 text-sm">
+        <Card class="p-6">
+          <div class="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 flex items-center justify-center mb-4">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </div>
+          <h3 class="text-base font-semibold text-neutral-900 dark:text-white mb-2">智能搜索</h3>
+          <p class="text-neutral-500 dark:text-neutral-400 text-sm leading-relaxed">
             强大的搜索功能，支持按名称、分类、标签等多种方式查找软件
           </p>
         </Card>
 
-        <Card class="text-center">
-          <div class="text-4xl mb-4">📱</div>
-          <h3 class="text-lg font-semibold text-gray-900 mb-2">响应式设计</h3>
-          <p class="text-gray-600 text-sm">
+        <Card class="p-6">
+          <div class="w-10 h-10 rounded-xl bg-neutral-100 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 flex items-center justify-center mb-4">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+            </svg>
+          </div>
+          <h3 class="text-base font-semibold text-neutral-900 dark:text-white mb-2">响应式设计</h3>
+          <p class="text-neutral-500 dark:text-neutral-400 text-sm leading-relaxed">
             完美适配桌面和移动设备，随时随地访问和管理软件
           </p>
         </Card>
@@ -291,15 +312,15 @@ const structuredData = {
 
     <!-- 技术栈 -->
     <section class="mb-16">
-      <h2 class="text-3xl font-bold text-gray-900 text-center mb-12">技术栈</h2>
-      <div class="bg-white rounded-2xl border border-gray-200 shadow-sm p-8">
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          <div class="text-center">
+      <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight text-neutral-900 dark:text-white text-center mb-10">技术栈</h2>
+      <div class="bg-white dark:bg-[#1c1c1e] rounded-3xl border border-black/[0.04] dark:border-white/[0.06] shadow-apple-card p-6 sm:p-8">
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
+          <div class="text-center p-4">
             <div
-              class="w-16 h-16 bg-orange-100 rounded-xl flex items-center justify-center mx-auto mb-4"
+              class="w-12 h-12 bg-orange-50 dark:bg-orange-950/40 rounded-2xl flex items-center justify-center mx-auto mb-3"
             >
               <svg
-                class="w-8 h-8 text-orange-600"
+                class="w-6 h-6 text-orange-600 dark:text-orange-400"
                 viewBox="0 0 24 24"
                 fill="currentColor"
               >
@@ -308,16 +329,16 @@ const structuredData = {
                 ></path>
               </svg>
             </div>
-            <h3 class="font-semibold text-gray-900 mb-1">Astro</h3>
-            <p class="text-sm text-gray-600">现代静态站点生成器</p>
+            <h3 class="font-medium text-neutral-900 dark:text-white text-sm sm:text-base mb-0.5">Astro</h3>
+            <p class="text-xs text-neutral-500 dark:text-neutral-400">现代静态站点生成器</p>
           </div>
 
-          <div class="text-center">
+          <div class="text-center p-4">
             <div
-              class="w-16 h-16 bg-blue-100 rounded-xl flex items-center justify-center mx-auto mb-4"
+              class="w-12 h-12 bg-blue-50 dark:bg-blue-950/40 rounded-2xl flex items-center justify-center mx-auto mb-3"
             >
               <svg
-                class="w-8 h-8 text-blue-600"
+                class="w-6 h-6 text-blue-600 dark:text-blue-400"
                 viewBox="0 0 24 24"
                 fill="currentColor"
               >
@@ -326,16 +347,16 @@ const structuredData = {
                 ></path>
               </svg>
             </div>
-            <h3 class="font-semibold text-gray-900 mb-1">React</h3>
-            <p class="text-sm text-gray-600">交互式组件开发</p>
+            <h3 class="font-medium text-neutral-900 dark:text-white text-sm sm:text-base mb-0.5">React</h3>
+            <p class="text-xs text-neutral-500 dark:text-neutral-400">交互式组件开发</p>
           </div>
 
-          <div class="text-center">
+          <div class="text-center p-4">
             <div
-              class="w-16 h-16 bg-cyan-100 rounded-xl flex items-center justify-center mx-auto mb-4"
+              class="w-12 h-12 bg-cyan-50 dark:bg-cyan-950/40 rounded-2xl flex items-center justify-center mx-auto mb-3"
             >
               <svg
-                class="w-8 h-8 text-cyan-600"
+                class="w-6 h-6 text-cyan-600 dark:text-cyan-400"
                 viewBox="0 0 24 24"
                 fill="currentColor"
               >
@@ -344,16 +365,16 @@ const structuredData = {
                 ></path>
               </svg>
             </div>
-            <h3 class="font-semibold text-gray-900 mb-1">Tailwind CSS</h3>
-            <p class="text-sm text-gray-600">实用优先的 CSS 框架</p>
+            <h3 class="font-medium text-neutral-900 dark:text-white text-sm sm:text-base mb-0.5">Tailwind CSS</h3>
+            <p class="text-xs text-neutral-500 dark:text-neutral-400">实用优先的 CSS 框架</p>
           </div>
 
-          <div class="text-center">
+          <div class="text-center p-4">
             <div
-              class="w-16 h-16 bg-blue-100 rounded-xl flex items-center justify-center mx-auto mb-4"
+              class="w-12 h-12 bg-sky-50 dark:bg-sky-950/40 rounded-2xl flex items-center justify-center mx-auto mb-3"
             >
               <svg
-                class="w-8 h-8 text-blue-600"
+                class="w-6 h-6 text-sky-600 dark:text-sky-400"
                 viewBox="0 0 24 24"
                 fill="currentColor"
               >
@@ -362,8 +383,8 @@ const structuredData = {
                 ></path>
               </svg>
             </div>
-            <h3 class="font-semibold text-gray-900 mb-1">TypeScript</h3>
-            <p class="text-sm text-gray-600">类型安全的 JavaScript</p>
+            <h3 class="font-medium text-neutral-900 dark:text-white text-sm sm:text-base mb-0.5">TypeScript</h3>
+            <p class="text-xs text-neutral-500 dark:text-neutral-400">类型安全的 JavaScript</p>
           </div>
         </div>
       </div>
@@ -371,49 +392,61 @@ const structuredData = {
 
     <!-- 联系信息 -->
     <section class="mb-16">
-      <h2 class="text-3xl font-bold text-gray-900 text-center mb-12">
-        联系我们
+      <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight text-neutral-900 dark:text-white text-center mb-10">
+        联系与支持
       </h2>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-        <Card class="text-center">
-          <div class="text-3xl mb-4">📧</div>
-          <h3 class="font-semibold text-gray-900 mb-2">邮箱支持</h3>
-          <p class="text-sm text-gray-600 mb-3">
-            有任何问题或建议，欢迎发送邮件给我们
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <Card class="p-6 text-center">
+          <div class="w-10 h-10 rounded-xl bg-primary-50 dark:bg-primary-950/40 text-primary-600 dark:text-primary-400 flex items-center justify-center mx-auto mb-3">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+            </svg>
+          </div>
+          <h3 class="font-semibold text-neutral-900 dark:text-white mb-1.5">邮箱支持</h3>
+          <p class="text-xs text-neutral-500 dark:text-neutral-400 mb-3">
+            有任何问题或建议，欢迎发送邮件与我们联系
           </p>
           <a
             href="mailto:support@lacs.cc"
-            class="text-primary-600 hover:text-primary-700 text-sm font-medium"
+            class="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 text-sm font-medium transition-colors"
           >
             support@lacs.cc
           </a>
         </Card>
 
-        <Card class="text-center">
-          <div class="text-3xl mb-4">📚</div>
-          <h3 class="font-semibold text-gray-900 mb-2">API 文档</h3>
-          <p class="text-sm text-gray-600 mb-3">
-            查看完整的 API 文档和开发指南
+        <Card class="p-6 text-center">
+          <div class="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mx-auto mb-3">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+          </div>
+          <h3 class="font-semibold text-neutral-900 dark:text-white mb-1.5">API 文档</h3>
+          <p class="text-xs text-neutral-500 dark:text-neutral-400 mb-3">
+            查看完整的接口规范与开发者接入指南
           </p>
           <a
             href={appConfig.links.documentation}
             target="_blank"
             rel="noopener noreferrer"
-            class="text-primary-600 hover:text-primary-700 text-sm font-medium"
+            class="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 text-sm font-medium transition-colors"
           >
             查看文档
           </a>
         </Card>
 
-        <Card class="text-center">
-          <div class="text-3xl mb-4">🐙</div>
-          <h3 class="font-semibold text-gray-900 mb-2">开源项目</h3>
-          <p class="text-sm text-gray-600 mb-3">查看我们的开源项目和贡献</p>
+        <Card class="p-6 text-center">
+          <div class="w-10 h-10 rounded-xl bg-neutral-100 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 flex items-center justify-center mx-auto mb-3">
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+              <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" />
+            </svg>
+          </div>
+          <h3 class="font-semibold text-neutral-900 dark:text-white mb-1.5">开源项目</h3>
+          <p class="text-xs text-neutral-500 dark:text-neutral-400 mb-3">探索开源仓库与技术社区互动</p>
           <a
             href={appConfig.links.github}
             target="_blank"
             rel="noopener noreferrer"
-            class="text-primary-600 hover:text-primary-700 text-sm font-medium"
+            class="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 text-sm font-medium transition-colors"
           >
             GitHub
           </a>
@@ -423,20 +456,20 @@ const structuredData = {
 
     <!-- 版本信息 -->
     <section class="text-center">
-      <div class="bg-gray-50 rounded-2xl p-8">
-        <h3 class="text-lg font-semibold text-gray-900 mb-4">版本信息</h3>
+      <div class="bg-white dark:bg-[#1c1c1e] rounded-3xl border border-black/[0.04] dark:border-white/[0.06] shadow-apple-card p-6 sm:p-8">
+        <h3 class="text-base font-semibold text-neutral-900 dark:text-white mb-4">版本信息</h3>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-sm">
           <div>
-            <div class="font-medium text-gray-900">当前版本</div>
-            <div class="text-gray-600">v{appConfig.version}</div>
+            <div class="font-medium text-neutral-900 dark:text-white">当前版本</div>
+            <div class="text-neutral-500 dark:text-neutral-400 mt-1">v{appConfig.version}</div>
           </div>
           <div>
-            <div class="font-medium text-gray-900">构建时间</div>
-            <div class="text-gray-600" id="build-time">-</div>
+            <div class="font-medium text-neutral-900 dark:text-white">构建时间</div>
+            <div class="text-neutral-500 dark:text-neutral-400 mt-1" id="build-time">-</div>
           </div>
           <div>
-            <div class="font-medium text-gray-900">开发团队</div>
-            <div class="text-gray-600">领创工作室</div>
+            <div class="font-medium text-neutral-900 dark:text-white">开发团队</div>
+            <div class="text-neutral-500 dark:text-neutral-400 mt-1">领创工作室</div>
           </div>
         </div>
       </div>

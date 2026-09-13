@@ -48,62 +48,62 @@ const formatSoftwareFileSize = (version: any) => {
 const fileSize = formatSoftwareFileSize(software.versions?.[0]);
 ---
 
-<div class={`bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow duration-200 cursor-pointer ${className}`} onclick="window.location.href='/software/${software.id}'">
-  <div class="p-6">
+<div class={`group bg-white dark:bg-[#161617] rounded-2xl sm:rounded-3xl border border-black/[0.04] dark:border-white/[0.06] shadow-[0_4px_24px_-2px_rgba(0,0,0,0.04)] hover:shadow-[0_20px_40px_-12px_rgba(0,0,0,0.08)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.5)] hover:-translate-y-1 transition-all duration-300 cursor-pointer overflow-hidden flex flex-col h-full ${className}`} onclick={`window.location.href='/software/${software.id}'`}>
+  <div class="p-3.5 sm:p-5 lg:p-6 flex-1 flex flex-col">
     <!-- 软件标题和版本 -->
-    <div class="flex items-start justify-between mb-3">
+    <div class="flex items-start justify-between mb-2.5 sm:mb-3">
       <div class="flex-1 min-w-0">
-        <h3 class="text-lg font-semibold text-gray-900 truncate hover:text-primary-600 transition-colors">
+        <h3 class="text-xs sm:text-base font-bold text-[#1d1d1f] dark:text-[#f5f5f7] truncate group-hover:text-[#0071e3] dark:group-hover:text-[#2997ff] transition-colors">
           {software.name}
         </h3>
         {software.nameEn && (
-          <p class="text-sm text-gray-500 truncate mt-1">
+          <p class="text-[10px] sm:text-xs text-[#86868b] dark:text-[#a1a1a6] truncate mt-0.5">
             {software.nameEn}
           </p>
         )}
       </div>
       
-      <div class="flex flex-col items-end space-y-1 ml-4">
-        <Badge variant="primary" size="sm">
+      <div class="flex flex-col items-end space-y-1 ml-2 sm:ml-4 flex-shrink-0">
+        <span class="inline-flex items-center px-1.5 sm:px-2.5 py-0.5 rounded-full text-[10px] sm:text-[11px] font-semibold bg-[#e8f2fc] text-[#0071e3] dark:bg-[#2997ff]/15 dark:text-[#2997ff]">
           v{software.currentVersion}
-        </Badge>
+        </span>
         {software.category && (
-          <Badge variant="secondary" size="sm">
+          <span class="hidden sm:inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-black/[0.04] text-[#515154] dark:bg-white/[0.08] dark:text-[#a1a1a6]">
             {software.category}
-          </Badge>
+          </span>
         )}
       </div>
     </div>
 
     <!-- 软件描述 -->
     {showDescription && software.description && (
-      <p class="text-gray-600 text-sm mb-4 line-clamp-2">
+      <p class="text-[11px] sm:text-xs text-[#86868b] dark:text-[#a1a1a6] leading-relaxed mb-2.5 sm:mb-4 line-clamp-2 flex-1">
         {software.description}
       </p>
     )}
 
     <!-- 软件标签 -->
     {showTags && software.tags && software.tags.length > 0 && (
-      <div class="flex flex-wrap gap-1 mb-4">
-        {software.tags.slice(0, 3).map(tag => (
-          <Badge variant="info" size="sm">
-            {tag}
-          </Badge>
+      <div class="flex flex-wrap gap-1 sm:gap-1.5 mb-2.5 sm:mb-4">
+        {software.tags.slice(0, 2).map(tag => (
+          <span class="inline-flex items-center px-1.5 sm:px-2 py-0.5 rounded-full text-[9px] sm:text-[10px] font-medium bg-black/[0.03] text-[#515154] dark:bg-white/[0.06] dark:text-[#a1a1a6]">
+            #{tag}
+          </span>
         ))}
-        {software.tags.length > 3 && (
-          <Badge variant="secondary" size="sm">
-            +{software.tags.length - 3}
-          </Badge>
+        {software.tags.length > 2 && (
+          <span class="inline-flex items-center px-1 py-0.5 rounded-full text-[9px] sm:text-[10px] text-[#86868b]">
+            +{software.tags.length - 2}
+          </span>
         )}
       </div>
     )}
 
     <!-- 软件信息 -->
-    <div class="flex items-center justify-between text-sm text-gray-500 mb-4">
-      <div class="flex items-center space-x-4">
+    <div class="flex items-center justify-between text-[10px] sm:text-[11px] text-[#86868b] dark:text-[#6e6e73] mb-2.5 sm:mb-4 mt-auto pt-2.5 sm:pt-3 border-t border-black/[0.04] dark:border-white/[0.06]">
+      <div class="flex items-center space-x-2 sm:space-x-3">
         {software.viewCount !== undefined && (
           <span class="flex items-center">
-            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg class="w-3 h-3 sm:w-3.5 sm:h-3.5 mr-0.5 sm:mr-1 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
             </svg>
@@ -112,8 +112,8 @@ const fileSize = formatSoftwareFileSize(software.versions?.[0]);
         )}
 
         {software.rank && (
-          <span class="flex items-center text-orange-600">
-            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <span class="flex items-center text-amber-600 dark:text-amber-400 font-semibold">
+            <svg class="w-3 h-3 sm:w-3.5 sm:h-3.5 mr-0.5 sm:mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
             </svg>
             #{software.rank}
@@ -121,20 +121,11 @@ const fileSize = formatSoftwareFileSize(software.versions?.[0]);
         )}
 
         {fileSize && (
-          <span class="flex items-center">
-            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <span class="hidden sm:flex items-center">
+            <svg class="w-3.5 h-3.5 mr-1 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10"></path>
             </svg>
             {fileSize}
-          </span>
-        )}
-
-        {software.filetype && (
-          <span class="flex items-center">
-            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-            </svg>
-            {software.filetype.toUpperCase()}
           </span>
         )}
       </div>
@@ -146,17 +137,17 @@ const fileSize = formatSoftwareFileSize(software.versions?.[0]);
 
     <!-- 操作按钮 -->
     <div class="flex items-center justify-between">
-      <div class="flex items-center space-x-2">
+      <div class="flex items-center space-x-1 sm:space-x-2">
         {software.officialWebsite && (
           <a 
             href={software.officialWebsite}
             target="_blank"
             rel="noopener noreferrer"
-            class="text-gray-400 hover:text-gray-600 transition-colors"
+            class="text-[#86868b] hover:text-[#1d1d1f] dark:hover:text-[#f5f5f7] transition-colors p-1"
             title="官方网站"
             onclick="event.stopPropagation()"
           >
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
             </svg>
           </a>
@@ -165,17 +156,17 @@ const fileSize = formatSoftwareFileSize(software.versions?.[0]);
 
       {showDownload && downloadUrl && (
         <button
-          class="btn btn-primary btn-sm"
+          class="inline-flex items-center justify-center px-3 sm:px-4 py-1 sm:py-1.5 rounded-full bg-[#0071e3] hover:bg-[#0077ed] text-white text-[11px] sm:text-xs font-semibold shadow-sm hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 cursor-pointer"
           data-download-url={downloadUrl}
           data-show-login-prompt="true"
           type="button"
           onclick="event.stopPropagation()"
         >
-          <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg class="w-3 h-3 sm:w-3.5 sm:h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
           </svg>
-          <span class="download-text">下载</span>
-          <span class="login-prompt-text hidden">需要登录</span>
+          <span class="download-text">获取</span>
+          <span class="login-prompt-text hidden">需登录</span>
         </button>
       )}
     </div>

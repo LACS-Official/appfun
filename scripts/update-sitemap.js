@@ -15,7 +15,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const API_BASE_URL = 'https://api-g.lacs.cc';
-const SITE_URL = 'https://appfun.fun';
+const SITE_URL = 'https://appfun.lacs.cc';
 const SITEMAP_PATH = path.join(__dirname, '..', 'public', 'sitemap.xml');
 
 async function fetchSoftwareList() {
