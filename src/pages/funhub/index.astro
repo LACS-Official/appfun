@@ -1,0 +1,23 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Home from '../../components/funhub/Home.jsx';
+
+const title = 'FunHub - 创意网页集合平台';
+const description = '探索各种创意网页项目，体验大米笔解锁、彩虹电池刷机与交互设计';
+const keywords = 'FunHub,大米笔解锁,大米巨能写,彩虹电池刷机,趣味工具,领创工作室';
+---
+
+<Layout
+  title={title}
+  description={description}
+  keywords={keywords}
+  showFooter={false}
+>
+  <link
+    slot="head"
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+  />
+
+  <Home client:load />
+</Layout>

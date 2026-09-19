@@ -1,0 +1,23 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import MiRainbowBattery from '../../../components/funhub/MiRainbowBattery.jsx';
+
+const title = '大米巨能写设备电池 - FunHub';
+const description = '查看大米巨能写与彩虹电池设备的电池状态、健康信息与固件刷机方案';
+const keywords = '大米彩虹电池,巨能写电池,彩虹电池刷机,FunHub,HyperOS官改';
+---
+
+<Layout
+  title={title}
+  description={description}
+  keywords={keywords}
+  showFooter={false}
+>
+  <link
+    slot="head"
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+  />
+
+  <MiRainbowBattery client:load initialIsToolsPage={false} />
+</Layout>

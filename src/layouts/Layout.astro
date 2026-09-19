@@ -10,6 +10,7 @@ export interface Props {
   description?: string;
   showSearch?: boolean;
   showFooter?: boolean;
+  showHeader?: boolean;
   class?: string;
   keywords?: string;
   canonical?: string;
@@ -23,6 +24,7 @@ const {
   description = appConfig.description,
   showSearch = true,
   showFooter = true,
+  showHeader = true,
   class: className = '',
   keywords = '软件管理,软件下载,激活码,LACS,APPFUN,有趣软件',
   canonical,
@@ -241,6 +243,9 @@ const canonicalUrl = canonical || new URL(Astro.url.pathname, Astro.site).href;
     <!-- Structured Data -->
     <StructuredData type={structuredDataType} data={structuredDataProps} />
     
+    <!-- Custom Page Head Slot -->
+    <slot name="head" />
+    
     <!-- Prevent FOUC: 使用关键样式与字体优化，避免隐藏 html -->
   </head>
   
@@ -251,7 +256,7 @@ const canonicalUrl = canonical || new URL(Astro.url.pathname, Astro.site).href;
     </a>
 
     <!-- Header -->
-    <Header client:idle title={appConfig.title} showSearch={showSearch} />
+    {showHeader && <Header client:idle title={appConfig.title} showSearch={showSearch} />}
     
     <!-- Main Content -->
     <main id="main-content" class={`flex-1 w-full flex flex-col ${className}`}>

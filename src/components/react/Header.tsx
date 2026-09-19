@@ -150,6 +150,13 @@ export default function Header({
                   >
                     关于
                   </a>
+                  <a
+                    href="/funhub"
+                    className="px-3.5 py-1.5 rounded-full text-[13px] font-medium text-[#515154] dark:text-[#a1a1a6] hover:text-[#1d1d1f] dark:hover:text-[#f5f5f7] hover:bg-black/[0.04] dark:hover:bg-white/[0.08] transition-all duration-150 flex items-center gap-1"
+                  >
+                    <span>FunHub</span>
+                    <span className="w-1.5 h-1.5 rounded-full bg-orange-500 inline-block animate-pulse"></span>
+                  </a>
                 </div>
 
                 <AuthButton />
@@ -215,6 +222,13 @@ export default function Header({
                 className="block px-4 py-2.5 rounded-xl text-sm font-medium text-[#1d1d1f] dark:text-[#f5f5f7] hover:bg-black/[0.04] dark:hover:bg-white/[0.08] transition-colors"
               >
                 关于
+              </a>
+              <a
+                href="/funhub"
+                className="block px-4 py-2.5 rounded-xl text-sm font-medium text-[#1d1d1f] dark:text-[#f5f5f7] hover:bg-black/[0.04] dark:hover:bg-white/[0.08] transition-colors flex items-center justify-between"
+              >
+                <span>FunHub 创意工坊</span>
+                <span className="text-[10px] px-2 py-0.5 rounded-full bg-orange-500/10 text-orange-500 font-semibold">趣味</span>
               </a>
               <button
                 onClick={() => setIsGroupModalOpen(true)}

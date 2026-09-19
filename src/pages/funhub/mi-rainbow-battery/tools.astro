@@ -1,0 +1,23 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import MiRainbowBattery from '../../../components/funhub/MiRainbowBattery.jsx';
+
+const title = '大米彩虹电池工具箱 - FunHub';
+const description = '彩虹电池高级管理与刷机工具箱，支持解锁 Bootloader、多系统 ROM 刷机、Root 模块管理与官改高级设置';
+const keywords = '彩虹电池工具箱,彩虹电池刷机,Bootloader解锁,Root模块,HyperOS官改,FunHub';
+---
+
+<Layout
+  title={title}
+  description={description}
+  keywords={keywords}
+  showFooter={false}
+>
+  <link
+    slot="head"
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+  />
+
+  <MiRainbowBattery client:load initialIsToolsPage={true} />
+</Layout>

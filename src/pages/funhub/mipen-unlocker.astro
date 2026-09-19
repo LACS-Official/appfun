@@ -1,0 +1,23 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import MiPenUnlocker from '../../components/funhub/MiPenUnlocker.jsx';
+
+const title = '大米笔解锁工具 - FunHub';
+const description = '解除大米巨能写设备与触控笔的功能限制，获得完整的拟真使用体验';
+const keywords = '大米触控笔解锁,巨能写解锁,小米触控笔,FunHub,模拟解锁';
+---
+
+<Layout
+  title={title}
+  description={description}
+  keywords={keywords}
+  showFooter={false}
+>
+  <link
+    slot="head"
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+  />
+
+  <MiPenUnlocker client:load />
+</Layout>
